@@ -2,7 +2,8 @@ package com.kuri01.Game.Card;
 
 public class Card {
     public enum Suit {
-        HEARTS, DIAMONDS, CLUBS, SPADES
+        heart, diamond, club, spade;
+
     }
 
     private final Suit suit;
@@ -40,6 +41,7 @@ public class Card {
 
     @Override
     public String toString() {
-        return (faceUp ? "[FaceUp]" : "[FaceDown]") + " " + value + " of " + suit;
+        if (faceUp) return "[" + " " + value + "_" + suit +"]";
+        return "[" +"XX_XX" +"]";
     }
 }

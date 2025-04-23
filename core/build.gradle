@@ -6,8 +6,9 @@ dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
   api "com.kotcrab.vis:vis-ui:$visUiVersion"
   api "org.mini2Dx:universal-tween-engine:$universalTweenVersion"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
-  if(enableGraalNative == 'true') {
+    if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
 }
