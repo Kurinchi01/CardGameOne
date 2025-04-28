@@ -5,6 +5,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.kuri01.Game.Card.Card;
 import com.kuri01.Game.Card.CardRenderer;
@@ -25,28 +26,15 @@ public class GameScreen extends ScreenAdapter {
     private CardRenderer cardRenderer;
     public static float cardWidth;
     public static float cardHeight;
-    private Rectangle playArea;
-
+    ShapeRenderer shapeRenderer;
 
     @Override
     public void show() {
        // init
         batch = new SpriteBatch();
         font = new BitmapFont();
+        shapeRenderer = new ShapeRenderer();
 
-        float margin = 40f; // etwas Abstand vom Rand
-
-        float playWidth = Gdx.graphics.getWidth() * 0.9f;
-        float playHeight = Gdx.graphics.getHeight() * 0.8f;
-
-        float playX = (Gdx.graphics.getWidth() - playWidth) / 2f;
-        float playY = margin; // von unten Abstand
-
-        playArea = new Rectangle(playX, playY, playWidth, playHeight);
-        float cardWidth = playArea.width / (10f + 9f * 0.2f); // 10 Karten + 9 Zwischenräume
-        float cardHeight = cardWidth / 0.7f;
-
-         // später mit freetype ersetzen
 
         //deck erstellen und mischen
         deck = new Deck();
@@ -58,15 +46,14 @@ public class GameScreen extends ScreenAdapter {
             pyramidCards.add(card);
         }
 
-        layoutPyramide = new TriPeaksLayout();
-        layoutPyramide.init(pyramidCards, cardWidth,  cardHeight,playArea);
+        layoutPyramide = new TriPeaksLayout(pyramidCards);
+        layoutPyramide.init();
 
         topCard = deck.draw();
+        topCard.setFaceUp(true);
+
         cardRenderer= new CardRenderer();
 
-        topCard.setFaceUp(true);
-        Gdx.input.setInputProcessor(new SimpleInput(layoutPyramide, this));
-        System.out.println("Deck size after layout: " + deck.remainingCards());
 
     }
 
@@ -81,20 +68,20 @@ public class GameScreen extends ScreenAdapter {
         for (TriPeaksLayout.CardSlot slot : layoutPyramide.getSlots()) {
             if (slot.card != null) {
                 boolean faceUp = slot.card.isFaceUp();
-                System.out.println("Drawing card at: " + slot.x + ", " + slot.y);
-                System.out.println("Texture is null? " + (cardRenderer.getTexture(slot.card, faceUp)));
-                batch.draw(cardRenderer.getTexture(slot.card, faceUp), slot.x, slot.y, cardWidth, cardHeight);
+                batch.draw(cardRenderer.getTexture(slot.card, faceUp), slot.x, slot.y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
             }
         }
 
         if (topCard != null) {
             float x = Gdx.graphics.getWidth() / 2f - cardWidth / 2f;
             float y = 50;
-            batch.draw(cardRenderer.getTexture(topCard, true), x, y, cardWidth, cardHeight);
+            batch.draw(cardRenderer.getTexture(topCard, true), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
         }
-        //Test
-        System.out.println("Slots: " + layoutPyramide.getSlots().size());
         batch.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        layoutPyramide.renderDebugGrid(shapeRenderer);
+        shapeRenderer.end();
     }
 
     @Override
@@ -122,6 +109,8 @@ public class GameScreen extends ScreenAdapter {
         batch.dispose();
         font.dispose();
         cardRenderer.dispose();
+        shapeRenderer.dispose();
+
     }
 
     public Card getTopCard() {
