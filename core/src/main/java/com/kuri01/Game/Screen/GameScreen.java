@@ -3,10 +3,9 @@ package com.kuri01.Game.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.math.Rectangle;
 import com.kuri01.Game.Card.Card;
 import com.kuri01.Game.Card.CardRenderer;
 import com.kuri01.Game.Card.Deck;
@@ -22,57 +21,55 @@ public class GameScreen extends ScreenAdapter {
     private BitmapFont font;
     private Deck deck;
     private Card topCard;
-    private GlyphLayout layout;
     private TriPeaksLayout layoutPyramide;
     private CardRenderer cardRenderer;
-    private static final float CARD_WIDTH_PERCENT = 0.08f;  // z. B. 8 % der Bildschirmbreite
-    private static final float CARD_ASPECT_RATIO = 0.7f;    // Standardkarten: z. B. 50x70
-
-    private float cardWidth;
-    private float cardHeight;
+    public static float cardWidth;
+    public static float cardHeight;
+    private Rectangle playArea;
 
 
     @Override
     public void show() {
-        cardWidth = Gdx.graphics.getWidth() * 0.05f;
-        cardHeight = cardWidth / 0.7f;
+       // init
         batch = new SpriteBatch();
-        font = new BitmapFont(); // später mit freetype ersetzen
+        font = new BitmapFont();
+
+        float margin = 40f; // etwas Abstand vom Rand
+
+        float playWidth = Gdx.graphics.getWidth() * 0.9f;
+        float playHeight = Gdx.graphics.getHeight() * 0.8f;
+
+        float playX = (Gdx.graphics.getWidth() - playWidth) / 2f;
+        float playY = margin; // von unten Abstand
+
+        playArea = new Rectangle(playX, playY, playWidth, playHeight);
+        float cardWidth = playArea.width / (10f + 9f * 0.2f); // 10 Karten + 9 Zwischenräume
+        float cardHeight = cardWidth / 0.7f;
+
+         // später mit freetype ersetzen
+
+        //deck erstellen und mischen
         deck = new Deck();
-        layout = new GlyphLayout();
-        cardRenderer = new CardRenderer();
 
-
+        //28 Karten für Pyramide ziehen
         List<Card> pyramidCards = new ArrayList<>();
         for (int i = 0; i < 28; i++) {
             Card card = deck.draw();
             pyramidCards.add(card);
         }
 
-        layoutPyramide = new TriPeaksLayout(pyramidCards, cardWidth,  cardHeight);
+        layoutPyramide = new TriPeaksLayout();
+        layoutPyramide.init(pyramidCards, cardWidth,  cardHeight,playArea);
 
         topCard = deck.draw();
+        cardRenderer= new CardRenderer();
+
         topCard.setFaceUp(true);
-        SimpleInput inputProcessor = new SimpleInput(layoutPyramide, topCard, new SimpleInput.CardPlayedCallback() {
-            @Override
-            public void onCardPlayed(Card newTopCard) {
-                topCard = newTopCard;
-                System.out.println("Karte gespielt: " + newTopCard);
-            }
-        });
+        Gdx.input.setInputProcessor(new SimpleInput(layoutPyramide, this));
+        System.out.println("Deck size after layout: " + deck.remainingCards());
 
-
-        Gdx.input.setInputProcessor(inputProcessor);
     }
 
-    private void drawNextCard() {
-        if (!deck.isEmpty()) {
-            topCard = deck.draw();
-            topCard.setFaceUp(true);
-        } else {
-            topCard = null; // Wenn leer
-        }
-    }
 
     @Override
     public void render(float delta) {
@@ -83,15 +80,20 @@ public class GameScreen extends ScreenAdapter {
 
         for (TriPeaksLayout.CardSlot slot : layoutPyramide.getSlots()) {
             if (slot.card != null) {
-                Texture tex = cardRenderer.getTexture(slot.card,slot.card.isFaceUp());
-                batch.draw(tex, slot.x, slot.y, cardWidth, cardHeight);
+                boolean faceUp = slot.card.isFaceUp();
+                System.out.println("Drawing card at: " + slot.x + ", " + slot.y);
+                System.out.println("Texture is null? " + (cardRenderer.getTexture(slot.card, faceUp)));
+                batch.draw(cardRenderer.getTexture(slot.card, faceUp), slot.x, slot.y, cardWidth, cardHeight);
             }
         }
 
         if (topCard != null) {
-            Texture topTex = cardRenderer.getTexture(topCard,true);
-            batch.draw(topTex, 500, 50, cardWidth, cardHeight);
+            float x = Gdx.graphics.getWidth() / 2f - cardWidth / 2f;
+            float y = 50;
+            batch.draw(cardRenderer.getTexture(topCard, true), x, y, cardWidth, cardHeight);
         }
+        //Test
+        System.out.println("Slots: " + layoutPyramide.getSlots().size());
         batch.end();
     }
 
@@ -120,5 +122,17 @@ public class GameScreen extends ScreenAdapter {
         batch.dispose();
         font.dispose();
         cardRenderer.dispose();
+    }
+
+    public Card getTopCard() {
+        return topCard;
+    }
+
+    public void setTopCard(Card topCard) {
+        this.topCard = topCard;
+    }
+
+    public Deck getDeck() {
+        return deck;
     }
 }
