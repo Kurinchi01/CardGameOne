@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.kuri01.Game.Card.Card;
+import com.kuri01.Game.Card.CardSlot;
 import com.kuri01.Game.Card.TriPeaksLayout;
 
 
@@ -30,7 +31,7 @@ public class SimpleInput extends InputAdapter {
         camera.unproject(touchPos);
 
         // Durch alle Karten-Slots gehen
-        for (TriPeaksLayout.CardSlot slot : layout.getSlots()) {
+        for (CardSlot slot : layout.getSlots()) {
             Card card = slot.card;
 
             if (card != null && card.isFaceUp()) {

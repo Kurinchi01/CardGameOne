@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.kuri01.Game.Card.Card;
 import com.kuri01.Game.Card.CardRenderer;
+import com.kuri01.Game.Card.CardSlot;
 import com.kuri01.Game.Card.Deck;
 import com.kuri01.Game.Card.TriPeaksLayout;
 
@@ -34,6 +34,7 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
+
 
 
         //deck erstellen und mischen
@@ -65,7 +66,7 @@ public class GameScreen extends ScreenAdapter {
 
         batch.begin();
 
-        for (TriPeaksLayout.CardSlot slot : layoutPyramide.getSlots()) {
+        for (CardSlot slot : layoutPyramide.getSlots()) {
             if (slot.card != null) {
                 boolean faceUp = slot.card.isFaceUp();
                 batch.draw(cardRenderer.getTexture(slot.card, faceUp), slot.x, slot.y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
@@ -79,9 +80,8 @@ public class GameScreen extends ScreenAdapter {
         }
         batch.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        layoutPyramide.renderDebugGrid(shapeRenderer);
-        shapeRenderer.end();
+        layoutPyramide.getMainGrid().render(shapeRenderer);
+        layoutPyramide.getHelpGrid().render(shapeRenderer);
     }
 
     @Override
