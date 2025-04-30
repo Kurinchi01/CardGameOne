@@ -3,42 +3,65 @@ package com.kuri01.Game.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kuri01.Game.Card.Card;
 import com.kuri01.Game.Card.CardRenderer;
 import com.kuri01.Game.Card.CardSlot;
 import com.kuri01.Game.Card.Deck;
 import com.kuri01.Game.Card.TriPeaksLayout;
+import com.kuri01.Game.Screen.EventHandler.InputHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-/** First screen of the application. Displayed after the application is created. */
+/**
+ * First screen of the application. Displayed after the application is created.
+ */
 public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private BitmapFont font;
     private Deck deck;
     private Card topCard;
+    private CardSlot deckSlot;
     private TriPeaksLayout layoutPyramide;
     private CardRenderer cardRenderer;
     public static float cardWidth;
     public static float cardHeight;
     ShapeRenderer shapeRenderer;
+    private InputHandler inputHandler;
+    private OrthographicCamera camera;
+    private Viewport viewport;
 
+    boolean debug = true;
+    private float y;
+
+
+    @SuppressWarnings("NewApi")
     @Override
     public void show() {
-       // init
+        // init
         batch = new SpriteBatch();
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
-
-
-
+        cardRenderer = new CardRenderer();
         //deck erstellen und mischen
         deck = new Deck();
+
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport.apply();
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.update();
+
+        batch.setProjectionMatrix(camera.combined);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+
 
         //28 Karten für Pyramide ziehen
         List<Card> pyramidCards = new ArrayList<>();
@@ -49,11 +72,17 @@ public class GameScreen extends ScreenAdapter {
 
         layoutPyramide = new TriPeaksLayout(pyramidCards);
         layoutPyramide.init();
+        cardWidth= layoutPyramide.getCardWidth();
+        cardHeight= layoutPyramide.getCardHeight();
 
         topCard = deck.draw();
         topCard.setFaceUp(true);
 
-        cardRenderer= new CardRenderer();
+        deckSlot=new CardSlot(0,0,deck.getCards().getFirst());
+        layoutPyramide.getMainGrid().applyToSlot(deckSlot,0,0);
+
+        inputHandler = new InputHandler(camera,layoutPyramide,this); // Deine Kamera, z.B. orthographicCamera
+        Gdx.input.setInputProcessor(inputHandler);
 
 
     }
@@ -66,27 +95,36 @@ public class GameScreen extends ScreenAdapter {
 
         batch.begin();
 
-        for (CardSlot slot : layoutPyramide.getSlots()) {
+        for (CardSlot slot : layoutPyramide.getPyramidCards()) {
             if (slot.card != null) {
-                boolean faceUp = slot.card.isFaceUp();
-                batch.draw(cardRenderer.getTexture(slot.card, faceUp), slot.x, slot.y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
+                batch.draw(cardRenderer.getTexture(slot.card, slot.card.isFaceUp()), slot.x, slot.y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
             }
         }
 
         if (topCard != null) {
-            float x = Gdx.graphics.getWidth() / 2f - cardWidth / 2f;
-            float y = 50;
+            float x = layoutPyramide.getMainGrid().getPosition(4, 0).x;
+            float y = layoutPyramide.getMainGrid().getPosition(4, 0).y;
             batch.draw(cardRenderer.getTexture(topCard, true), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
         }
+        if (!deck.isEmpty()) {
+            float x = layoutPyramide.getMainGrid().getPosition(0, 0).x;
+            float y = layoutPyramide.getMainGrid().getPosition(0, 0).y;
+
+            batch.draw(cardRenderer.getTexture(deckSlot.card, false), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
+
+        }
+
         batch.end();
 
-        layoutPyramide.getMainGrid().render(shapeRenderer);
-        layoutPyramide.getHelpGrid().render(shapeRenderer);
+        if (debug) {
+            layoutPyramide.getMainGrid().render(shapeRenderer, batch, font);
+
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
+        viewport.update(width, height);
     }
 
     @Override
@@ -110,7 +148,10 @@ public class GameScreen extends ScreenAdapter {
         font.dispose();
         cardRenderer.dispose();
         shapeRenderer.dispose();
+    }
 
+    public CardSlot getDeckSlot() {
+        return deckSlot;
     }
 
     public Card getTopCard() {

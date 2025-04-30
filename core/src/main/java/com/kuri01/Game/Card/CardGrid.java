@@ -1,5 +1,8 @@
 package com.kuri01.Game.Card;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -30,21 +33,37 @@ public class CardGrid {
     }
 
 //Debug Grid anzeigen, ShapeRenderer.begin und ShapeRenderer.end bereits enthalten
-    public void render(ShapeRenderer renderer) {
+    public void render(ShapeRenderer renderer, SpriteBatch spriteBatch, BitmapFont bitmapFont) {
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(0, 1, 0, 1); // Grün
 
-        for (int row = 0; row <= rows; row++) {
-            float y = originY + row * cellHeight;
-            renderer.line(originX, y, originX + cols * cellWidth, y);
-        }
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                float x = originX + col * cellWidth;
+                float y = originY + row * cellHeight;
 
-        for (int col = 0; col <= cols; col++) {
-            float x = originX + col * cellWidth;
-            renderer.line(x, originY, x, originY + rows * cellHeight);
+                // zeichne Rahmen
+                renderer.rect(x, y, cellWidth, cellHeight);
+            }
         }
 
         renderer.end();
+        spriteBatch.begin();
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                float x = originX + col * cellWidth;
+                float y = originY + row * cellHeight;
+
+                String text = "[" + col + ", " + row + "]";
+                GlyphLayout layout = new GlyphLayout(bitmapFont, text);
+
+                float textX = x + (cellWidth - layout.width) / 2;
+                float textY = y + (cellHeight + layout.height) / 2;
+
+                bitmapFont.draw(spriteBatch, layout, textX, textY);
+            }
+        }
+        spriteBatch.end();
     }
 
     //manuelles setzen eines Slots

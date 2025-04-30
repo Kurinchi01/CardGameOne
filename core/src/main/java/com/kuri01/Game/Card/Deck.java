@@ -3,6 +3,8 @@ package com.kuri01.Game.Card;
 import java.util.*;
 
 public class Deck {
+
+
     private final Stack<Card> cards = new Stack<>();
 
     public Deck() {
@@ -16,7 +18,7 @@ public class Deck {
                 cards.push(new Card(suit, value));
             }
         }
-        //Collections.shuffle(cards);
+        Collections.shuffle(cards);
     }
 
     public Card draw() {
@@ -29,6 +31,10 @@ public class Deck {
 
     public int remainingCards() {
         return cards.size();
+    }
+
+    public Stack<Card> getCards() {
+        return cards;
     }
 }
 

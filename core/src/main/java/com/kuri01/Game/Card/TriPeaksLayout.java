@@ -9,15 +9,10 @@ import java.util.List;
 public class TriPeaksLayout {
 
     private float viewX, viewY, viewWidth, viewHeight;
-    private final List<CardSlot> slots = new ArrayList<>();
+    private final List<CardSlot> pyramidCards = new ArrayList<>();
     private float cardWidth, cardHeight;
 
     CardGrid MainGrid;
-    CardGrid helpGrid;
-
-    public CardGrid getHelpGrid() {
-        return helpGrid;
-    }
 
     public TriPeaksLayout(List<Card> cards) {
 
@@ -25,30 +20,23 @@ public class TriPeaksLayout {
         float screenHeight = Gdx.graphics.getHeight();
 
 
-        viewX = screenWidth * 0.30f;      // 30% Abstand links
+        viewX = screenWidth * 0.1f;      // 10% Abstand links
         viewY = screenHeight * 0.1f;     // 10% Abstand unten
 
-        viewWidth = screenWidth * 0.65f;  // 100% - 30% links - 5% rechts
+        viewWidth = screenWidth * 0.85f;  // 100% - 10% links - 5% rechts
         viewHeight = screenHeight * 0.85f; // 100% - 5% oben - 10% unten
 
-        cardWidth = viewWidth / 20f * 2f;  //
+        cardWidth = viewWidth / 28f * 2f;  //
         cardHeight = viewHeight / 5f * 2f;
 
-        MainGrid = new CardGrid(20, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
+        MainGrid = new CardGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
 
-        int helperCols = 3;
-        int helperRows = MainGrid.getRows(); // gleiche Zeilenanzahl
-
-        float helperGridX = MainGrid.getOriginX() - helperCols * cardWidth;
-        float helperGridY = MainGrid.getOriginY();
-
-        CardGrid helperGrid = new CardGrid( helperCols, helperRows, cardWidth, cardHeight,helperGridX, helperGridY);
 
         // Füge den Slots eine Karte hinzu
         for (Card a : cards
         ) {
             CardSlot b = new CardSlot(0, 0, a);
-            slots.add(b);
+            pyramidCards.add(b);
         }
 
     }
@@ -56,32 +44,34 @@ public class TriPeaksLayout {
 
     public void init() {
 // Zeile 3 (Peaks oben)
-        MainGrid.applyToSlot(slots.get(0), 3, 3);
-        MainGrid.applyToSlot(slots.get(1), 9, 3);
-        MainGrid.applyToSlot(slots.get(2), 15, 3);
+        // Zeile 3 (Peaks oben)
+        MainGrid.applyToSlot(pyramidCards.get(0), 11, 3);
+        MainGrid.applyToSlot(pyramidCards.get(1), 17, 3);
+        MainGrid.applyToSlot(pyramidCards.get(2), 23, 3);
 
         // Zeile 2
-        MainGrid.applyToSlot(slots.get(3), 2, 2);
-        MainGrid.applyToSlot(slots.get(4), 4, 2);
-        MainGrid.applyToSlot(slots.get(5), 8, 2);
-        MainGrid.applyToSlot(slots.get(6), 10, 2);
-        MainGrid.applyToSlot(slots.get(7), 14, 2);
-        MainGrid.applyToSlot(slots.get(8), 16, 2);
+        MainGrid.applyToSlot(pyramidCards.get(3), 10, 2);
+        MainGrid.applyToSlot(pyramidCards.get(4), 12, 2);
+        MainGrid.applyToSlot(pyramidCards.get(5), 16, 2);
+        MainGrid.applyToSlot(pyramidCards.get(6), 18, 2);
+        MainGrid.applyToSlot(pyramidCards.get(7), 22, 2);
+        MainGrid.applyToSlot(pyramidCards.get(8), 24, 2);
 
         // Zeile 1
-        MainGrid.applyToSlot(slots.get(9), 1, 1);
-        MainGrid.applyToSlot(slots.get(10), 3, 1);
-        MainGrid.applyToSlot(slots.get(11), 5, 1);
-        MainGrid.applyToSlot(slots.get(12), 7, 1);
-        MainGrid.applyToSlot(slots.get(13), 9, 1);
-        MainGrid.applyToSlot(slots.get(14), 11, 1);
-        MainGrid.applyToSlot(slots.get(15), 13, 1);
-        MainGrid.applyToSlot(slots.get(16), 15, 1);
-        MainGrid.applyToSlot(slots.get(17), 17, 1);
+        MainGrid.applyToSlot(pyramidCards.get(9), 9, 1);
+        MainGrid.applyToSlot(pyramidCards.get(10), 11, 1);
+        MainGrid.applyToSlot(pyramidCards.get(11), 13, 1);
+        MainGrid.applyToSlot(pyramidCards.get(12), 15, 1);
+        MainGrid.applyToSlot(pyramidCards.get(13), 17, 1);
+        MainGrid.applyToSlot(pyramidCards.get(14), 19, 1);
+        MainGrid.applyToSlot(pyramidCards.get(15), 21, 1);
+        MainGrid.applyToSlot(pyramidCards.get(16), 23, 1);
+        MainGrid.applyToSlot(pyramidCards.get(17), 25, 1);
 
         // Basiskarten (Zeile 0)
         for (int i = 0; i < 10; i++) {
-            MainGrid.applyToSlot(slots.get(18 + i), i*2, 0);
+            MainGrid.applyToSlot(pyramidCards.get(18 + i), i*2+8, 0);
+            pyramidCards.get(18+i).card.setFaceUp(true);
         }
 
     }
@@ -109,8 +99,8 @@ public class TriPeaksLayout {
 
 
 
-    public List<CardSlot> getSlots() {
-        return slots;
+    public List<CardSlot> getPyramidCards() {
+        return pyramidCards;
     }
 
     public float getViewX() {

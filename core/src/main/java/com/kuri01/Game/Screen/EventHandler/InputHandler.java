@@ -1,34 +1,30 @@
-package com.kuri01.Game.Screen;
+package com.kuri01.Game.Screen.EventHandler;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.kuri01.Game.Card.Card;
 import com.kuri01.Game.Card.CardSlot;
 import com.kuri01.Game.Card.TriPeaksLayout;
+import com.kuri01.Game.Screen.GameScreen;
 
+public class InputHandler extends InputAdapter {
 
-public class SimpleInput extends InputAdapter {
-    private final TriPeaksLayout layout;
-    private Card topCard;
-    private GameScreen gameScreen;
-    private OrthographicCamera camera;
+    private final Camera camera;
+    private TriPeaksLayout layout;
+    GameScreen gameScreen;
 
-
-
-    public SimpleInput(TriPeaksLayout layout, GameScreen gameScreen) {
+    public InputHandler(Camera camera, TriPeaksLayout layout, GameScreen gameScreen) {
+        this.camera = camera;
         this.layout = layout;
         this.gameScreen = gameScreen;
-        this.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.camera.setToOrtho(false);
     }
 
-    @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Bildschirmkoordinaten in Weltkoordinaten umwandeln
-        Vector3 touchPos = new Vector3(screenX, screenY, 0);
-        camera.unproject(touchPos);
+        Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
+        float width = GameScreen.cardWidth;
+        float height = GameScreen.cardHeight;
 
         // Durch alle Karten-Slots gehen
         for (CardSlot slot : layout.getPyramidCards()) {
@@ -37,13 +33,14 @@ public class SimpleInput extends InputAdapter {
             if (card != null && card.isFaceUp()) {
                 float x = slot.x;
                 float y = slot.y;
-                float width = GameScreen.cardWidth;
-                float height = GameScreen.cardHeight;
 
-                if (touchPos.x >= x && touchPos.x <= x + width &&
-                    touchPos.y >= y && touchPos.y <= y + height) {
+
+                if (worldCoordinates.x >= x && worldCoordinates.x <= x + width &&
+                    worldCoordinates.y >= y && worldCoordinates.y <= y + height) {
 
                     // 🃏 Klicken auf Karte erkannt
+                    //Debugg
+                    System.out.println("Touched at: [" + worldCoordinates.x + ", " + worldCoordinates.y + "] Karte "+card.getSuit()+" "+card.getValue()+" wurde angeklickt!");
 
                     Card topCard = gameScreen.getTopCard();
 
@@ -57,16 +54,15 @@ public class SimpleInput extends InputAdapter {
             }
         }
 
-        // Wenn Deck leer ist, nichts tun
-        if (gameScreen.getDeck().remainingCards() <= 0) {
-            return true;
-        }
 
-        // Wenn auf keine Karte geklickt: neue Karte vom Deck holen
-        Card newCard = gameScreen.getDeck().draw();
-        if (newCard != null) {
-            gameScreen.setTopCard(newCard);
-        }
+         if (worldCoordinates.x >= gameScreen.getDeckSlot().x && worldCoordinates.x <= gameScreen.getDeckSlot().x + width &&
+            worldCoordinates.y >= gameScreen.getDeckSlot().y && worldCoordinates.y <= gameScreen.getDeckSlot().y + height) {
+             System.out.println("Deck Karte "+gameScreen.getDeckSlot().card.getSuit()+" "+gameScreen.getDeckSlot().card.getValue()+" wurde angeklickt!");
+             gameScreen.setTopCard(gameScreen.getDeckSlot().card);
+             gameScreen.getDeckSlot().card=gameScreen.getDeck().draw();
+         }
+
+
 
         return true;
     }
@@ -79,5 +75,6 @@ public class SimpleInput extends InputAdapter {
             (clickedValue == 1 && topValue == 13) || // Ass auf König
             (clickedValue == 13 && topValue == 1);   // König auf Ass
     }
-}
 
+
+}
