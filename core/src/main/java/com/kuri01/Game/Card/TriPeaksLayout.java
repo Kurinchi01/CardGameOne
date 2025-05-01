@@ -152,21 +152,20 @@ public class TriPeaksLayout {
 
 
         //Decke Karten auf
-        if(isUnblocked((int) b1))
+        if(b1!=-1&&isUnblocked((int) b1))
         {
             pyramidCards.get((int) b1).card.setFaceUp(true);
         }
-        if(isUnblocked((int) b2))
+        if(b2!=-1&&isUnblocked((int) b2))
         {
             pyramidCards.get((int) b2).card.setFaceUp(true);
         }
-
 
     }
 
     public boolean isUnblocked(int i)
     {
-        return pyramidCards.get(i).getBlocking2() == -1 && pyramidCards.get(i).getBlocking1() == -1;
+        return pyramidCards.get(i).getBlockedBy1() == -1 && pyramidCards.get(i).getBlockedBy2() == -1;
     }
 
     public CardGrid getMainGrid() {

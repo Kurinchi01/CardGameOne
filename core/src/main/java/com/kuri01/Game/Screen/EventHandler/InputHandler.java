@@ -8,6 +8,9 @@ import com.kuri01.Game.Card.CardSlot;
 import com.kuri01.Game.Card.TriPeaksLayout;
 import com.kuri01.Game.Screen.GameScreen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InputHandler extends InputAdapter {
 
     private final Camera camera;
@@ -27,12 +30,13 @@ public class InputHandler extends InputAdapter {
         float height = GameScreen.cardHeight;
 
         // Durch alle Karten-Slots gehen
-        for (CardSlot slot : layout.getPyramidCards()) {
-            Card card = slot.card;
+        for (int i=0;i< layout.getPyramidCards().size();i++) {
+            List<CardSlot> slot =  layout.getPyramidCards();
+            Card card = slot.get(i).card;
 
             if (card != null && card.isFaceUp()) {
-                float x = slot.x;
-                float y = slot.y;
+                float x = slot.get(i).x;
+                float y = slot.get(i).y;
 
 
                 if (worldCoordinates.x >= x && worldCoordinates.x <= x + width &&
@@ -40,14 +44,15 @@ public class InputHandler extends InputAdapter {
 
                     // 🃏 Klicken auf Karte erkannt
                     //Debugg
-                    System.out.println("Touched at: [" + worldCoordinates.x + ", " + worldCoordinates.y + "] Karte " + card.getSuit() + " " + card.getValue() + " wurde angeklickt!");
+
 
                     Card topCard = gameScreen.getTopCard();
 
                     if (topCard != null && isPlayable(card, topCard)) {
                         // Karte ist spielbar
                         gameScreen.setTopCard(card);
-                        slot.card = null; // Karte vom Spielfeld entfernen
+                        slot.get(i).card = null; // Karte vom Spielfeld entfernen
+                        layout.isRemoved(i);
                         return true;
                     }
                 }

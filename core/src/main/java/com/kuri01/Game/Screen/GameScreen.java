@@ -1,12 +1,18 @@
 package com.kuri01.Game.Screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kuri01.Game.Card.Card;
@@ -14,6 +20,7 @@ import com.kuri01.Game.Card.CardRenderer;
 import com.kuri01.Game.Card.CardSlot;
 import com.kuri01.Game.Card.Deck;
 import com.kuri01.Game.Card.TriPeaksLayout;
+import com.kuri01.Game.Main;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
 
 import java.util.ArrayList;
@@ -24,6 +31,9 @@ import java.util.List;
  * First screen of the application. Displayed after the application is created.
  */
 public class GameScreen extends ScreenAdapter {
+    private Stage stage;
+    private Skin skin;
+    private TextButton restartButton;
     private SpriteBatch batch;
     private BitmapFont font;
     private Deck deck;
@@ -39,10 +49,12 @@ public class GameScreen extends ScreenAdapter {
     private Viewport viewport;
 
     boolean debug = true;
+    private final Main game;
+    public GameScreen(Main game) {
+        this.game=game;
+    }
 
 
-
-    @SuppressWarnings("NewApi")
     @Override
     public void show() {
         // init
@@ -81,8 +93,32 @@ public class GameScreen extends ScreenAdapter {
         deckSlot=new CardSlot(0,0,deck.getCards().getFirst());
         layoutPyramide.getMainGrid().applyToSlot(deckSlot,0,0);
 
+        skin = new Skin(Gdx.files.internal("uiskin.json")); // Stelle sicher, dass uiskin.json vorhanden ist
+        stage = new Stage(viewport, batch);
+        Gdx.input.setInputProcessor(stage); // damit Buttons funktionieren
+
+        restartButton = new TextButton("Neustart", skin);
+        restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
+        restartButton.setPosition(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.9f); // oben links
+
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new GameScreen(game)); // Neustart des Screens
+            }
+        });
+        stage.addActor(restartButton);
+
         inputHandler = new InputHandler(camera,layoutPyramide,this); // Deine Kamera, z.B. orthographicCamera
-        Gdx.input.setInputProcessor(inputHandler);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+
+        //Mulitplexer Reihenfolge wichtig!!
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(inputHandler);
+
+
+        Gdx.input.setInputProcessor(multiplexer);
 
 
     }
@@ -115,10 +151,13 @@ public class GameScreen extends ScreenAdapter {
         }
 
         batch.end();
+        stage.act(delta);
+        stage.draw();
 
         if (debug) {
             layoutPyramide.getMainGrid().render(shapeRenderer, batch, font);
         }
+
     }
 
     @Override
