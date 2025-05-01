@@ -39,7 +39,7 @@ public class GameScreen extends ScreenAdapter {
     private Viewport viewport;
 
     boolean debug = true;
-    private float y;
+
 
 
     @SuppressWarnings("NewApi")
@@ -118,7 +118,6 @@ public class GameScreen extends ScreenAdapter {
 
         if (debug) {
             layoutPyramide.getMainGrid().render(shapeRenderer, batch, font);
-
         }
     }
 

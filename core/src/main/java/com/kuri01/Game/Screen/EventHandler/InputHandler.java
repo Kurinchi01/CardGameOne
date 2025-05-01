@@ -40,7 +40,7 @@ public class InputHandler extends InputAdapter {
 
                     // 🃏 Klicken auf Karte erkannt
                     //Debugg
-                    System.out.println("Touched at: [" + worldCoordinates.x + ", " + worldCoordinates.y + "] Karte "+card.getSuit()+" "+card.getValue()+" wurde angeklickt!");
+                    System.out.println("Touched at: [" + worldCoordinates.x + ", " + worldCoordinates.y + "] Karte " + card.getSuit() + " " + card.getValue() + " wurde angeklickt!");
 
                     Card topCard = gameScreen.getTopCard();
 
@@ -55,13 +55,15 @@ public class InputHandler extends InputAdapter {
         }
 
 
-         if (worldCoordinates.x >= gameScreen.getDeckSlot().x && worldCoordinates.x <= gameScreen.getDeckSlot().x + width &&
+        if (worldCoordinates.x >= gameScreen.getDeckSlot().x && worldCoordinates.x <= gameScreen.getDeckSlot().x + width &&
             worldCoordinates.y >= gameScreen.getDeckSlot().y && worldCoordinates.y <= gameScreen.getDeckSlot().y + height) {
-             System.out.println("Deck Karte "+gameScreen.getDeckSlot().card.getSuit()+" "+gameScreen.getDeckSlot().card.getValue()+" wurde angeklickt!");
-             gameScreen.setTopCard(gameScreen.getDeckSlot().card);
-             gameScreen.getDeckSlot().card=gameScreen.getDeck().draw();
-         }
-
+            //debugg
+            if (gameScreen.getDeckSlot().card != null) {
+                System.out.println("Deck Karte " + gameScreen.getDeckSlot().card.getSuit() + " " + gameScreen.getDeckSlot().card.getValue() + " wurde angeklickt!");
+            }
+            gameScreen.setTopCard(gameScreen.getDeckSlot().card);
+            gameScreen.getDeckSlot().card = gameScreen.getDeck().draw();
+        }
 
 
         return true;
