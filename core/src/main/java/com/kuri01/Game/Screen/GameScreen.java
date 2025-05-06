@@ -152,13 +152,19 @@ public class GameScreen extends ScreenAdapter {
             batch.draw(cardRenderer.getTexture(deckSlot.card, false), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
 
         }
-        if (isGameOver()) {
-            showGameOverDialog();
-        }
+
 
         batch.end();
         stage.act(delta);
         stage.draw();
+
+        if (isGameOver()) {
+            new GameOverDialog(skin, stage,
+                () -> System.out.println("Dummy Neustart"),
+                () -> game.setScreen(new GameScreen(game)),  // Neues Spiel
+                () -> Gdx.app.exit()                         // Spiel beenden
+            );
+        }
 
         if (debug) {
             layoutPyramide.getMainGrid().render(shapeRenderer, batch, font);
@@ -172,32 +178,7 @@ public class GameScreen extends ScreenAdapter {
         return deckLeer && keineZügeMehr;
     }
 
-    private void showGameOverDialog() {
-        Dialog gameOverDialog = new Dialog("Spiel beendet", skin) {
-            @Override
-            protected void result(Object object) {
-                switch ((String) object) {
-                    case "dummy":
-                        System.out.println("Dummy Neustart geklickt.");
-                        break;
-                    case "new":
-                        game.setScreen(new GameScreen(game));
-                        break;
-                    case "exit":
-                        Gdx.app.exit();
-                        break;
-                }
-            }
-        };
 
-        gameOverDialog.text("Keine weiteren Züge möglich.\nWas möchtest du tun?");
-
-        gameOverDialog.button("Dummy Neustart", "dummy", skin.get("dummy", TextButton.TextButtonStyle.class));
-        gameOverDialog.button("Neues Spiel", "new", skin.get("new", TextButton.TextButtonStyle.class));
-        gameOverDialog.button("Spiel beenden", "exit", skin.get("exit", TextButton.TextButtonStyle.class));
-
-        gameOverDialog.show(stage);
-    }
 
     @Override
     public void resize(int width, int height) {
