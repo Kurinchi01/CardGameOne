@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -50,8 +51,9 @@ public class GameScreen extends ScreenAdapter {
 
     boolean debug = true;
     private final Main game;
+
     public GameScreen(Main game) {
-        this.game=game;
+        this.game = game;
     }
 
 
@@ -62,9 +64,9 @@ public class GameScreen extends ScreenAdapter {
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
         cardRenderer = new CardRenderer();
+
         //deck erstellen und mischen
         deck = new Deck();
-
         camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
@@ -84,14 +86,14 @@ public class GameScreen extends ScreenAdapter {
 
         layoutPyramide = new TriPeaksLayout(pyramidCards);
         layoutPyramide.init();
-        cardWidth= layoutPyramide.getCardWidth();
-        cardHeight= layoutPyramide.getCardHeight();
+        cardWidth = layoutPyramide.getCardWidth();
+        cardHeight = layoutPyramide.getCardHeight();
 
         topCard = deck.draw();
         topCard.setFaceUp(true);
 
-        deckSlot=new CardSlot(0,0,deck.getCards().getFirst());
-        layoutPyramide.getMainGrid().applyToSlot(deckSlot,0,0);
+        deckSlot = new CardSlot(0, 0, deck.getCards().getFirst());
+        layoutPyramide.getMainGrid().applyToSlot(deckSlot, 0, 0);
 
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Stelle sicher, dass uiskin.json vorhanden ist
         stage = new Stage(viewport, batch);
@@ -109,8 +111,9 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(restartButton);
 
-        inputHandler = new InputHandler(camera,layoutPyramide,this); // Deine Kamera, z.B. orthographicCamera
+        inputHandler = new InputHandler(camera, layoutPyramide, this); // Deine Kamera, z.B. orthographicCamera
         InputMultiplexer multiplexer = new InputMultiplexer();
+
 
 
         //Mulitplexer Reihenfolge wichtig!!
@@ -149,6 +152,9 @@ public class GameScreen extends ScreenAdapter {
             batch.draw(cardRenderer.getTexture(deckSlot.card, false), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
 
         }
+        if (isGameOver()) {
+            showGameOverDialog();
+        }
 
         batch.end();
         stage.act(delta);
@@ -158,6 +164,39 @@ public class GameScreen extends ScreenAdapter {
             layoutPyramide.getMainGrid().render(shapeRenderer, batch, font);
         }
 
+    }
+
+    private boolean isGameOver() {
+        boolean deckLeer = deck.isEmpty();
+        boolean keineZügeMehr = !layoutPyramide.hasPlayableCard(topCard);
+        return deckLeer && keineZügeMehr;
+    }
+
+    private void showGameOverDialog() {
+        Dialog gameOverDialog = new Dialog("Spiel beendet", skin) {
+            @Override
+            protected void result(Object object) {
+                switch ((String) object) {
+                    case "dummy":
+                        System.out.println("Dummy Neustart geklickt.");
+                        break;
+                    case "new":
+                        game.setScreen(new GameScreen(game));
+                        break;
+                    case "exit":
+                        Gdx.app.exit();
+                        break;
+                }
+            }
+        };
+
+        gameOverDialog.text("Keine weiteren Züge möglich.\nWas möchtest du tun?");
+
+        gameOverDialog.button("Dummy Neustart", "dummy", skin.get("dummy", TextButton.TextButtonStyle.class));
+        gameOverDialog.button("Neues Spiel", "new", skin.get("new", TextButton.TextButtonStyle.class));
+        gameOverDialog.button("Spiel beenden", "exit", skin.get("exit", TextButton.TextButtonStyle.class));
+
+        gameOverDialog.show(stage);
     }
 
     @Override

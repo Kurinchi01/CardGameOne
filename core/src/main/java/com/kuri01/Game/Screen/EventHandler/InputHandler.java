@@ -48,7 +48,7 @@ public class InputHandler extends InputAdapter {
 
                     Card topCard = gameScreen.getTopCard();
 
-                    if (topCard != null && isPlayable(card, topCard)) {
+                    if (topCard != null && layout.isPlayable(card, topCard)) {
                         // Karte ist spielbar
                         gameScreen.setTopCard(card);
                         slot.get(i).card = null; // Karte vom Spielfeld entfernen
@@ -66,6 +66,7 @@ public class InputHandler extends InputAdapter {
             if (gameScreen.getDeckSlot().card != null) {
                 System.out.println("Deck Karte " + gameScreen.getDeckSlot().card.getSuit() + " " + gameScreen.getDeckSlot().card.getValue() + " wurde angeklickt!");
             }
+
             gameScreen.setTopCard(gameScreen.getDeckSlot().card);
             gameScreen.getDeckSlot().card = gameScreen.getDeck().draw();
         }
@@ -74,14 +75,7 @@ public class InputHandler extends InputAdapter {
         return true;
     }
 
-    private boolean isPlayable(Card clickedCard, Card topCard) {
-        int clickedValue = clickedCard.getValue();
-        int topValue = topCard.getValue();
 
-        return Math.abs(clickedValue - topValue) == 1 ||
-            (clickedValue == 1 && topValue == 13) || // Ass auf König
-            (clickedValue == 13 && topValue == 1);   // König auf Ass
-    }
 
 
 }

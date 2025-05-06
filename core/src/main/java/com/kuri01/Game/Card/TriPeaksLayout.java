@@ -10,6 +10,7 @@ public class TriPeaksLayout {
 
     private float viewX, viewY, viewWidth, viewHeight;
     private final List<CardSlot> pyramidCards = new ArrayList<>();
+    private List<CardSlot> faceUpCards = new ArrayList<>();
     private float cardWidth, cardHeight;
 
     CardGrid MainGrid;
@@ -96,6 +97,7 @@ public class TriPeaksLayout {
             int index = 18 + i;
             MainGrid.applyToSlot(pyramidCards.get(index), i * 2 + 8, 0);
             pyramidCards.get(index).card.setFaceUp(true);
+            faceUpCards.add(pyramidCards.get(index));
         }
 
         // Blockierungsverhältnisse der Basiskarten
@@ -123,6 +125,7 @@ public class TriPeaksLayout {
     }
 
     public void isRemoved(int i) {
+        faceUpCards.remove(pyramidCards.get(i));
         //index von Slots einer höheren Ebene
         float b1 = pyramidCards.get(i).getBlocking1();
         float b2 = pyramidCards.get(i).getBlocking2();
@@ -161,6 +164,25 @@ public class TriPeaksLayout {
             pyramidCards.get((int) b2).card.setFaceUp(true);
         }
 
+    }
+
+    public boolean hasPlayableCard(Card card)
+    {
+        for (CardSlot a: faceUpCards
+             ) {
+            return isPlayable(a.card,card);
+
+        }
+        return false;
+    }
+
+    public boolean isPlayable(Card clickedCard, Card topCard) {
+        int clickedValue = clickedCard.getValue();
+        int topValue = topCard.getValue();
+
+        return Math.abs(clickedValue - topValue) == 1 ||
+            (clickedValue == 1 && topValue == 13) || // Ass auf König
+            (clickedValue == 13 && topValue == 1);   // König auf Ass
     }
 
     public boolean isUnblocked(int i)
