@@ -43,8 +43,6 @@ public class InputHandler extends InputAdapter {
                     worldCoordinates.y >= y && worldCoordinates.y <= y + height) {
 
                     // 🃏 Klicken auf Karte erkannt
-                    //Debugg
-
 
                     Card topCard = gameScreen.getTopCard();
 

@@ -1,5 +1,6 @@
 package com.kuri01.Game.Screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
@@ -36,6 +37,8 @@ public class GameScreen extends ScreenAdapter {
     private Skin skin;
     private TextButton restartButton;
     private SpriteBatch batch;
+    private SpriteBatch gameBatch;
+    private SpriteBatch uiBatch;
     private BitmapFont font;
     private Deck deck;
     private Card topCard;
@@ -48,6 +51,8 @@ public class GameScreen extends ScreenAdapter {
     private InputHandler inputHandler;
     private OrthographicCamera camera;
     private Viewport viewport;
+    private boolean gameOverDialogShown = false;
+
 
     boolean debug = true;
     private final Main game;
@@ -61,6 +66,8 @@ public class GameScreen extends ScreenAdapter {
     public void show() {
         // init
         batch = new SpriteBatch();
+        gameBatch = new SpriteBatch();
+        uiBatch = new SpriteBatch();
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
         cardRenderer = new CardRenderer();
@@ -96,7 +103,7 @@ public class GameScreen extends ScreenAdapter {
         layoutPyramide.getMainGrid().applyToSlot(deckSlot, 0, 0);
 
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Stelle sicher, dass uiskin.json vorhanden ist
-        stage = new Stage(viewport, batch);
+        stage = new Stage(viewport, uiBatch);
         Gdx.input.setInputProcessor(stage); // damit Buttons funktionieren
 
         restartButton = new TextButton("Neustart", skin);
@@ -132,49 +139,71 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
+        camera.update();
+        gameBatch.setProjectionMatrix(camera.combined);
+
+        gameBatch.begin();
 
         for (CardSlot slot : layoutPyramide.getPyramidCards()) {
             if (slot.card != null) {
-                batch.draw(cardRenderer.getTexture(slot.card, slot.card.isFaceUp()), slot.x, slot.y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
+                gameBatch.draw(cardRenderer.getTexture(slot.card, slot.card.isFaceUp()), slot.x, slot.y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
             }
         }
 
         if (topCard != null) {
             float x = layoutPyramide.getMainGrid().getPosition(4, 0).x;
             float y = layoutPyramide.getMainGrid().getPosition(4, 0).y;
-            batch.draw(cardRenderer.getTexture(topCard, true), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
+            gameBatch.draw(cardRenderer.getTexture(topCard, true), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
         }
         if (!deck.isEmpty()) {
             float x = layoutPyramide.getMainGrid().getPosition(0, 0).x;
             float y = layoutPyramide.getMainGrid().getPosition(0, 0).y;
 
-            batch.draw(cardRenderer.getTexture(deckSlot.card, false), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
+            gameBatch.draw(cardRenderer.getTexture(deckSlot.card, false), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
 
         }
+        gameBatch.end();
 
 
-        batch.end();
+
         stage.act(delta);
         stage.draw();
 
-        if (isGameOver()) {
-            new GameOverDialog(skin, stage,
-                () -> System.out.println("Dummy Neustart"),
-                () -> game.setScreen(new GameScreen(game)),  // Neues Spiel
-                () -> Gdx.app.exit()                         // Spiel beenden
-            );
-        }
+
+        Gdx.app.postRunnable(() -> {
+        if (isGameOver()&&!gameOverDialogShown) {
+            gameOverDialogShown = true;
+
+            // Verzögert anzeigen, damit kein Frame-Flackern entsteht
+
+
+                GameOverDialog dialog = new GameOverDialog(skin, stage,
+                    () -> System.out.println("Dummy Neustart"),
+                    () -> game.setScreen(new GameScreen(game)),
+                    () -> Gdx.app.exit()
+                );
+                dialog.show(stage);
+            };
+        });
+
+
+
 
         if (debug) {
-            layoutPyramide.getMainGrid().render(shapeRenderer, batch, font);
+            layoutPyramide.getMainGrid().render(shapeRenderer, gameBatch, font);
         }
 
     }
 
     private boolean isGameOver() {
         boolean deckLeer = deck.isEmpty();
-        boolean keineZügeMehr = !layoutPyramide.hasPlayableCard(topCard);
+        boolean keineZügeMehr;
+
+        if(topCard!=null) {
+            keineZügeMehr = !layoutPyramide.hasPlayableCard(topCard);
+        }
+
+        else keineZügeMehr=false;
         return deckLeer && keineZügeMehr;
     }
 
@@ -182,7 +211,9 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        viewport.update(width, height, true); // <<<<<< ACHTUNG: true setzen
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.update();
     }
 
     @Override
@@ -202,6 +233,8 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void dispose() {
+        gameBatch.dispose();
+        uiBatch.dispose();
         batch.dispose();
         font.dispose();
         cardRenderer.dispose();
