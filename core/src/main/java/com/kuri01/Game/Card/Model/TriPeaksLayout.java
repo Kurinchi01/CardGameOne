@@ -1,4 +1,4 @@
-package com.kuri01.Game.Card;
+package com.kuri01.Game.Card.Model;
 
 import com.badlogic.gdx.Gdx;
 
@@ -13,26 +13,9 @@ public class TriPeaksLayout {
     private List<CardSlot> faceUpCards = new ArrayList<>();
     private float cardWidth, cardHeight;
 
-    CardGrid MainGrid;
-    //TestConstructor
+
 
     public TriPeaksLayout(List<Card> cards) {
-
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
-
-
-        viewX = screenWidth * 0.1f;      // 10% Abstand links
-        viewY = screenHeight * 0.1f;     // 10% Abstand unten
-
-        viewWidth = screenWidth * 0.85f;  // 100% - 10% links - 5% rechts
-        viewHeight = screenHeight * 0.85f; // 100% - 5% oben - 10% unten
-
-        cardWidth = viewWidth / 28f * 2f;  //
-        cardHeight = viewHeight / 5f * 2f;
-
-        MainGrid = new CardGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
-
 
         // Füge den Slots eine Karte hinzu
         for (Card a : cards
@@ -44,7 +27,7 @@ public class TriPeaksLayout {
     }
 
 
-    public void init() {
+    public void init(CardGrid MainGrid) {
 
         int[] zeile3_x = {11, 17, 23};
         int[][] zeile3_blocks = {{3, 4}, {5, 6}, {7, 8}};
@@ -190,9 +173,7 @@ public class TriPeaksLayout {
         return pyramidCards.get(i).getBlockedBy1() == -1 && pyramidCards.get(i).getBlockedBy2() == -1;
     }
 
-    public CardGrid getMainGrid() {
-        return MainGrid;
-    }
+
 
     public float getCardHeight() {
         return cardHeight;
@@ -249,28 +230,5 @@ public class TriPeaksLayout {
     }
 
 
-    public TriPeaksLayout(List<Card> cards, float t, float u) {
-
-
-        viewX = t * 0.1f;      // 10% Abstand links
-        viewY = u * 0.1f;     // 10% Abstand unten
-
-        viewWidth = t * 0.85f;  // 100% - 10% links - 5% rechts
-        viewHeight = u * 0.85f; // 100% - 5% oben - 10% unten
-
-        cardWidth = viewWidth / 28f * 2f;  //
-        cardHeight = viewHeight / 5f * 2f;
-
-        MainGrid = new CardGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
-
-
-        // Füge den Slots eine Karte hinzu
-        for (Card a : cards
-        ) {
-            CardSlot b = new CardSlot(0, 0, a);
-            pyramidCards.add(b);
-        }
-
-    }
 
 }

@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
-import com.kuri01.Game.Card.Card;
-import com.kuri01.Game.Card.CardSlot;
-import com.kuri01.Game.Card.TriPeaksLayout;
+import com.kuri01.Game.Card.Model.Card;
+import com.kuri01.Game.Card.Model.CardSlot;
+import com.kuri01.Game.Card.Model.TriPeaksLayout;
 
 
 public class SimpleInput extends InputAdapter {
@@ -57,16 +57,16 @@ public class SimpleInput extends InputAdapter {
             }
         }
 
-        // Wenn Deck leer ist, nichts tun
-        if (gameScreen.getDeck().remainingCards() <= 0) {
-            return true;
-        }
-
-        // Wenn auf keine Karte geklickt: neue Karte vom Deck holen
-        Card newCard = gameScreen.getDeck().draw();
-        if (newCard != null) {
-            gameScreen.setTopCard(newCard);
-        }
+//        // Wenn Deck leer ist, nichts tun
+//        if (gameScreen.getDeck().remainingCards() <= 0) {
+//            return true;
+//        }
+//
+//        // Wenn auf keine Karte geklickt: neue Karte vom Deck holen
+//        Card newCard = gameScreen.getDeck().draw();
+//        if (newCard != null) {
+//            gameScreen.setTopCard(newCard);
+//        }
 
         return true;
     }

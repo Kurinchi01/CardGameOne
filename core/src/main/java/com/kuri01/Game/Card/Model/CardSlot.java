@@ -1,4 +1,4 @@
-package com.kuri01.Game.Card;
+package com.kuri01.Game.Card.Model;
 
 public class CardSlot {
     public Card card;

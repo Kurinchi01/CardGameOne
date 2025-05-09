@@ -1,6 +1,8 @@
-package com.kuri01.Game.Card;
+package com.kuri01.Game.Card.View;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.kuri01.Game.Card.Model.Card;
+
 import java.util.HashMap;
 import java.util.Map;
 

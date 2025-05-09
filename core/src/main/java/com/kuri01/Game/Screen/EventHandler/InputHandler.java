@@ -3,12 +3,11 @@ package com.kuri01.Game.Screen.EventHandler;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-import com.kuri01.Game.Card.Card;
-import com.kuri01.Game.Card.CardSlot;
-import com.kuri01.Game.Card.TriPeaksLayout;
+import com.kuri01.Game.Card.Model.Card;
+import com.kuri01.Game.Card.Model.CardSlot;
+import com.kuri01.Game.Card.Model.TriPeaksLayout;
 import com.kuri01.Game.Screen.GameScreen;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InputHandler extends InputAdapter {
@@ -66,7 +65,7 @@ public class InputHandler extends InputAdapter {
             }
 
             gameScreen.setTopCard(gameScreen.getDeckSlot().card);
-            gameScreen.getDeckSlot().card = gameScreen.getDeck().draw();
+//            gameScreen.getDeckSlot().card = gameScreen.getDeck().draw();
         }
 
 

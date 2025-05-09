@@ -1,4 +1,4 @@
-package com.kuri01.Game.Card;
+package com.kuri01.Game.Card.Model;
 
 public class Card {
     public enum Suit {
@@ -32,12 +32,12 @@ public class Card {
         this.faceUp = faceUp;
     }
 
-    public boolean isPlayable(Card topCard) {
-        if (!this.faceUp || topCard == null) return false;
-
-        int diff = Math.abs(this.value - topCard.value);
-        return diff == 1 || (this.value == 1 && topCard.value == 13) || (this.value == 13 && topCard.value == 1);
-    }
+//    public boolean isPlayable(Card topCard) {
+//        if (!this.faceUp || topCard == null) return false;
+//
+//        int diff = Math.abs(this.value - topCard.value);
+//        return diff == 1 || (this.value == 1 && topCard.value == 13) || (this.value == 13 && topCard.value == 1);
+//    }
 
     @Override
     public String toString() {
