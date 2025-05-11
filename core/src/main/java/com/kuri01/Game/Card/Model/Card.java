@@ -1,5 +1,8 @@
 package com.kuri01.Game.Card.Model;
 
+
+//reine Getter und Setter, keine Logik
+//POJO(Plain Old Java Object)
 public class Card {
     public enum Suit {
         heart, diamond, club, spade;
@@ -32,12 +35,6 @@ public class Card {
         this.faceUp = faceUp;
     }
 
-//    public boolean isPlayable(Card topCard) {
-//        if (!this.faceUp || topCard == null) return false;
-//
-//        int diff = Math.abs(this.value - topCard.value);
-//        return diff == 1 || (this.value == 1 && topCard.value == 13) || (this.value == 13 && topCard.value == 1);
-//    }
 
     @Override
     public String toString() {

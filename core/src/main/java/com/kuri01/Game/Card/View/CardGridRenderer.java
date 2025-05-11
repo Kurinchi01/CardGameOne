@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.kuri01.Game.Card.Model.CardGrid;
 import com.kuri01.Game.Screen.GameScreen;
 
-public class CardGrindRenderer extends Renderer {
+public class CardGridRenderer extends Renderer {
     private CardGrid grid;
 
-    public CardGrindRenderer(CardGrid grid, GameScreen gameScreen)
+    public CardGridRenderer(CardGrid grid, GameScreen gameScreen)
     {
         super(gameScreen);
         this.grid=grid;
@@ -48,4 +48,5 @@ public class CardGrindRenderer extends Renderer {
         }
         spriteBatch.end();
     }
+
 }

@@ -8,7 +8,6 @@ import java.util.List;
 
 public class TriPeaksLayout {
 
-    private float viewX, viewY, viewWidth, viewHeight;
     private final List<CardSlot> pyramidCards = new ArrayList<>();
     private List<CardSlot> faceUpCards = new ArrayList<>();
     private float cardWidth, cardHeight;
@@ -204,37 +203,7 @@ public class TriPeaksLayout {
         return pyramidCards;
     }
 
-    public float getViewX() {
-        return viewX;
-    }
 
-    public void setViewX(float viewX) {
-        this.viewX = viewX;
-    }
-
-    public float getViewY() {
-        return viewY;
-    }
-
-    public void setViewY(float viewY) {
-        this.viewY = viewY;
-    }
-
-    public float getViewWidth() {
-        return viewWidth;
-    }
-
-    public void setViewWidth(float viewWidth) {
-        this.viewWidth = viewWidth;
-    }
-
-    public float getViewHeight() {
-        return viewHeight;
-    }
-
-    public void setViewHeight(float viewHeight) {
-        this.viewHeight = viewHeight;
-    }
 
     public List<CardSlot> getFaceUpCards() {
         return faceUpCards;
