@@ -1,8 +1,12 @@
 package com.kuri01.Game.Card.Model;
 
+//reine Getter und Setter, keine Logik
+//POJO(Plain Old Java Object)
 public class CardSlot {
     public Card card;
     public float x, y;
+
+
     //Diesen Slot blockierende Slot index, oder -1 für keine blockierung
     public float blockedBy1;
     public float blockedBy2;

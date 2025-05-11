@@ -27,6 +27,7 @@ public class TriPeaksLayout {
     }
 
 
+    //setze die Karten an die richtige Position und setze die richtigen Indexe für blockierte und blockierende Karten
     public void init(CardGrid MainGrid) {
 
         int[] zeile3_x = {11, 17, 23};
@@ -107,6 +108,8 @@ public class TriPeaksLayout {
         }
     }
 
+
+
     public void isRemoved(int i) {
         faceUpCards.remove(pyramidCards.get(i));
         //index von Slots einer höheren Ebene
@@ -141,19 +144,23 @@ public class TriPeaksLayout {
         if(b1!=-1&&isUnblocked((int) b1))
         {
             pyramidCards.get((int) b1).card.setFaceUp(true);
+            faceUpCards.add(pyramidCards.get((int)b1));
         }
         if(b2!=-1&&isUnblocked((int) b2))
         {
             pyramidCards.get((int) b2).card.setFaceUp(true);
+            faceUpCards.add(pyramidCards.get((int)b2));
         }
 
     }
 
     public boolean hasPlayableCard(Card card)
     {
+
         for (CardSlot a: faceUpCards
              ) {
-            return isPlayable(a.card,card);
+            if(isPlayable(a.card,card))
+                return true;
 
         }
         return false;
@@ -229,6 +236,11 @@ public class TriPeaksLayout {
         this.viewHeight = viewHeight;
     }
 
+    public List<CardSlot> getFaceUpCards() {
+        return faceUpCards;
+    }
 
-
+    public void setFaceUpCards(List<CardSlot> faceUpCards) {
+        this.faceUpCards = faceUpCards;
+    }
 }
