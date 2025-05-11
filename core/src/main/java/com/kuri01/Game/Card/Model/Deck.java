@@ -18,7 +18,7 @@ public class Deck {
                 cards.push(new Card(suit, value));
             }
         }
-        Collections.shuffle(cards);
+        
     }
 
     public Card draw() {

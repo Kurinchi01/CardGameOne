@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 public class DeckTest {
 
     private Deck deck;
@@ -16,6 +18,7 @@ public class DeckTest {
     @BeforeEach
     public void setUp() {
         deck = new Deck();
+        Collections.shuffle(deck.getCards());
     }
 
     @Test
