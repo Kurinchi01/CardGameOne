@@ -32,6 +32,20 @@ public class GameLogic {
         layoutPyramide = new TriPeaksLayout(tmpCardList);
         layoutPyramide.init(gameScreen.getCardGrid());
 
+        topCard=deck.draw();
+        topCard.setFaceUp(true);
+
+    }
+
+    public boolean isGameOver()
+    {
+        boolean keineZuegeMehr=false;
+        if(topCard!=null)
+        {
+            keineZuegeMehr=!layoutPyramide.hasPlayableCard(topCard);
+        }
+
+        return deck.isEmpty()&&keineZuegeMehr;
     }
 
 
