@@ -107,17 +107,19 @@ public class GameScreen extends ScreenAdapter {
         cardGrid.initGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
         gameLogic = new GameLogic(this);
 
+        gameLogic.getLayoutPyramide().setCardHeight(cardHeight);
+        gameLogic.getLayoutPyramide().setCardWidth(cardWidth);
 
+
+
+        topCard = gameLogic.getTopCard();
         //alle Renderer
 
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(gameLogic.getLayoutPyramide(), this);
 
 
-//        topCard = deck.draw();
-//        topCard.setFaceUp(true);
-//
-//        deckSlot = new CardSlot(0, 0, deck.getCards().getFirst());
-//        layoutPyramide.getMainGrid().applyToSlot(deckSlot, 0, 0);
+        //deckSlot = new CardSlot(0, 0, deck.getCards().getFirst());
+        //layoutPyramide.getMainGrid().applyToSlot(deckSlot, 0, 0);
 
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Stelle sicher, dass uiskin.json vorhanden ist
         stage = new Stage(viewport, uiBatch);
@@ -135,13 +137,13 @@ public class GameScreen extends ScreenAdapter {
         });
         stage.addActor(restartButton);
 
-//        inputHandler = new InputHandler(camera, layoutPyramide, this); // Deine Kamera, z.B. orthographicCamera
+//     inputHandler = new InputHandler(camera, layoutPyramide, this); // Deine Kamera, z.B. orthographicCamera
         InputMultiplexer multiplexer = new InputMultiplexer();
 
 
         //Mulitplexer Reihenfolge wichtig!!
         multiplexer.addProcessor(stage);
-        multiplexer.addProcessor(inputHandler);
+        //multiplexer.addProcessor(inputHandler);
 
 
         Gdx.input.setInputProcessor(multiplexer);
@@ -158,7 +160,9 @@ public class GameScreen extends ScreenAdapter {
         camera.update();
         gameBatch.setProjectionMatrix(camera.combined);
 
+
         gameBatch.begin();
+        triPeaksLayoutRenderer.render(gameBatch);
 
 //        for (CardSlot slot : layoutPyramide.getPyramidCards()) {
 //            if (slot.card != null) {
@@ -180,18 +184,13 @@ public class GameScreen extends ScreenAdapter {
 //        }
         gameBatch.end();
 
-
         stage.act(delta);
         stage.draw();
 
 
         Gdx.app.postRunnable(() -> {
-            if (isGameOver() && !gameOverDialogShown) {
+            if (gameLogic.isGameOver() && !gameOverDialogShown) {
                 gameOverDialogShown = true;
-
-                // Verzögert anzeigen, damit kein Frame-Flackern entsteht
-
-
                 GameOverDialog dialog = new GameOverDialog(skin, stage,
                     () -> System.out.println("Dummy Neustart"),
                     () -> game.setScreen(new GameScreen(game)),
@@ -202,22 +201,6 @@ public class GameScreen extends ScreenAdapter {
             ;
         });
 
-
-        if (debug) {
-
-        }
-
-    }
-
-    private boolean isGameOver() {
-//        boolean deckLeer = deck.isEmpty();
-//        boolean keineZügeMehr;
-//
-//        if (topCard != null) {
-//            keineZügeMehr = !layoutPyramide.hasPlayableCard(topCard);
-//        } else keineZügeMehr = false;
-//        return deckLeer && keineZügeMehr;
-        return true;
     }
 
 
@@ -289,5 +272,13 @@ public class GameScreen extends ScreenAdapter {
 
     public void setCardGrid(CardGrid cardGrid) {
         this.cardGrid = cardGrid;
+    }
+
+    public CardRenderer getCardRenderer() {
+        return cardRenderer;
+    }
+
+    public void setCardRenderer(CardRenderer cardRenderer) {
+        this.cardRenderer = cardRenderer;
     }
 }
