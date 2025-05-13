@@ -6,11 +6,11 @@ import com.kuri01.Game.Card.Model.Card;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CardRenderer {
+public class CardSpriteProvider {
     private final Map<String, Texture> textures = new HashMap<>();
     private final Texture backTexture = new Texture("cards/card_back.png");
 
-    public CardRenderer() {
+    public CardSpriteProvider() {
         // Lade alle Kartenbilder
         String[] suits = {"heart", "diamond", "club", "spade"};
 

@@ -1,7 +1,6 @@
 package com.kuri01.Game.Card.Model;
 
 
-import com.badlogic.gdx.Gdx;
 import com.kuri01.Game.Screen.GameScreen;
 
 import java.util.ArrayList;
@@ -9,13 +8,14 @@ import java.util.List;
 
 public class GameLogic {
     private Deck deck;
-    private Card topCard;
+    private CardSlot topCardSlot;
     private CardSlot deckSlot;
     private TriPeaksLayout layoutPyramide;
     private GameScreen gameScreen;
+    final Card tmpCard = new Card(Card.Suit.club,1);
 
     public GameLogic(GameScreen gameScreen) {
-        this.gameScreen=gameScreen;
+        this.gameScreen = gameScreen;
         //deck erstellen und mischen
         deck = new Deck();
 
@@ -32,20 +32,21 @@ public class GameLogic {
         layoutPyramide = new TriPeaksLayout(tmpCardList);
         layoutPyramide.init(gameScreen.getCardGrid());
 
-        topCard=deck.draw();
-        topCard.setFaceUp(true);
+        topCardSlot = new CardSlot(4, 0, deck.draw());
+        topCardSlot.card.setFaceUp(true);
+        layoutPyramide.aplyToSlot(topCardSlot);
 
+        deckSlot = new CardSlot(0, 0, tmpCard);
+        layoutPyramide.aplyToSlot(deckSlot);
     }
 
-    public boolean isGameOver()
-    {
-        boolean keineZuegeMehr=false;
-        if(topCard!=null)
-        {
-            keineZuegeMehr=!layoutPyramide.hasPlayableCard(topCard);
+    public boolean isGameOver() {
+        boolean keineZuegeMehr = false;
+        if (topCardSlot != null) {
+            keineZuegeMehr = !layoutPyramide.hasPlayableCard(topCardSlot.card);
         }
 
-        return deck.isEmpty()&&keineZuegeMehr;
+        return deck.isEmpty() && keineZuegeMehr;
     }
 
 
@@ -57,12 +58,12 @@ public class GameLogic {
         this.deck = deck;
     }
 
-    public Card getTopCard() {
-        return topCard;
+    public CardSlot getTopCardSlot() {
+        return topCardSlot;
     }
 
-    public void setTopCard(Card topCard) {
-        this.topCard = topCard;
+    public void setTopCardSlot(CardSlot topCardSlot) {
+        this.topCardSlot = topCardSlot;
     }
 
     public CardSlot getDeckSlot() {
@@ -79,6 +80,14 @@ public class GameLogic {
 
     public void setLayoutPyramide(TriPeaksLayout layoutPyramide) {
         this.layoutPyramide = layoutPyramide;
+    }
+
+    public void drawNewCard() {
+        if(!deck.isEmpty())
+        {
+            topCardSlot = new CardSlot(4,0,deck.draw());
+            layoutPyramide.aplyToSlot(topCardSlot);
+        }
     }
 
 

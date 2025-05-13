@@ -33,7 +33,20 @@ public class TriPeaksLayoutRenderer extends Renderer {
            // System.out.println(slot.card+"_ " +slot.x+" , "+slot.y);
         }
 
+        if (getGameScreen().getTopCardSlot() != null) {
+            float x = getGameScreen().getTopCardSlot().x;
+            float y = getGameScreen().getTopCardSlot().y;
+            gameBatch.draw(getGameScreen().getCardRenderer().getTexture(getGameScreen().getTopCardSlot().card, true), x, y, triPeaksLayout.getCardWidth(), triPeaksLayout.getCardHeight());
+        }
 
+
+        if (getGameScreen().getDeckSlot() != null) {
+            float x = getGameScreen().getDeckSlot().x;
+            float y = getGameScreen().getDeckSlot().y;
+
+            gameBatch.draw(getGameScreen().getCardRenderer().getTexture(getGameScreen().getDeckSlot().card, false), x, y, triPeaksLayout.getCardWidth(), triPeaksLayout.getCardHeight());
+
+        }
     }
 
 }

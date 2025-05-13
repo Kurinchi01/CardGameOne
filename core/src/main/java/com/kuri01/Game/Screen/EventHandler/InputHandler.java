@@ -29,8 +29,8 @@ public class InputHandler extends InputAdapter {
         float height = GameScreen.cardHeight;
 
         // Durch alle Karten-Slots gehen
-        for (int i=0;i< layout.getPyramidCards().size();i++) {
-            List<CardSlot> slot =  layout.getPyramidCards();
+        for (int i = 0; i < layout.getPyramidCards().size(); i++) {
+            List<CardSlot> slot = layout.getPyramidCards();
             Card card = slot.get(i).card;
 
             if (card != null && card.isFaceUp()) {
@@ -41,13 +41,13 @@ public class InputHandler extends InputAdapter {
                 if (worldCoordinates.x >= x && worldCoordinates.x <= x + width &&
                     worldCoordinates.y >= y && worldCoordinates.y <= y + height) {
 
-                    // 🃏 Klicken auf Karte erkannt
+                    //Klicken auf Karte erkannt
 
-                    Card topCard = gameScreen.getTopCard();
+                    Card tmpCard = gameScreen.getTopCardSlot().card;
 
-                    if (topCard != null && layout.isPlayable(card, topCard)) {
+                    if (tmpCard != null && layout.isPlayable(card, tmpCard)) {
                         // Karte ist spielbar
-                        gameScreen.setTopCard(card);
+                        gameScreen.setTopCardSlot(new CardSlot(4, 0, card));
                         slot.get(i).card = null; // Karte vom Spielfeld entfernen
                         layout.isRemoved(i);
                         return true;
@@ -56,23 +56,26 @@ public class InputHandler extends InputAdapter {
             }
         }
 
+        if (gameScreen.getDeckSlot() != null) {
+            if (worldCoordinates.x >= gameScreen.getDeckSlot().x && worldCoordinates.x <= gameScreen.getDeckSlot().x + width &&
+                worldCoordinates.y >= gameScreen.getDeckSlot().y && worldCoordinates.y <= gameScreen.getDeckSlot().y + height) {
 
-        if (worldCoordinates.x >= gameScreen.getDeckSlot().x && worldCoordinates.x <= gameScreen.getDeckSlot().x + width &&
-            worldCoordinates.y >= gameScreen.getDeckSlot().y && worldCoordinates.y <= gameScreen.getDeckSlot().y + height) {
-            //debugg
-            if (gameScreen.getDeckSlot().card != null) {
-                System.out.println("Deck Karte " + gameScreen.getDeckSlot().card.getSuit() + " " + gameScreen.getDeckSlot().card.getValue() + " wurde angeklickt!");
+                //debugg
+//            if (gameScreen.getDeckSlot().card != null) {
+//                System.out.println("Deck Karte " + gameScreen.getDeckSlot().card.getSuit() + " " + gameScreen.getDeckSlot().card.getValue() + " wurde angeklickt!");
+//            }
+
+                gameScreen.drawNewCard();
+                if (gameScreen.remainingCards() == 0) {
+                    gameScreen.setDeckSlot(null);
+                }
+
             }
-
-            gameScreen.setTopCard(gameScreen.getDeckSlot().card);
-//            gameScreen.getDeckSlot().card = gameScreen.getDeck().draw();
         }
 
 
         return true;
     }
-
-
 
 
 }

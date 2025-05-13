@@ -11,6 +11,7 @@ public class TriPeaksLayout {
     private final List<CardSlot> pyramidCards = new ArrayList<>();
     private List<CardSlot> faceUpCards = new ArrayList<>();
     private float cardWidth, cardHeight;
+    private CardGrid grid;
 
 
 
@@ -28,6 +29,7 @@ public class TriPeaksLayout {
 
     //setze die Karten an die richtige Position und setze die richtigen Indexe für blockierte und blockierende Karten
     public void init(CardGrid MainGrid) {
+        this.grid=MainGrid;
 
         int[] zeile3_x = {11, 17, 23};
         int[][] zeile3_blocks = {{3, 4}, {5, 6}, {7, 8}};
@@ -177,6 +179,12 @@ public class TriPeaksLayout {
     public boolean isUnblocked(int i)
     {
         return pyramidCards.get(i).getBlockedBy1() == -1 && pyramidCards.get(i).getBlockedBy2() == -1;
+    }
+
+    //nur um DeckSlot und TopSlot die richtige RenderPosition zu geben
+    public void aplyToSlot(CardSlot slot)
+    {
+        grid.applyToSlot(slot, slot.x, slot.y);
     }
 
 

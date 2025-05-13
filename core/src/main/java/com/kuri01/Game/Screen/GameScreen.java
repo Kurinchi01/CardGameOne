@@ -8,19 +8,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kuri01.Game.Card.Model.Card;
 import com.kuri01.Game.Card.Model.CardGrid;
 import com.kuri01.Game.Card.Model.CardSlot;
 import com.kuri01.Game.Card.Model.GameLogic;
 import com.kuri01.Game.Card.View.CardGridRenderer;
-import com.kuri01.Game.Card.View.CardRenderer;
+import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
@@ -38,10 +35,8 @@ public class GameScreen extends ScreenAdapter {
     private SpriteBatch uiBatch;
     private SpriteBatch debugBatch;
     private BitmapFont font;
-    private Card topCard;
-    private CardSlot deckSlot;
     private TriPeaksLayoutRenderer triPeaksLayoutRenderer;
-    private CardRenderer cardRenderer;
+    private CardSpriteProvider cardSpriteProvider;
     private CardGridRenderer cardGridRenderer;
     public static float cardWidth;
     public static float cardHeight;
@@ -72,7 +67,7 @@ public class GameScreen extends ScreenAdapter {
         debugBatch = new SpriteBatch();
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
-        cardRenderer = new CardRenderer();
+        cardSpriteProvider = new CardSpriteProvider();
 
         //deck erstellen und mischen
         camera = new OrthographicCamera();
@@ -109,10 +104,7 @@ public class GameScreen extends ScreenAdapter {
         gameLogic.getLayoutPyramide().setCardHeight(cardHeight);
         gameLogic.getLayoutPyramide().setCardWidth(cardWidth);
 
-
-        topCard = gameLogic.getTopCard();
         //alle Renderer
-
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(gameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
 
@@ -120,25 +112,26 @@ public class GameScreen extends ScreenAdapter {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(viewport, uiBatch);
 
-        restartButton = new TextButton("Neustart", skin);
-        restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
-        restartButton.setPosition(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.9f); // oben links
 
-        restartButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game)); // Neustart des Screens
-            }
-        });
-        stage.addActor(restartButton);
+//        restartButton = new TextButton("Neustart", skin);
+//        restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
+//        restartButton.setPosition(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.9f); // oben links
+//
+//        restartButton.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                game.setScreen(new GameScreen(game)); // Neustart des Screens
+//            }
+//        });
+//        stage.addActor(restartButton);
 
-//     inputHandler = new InputHandler(camera, layoutPyramide, this); // Deine Kamera, z.B. orthographicCamera
+        inputHandler = new InputHandler(camera, gameLogic.getLayoutPyramide(), this); // Deine Kamera, z.B. orthographicCamera
         InputMultiplexer multiplexer = new InputMultiplexer();
 
 
         //Mulitplexer Reihenfolge wichtig!!
         multiplexer.addProcessor(stage);
-        //multiplexer.addProcessor(inputHandler);
+        multiplexer.addProcessor(inputHandler);
 
 
         Gdx.input.setInputProcessor(multiplexer);
@@ -156,33 +149,14 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.setProjectionMatrix(camera.combined);
 
 
+
         gameBatch.begin();
         triPeaksLayoutRenderer.render(gameBatch);
 
-//        for (CardSlot slot : layoutPyramide.getPyramidCards()) {
-//            if (slot.card != null) {
-//                gameBatch.draw(cardRenderer.getTexture(slot.card, slot.card.isFaceUp()), slot.x, slot.y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
-//            }
-//        }
-//
-//        if (topCard != null) {
-//            float x = layoutPyramide.getMainGrid().getPosition(4, 0).x;
-//            float y = layoutPyramide.getMainGrid().getPosition(4, 0).y;
-//            gameBatch.draw(cardRenderer.getTexture(topCard, true), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
-//        }
-//        if (!deck.isEmpty()) {
-//            float x = layoutPyramide.getMainGrid().getPosition(0, 0).x;
-//            float y = layoutPyramide.getMainGrid().getPosition(0, 0).y;
-//
-//            gameBatch.draw(cardRenderer.getTexture(deckSlot.card, false), x, y, layoutPyramide.getCardWidth(), layoutPyramide.getCardHeight());
-//
-//        }
         gameBatch.end();
 
         stage.act(delta);
         stage.draw();
-
-
         Gdx.app.postRunnable(() -> {
             if (gameLogic.isGameOver() && !gameOverDialogShown) {
                 gameOverDialogShown = true;
@@ -200,8 +174,17 @@ public class GameScreen extends ScreenAdapter {
         if (debug)
             cardGridRenderer.render(shapeRenderer, debugBatch, font);
 
-
     }
+
+    public void drawNewCard() {
+        gameLogic.drawNewCard();
+    }
+
+    public int remainingCards()
+    {
+        return gameLogic.getDeck().remainingCards();
+    }
+
 
 
     @Override
@@ -233,20 +216,27 @@ public class GameScreen extends ScreenAdapter {
         debugBatch.dispose();
         batch.dispose();
         font.dispose();
-        cardRenderer.dispose();
+        cardSpriteProvider.dispose();
         shapeRenderer.dispose();
     }
 
+    public void setDeckSlot(CardSlot deckSlot) {
+        gameLogic.setDeckSlot(deckSlot);
+        if(deckSlot!=null)
+            gameLogic.getLayoutPyramide().aplyToSlot(deckSlot);
+    }
+
     public CardSlot getDeckSlot() {
-        return deckSlot;
+        return gameLogic.getDeckSlot();
     }
 
-    public Card getTopCard() {
-        return topCard;
+    public CardSlot getTopCardSlot() {
+        return gameLogic.getTopCardSlot();
     }
 
-    public void setTopCard(Card topCard) {
-        this.topCard = topCard;
+    public void setTopCardSlot(CardSlot topCardSlot) {
+        gameLogic.setTopCardSlot(topCardSlot);
+        gameLogic.getLayoutPyramide().aplyToSlot(topCardSlot);
     }
 
 
@@ -274,11 +264,11 @@ public class GameScreen extends ScreenAdapter {
         this.cardGrid = cardGrid;
     }
 
-    public CardRenderer getCardRenderer() {
-        return cardRenderer;
+    public CardSpriteProvider getCardRenderer() {
+        return cardSpriteProvider;
     }
 
-    public void setCardRenderer(CardRenderer cardRenderer) {
-        this.cardRenderer = cardRenderer;
+    public void setCardRenderer(CardSpriteProvider cardSpriteProvider) {
+        this.cardSpriteProvider = cardSpriteProvider;
     }
 }
