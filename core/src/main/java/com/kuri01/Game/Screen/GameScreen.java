@@ -47,7 +47,7 @@ public class GameScreen extends ScreenAdapter {
     private boolean gameOverDialogShown = false;
     float screenWidth;
     float screenHeight;
-    boolean debug = true;
+    boolean debug = false;
     private final Main game;
 
     //Modell
@@ -165,7 +165,9 @@ public class GameScreen extends ScreenAdapter {
                     () -> game.setScreen(new GameScreen(game)),
                     () -> Gdx.app.exit()
                 );
+
                 dialog.show(stage);
+                dialog.setSize(dialog.getWidth()*2,dialog.getHeight()*2);
             }
             ;
         });

@@ -16,7 +16,7 @@ public class GameOverDialog extends Dialog {
         TextButton newGameBtn = new TextButton("Neues Spiel", skin, "default");
         TextButton exitBtn = new TextButton("Spiel beenden", skin, "default");
 
-        dummyRestartBtn.addListener(new ClickListener(){
+        dummyRestartBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 onRestart.run();
@@ -37,11 +37,19 @@ public class GameOverDialog extends Dialog {
             }
         });
 
-        // Layout
-        getContentTable().row();
-        getContentTable().add(dummyRestartBtn).pad(10);
-        getContentTable().add(newGameBtn).pad(10);
-        getContentTable().add(exitBtn).pad(10);
+        // Horizontale Anordnung mit expand/fill
+        getContentTable().add(dummyRestartBtn).expandX().fillX().pad(10).uniformX();
+        getContentTable().add(newGameBtn).expandX().fillX().pad(10).uniformX();
+        getContentTable().add(exitBtn).expandX().fillX().pad(10).uniformX();
+
+        // Setze eine feste Dialoggröße
+        this.setSize(600, 200); // Beispielwerte
+
+        // Zentriere den Dialog auf dem Bildschirm
+        this.setPosition(
+            (stage.getWidth() - this.getWidth()) / 2f,
+            (stage.getHeight() - this.getHeight()) / 2f
+        );
     }
 
 

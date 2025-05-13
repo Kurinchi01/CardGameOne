@@ -4,6 +4,7 @@ package com.kuri01.Game.Card.Model;
 import com.kuri01.Game.Screen.GameScreen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GameLogic {
@@ -12,12 +13,13 @@ public class GameLogic {
     private CardSlot deckSlot;
     private TriPeaksLayout layoutPyramide;
     private GameScreen gameScreen;
-    final Card tmpCard = new Card(Card.Suit.club,1);
+    final Card tmpCard = new Card(Card.Suit.club, 1);
 
     public GameLogic(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         //deck erstellen und mischen
         deck = new Deck();
+        Collections.shuffle(deck.getCards());
 
 
         //ziehe die ersten 28 Karten
@@ -83,9 +85,8 @@ public class GameLogic {
     }
 
     public void drawNewCard() {
-        if(!deck.isEmpty())
-        {
-            topCardSlot = new CardSlot(4,0,deck.draw());
+        if (!deck.isEmpty()) {
+            topCardSlot = new CardSlot(4, 0, deck.draw());
             layoutPyramide.aplyToSlot(topCardSlot);
         }
     }
