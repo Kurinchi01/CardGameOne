@@ -80,4 +80,6 @@ public class GameLogic {
     public void setLayoutPyramide(TriPeaksLayout layoutPyramide) {
         this.layoutPyramide = layoutPyramide;
     }
+
+
 }

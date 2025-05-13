@@ -18,16 +18,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kuri01.Game.Card.Model.Card;
 import com.kuri01.Game.Card.Model.CardGrid;
 import com.kuri01.Game.Card.Model.CardSlot;
-import com.kuri01.Game.Card.Model.Deck;
 import com.kuri01.Game.Card.Model.GameLogic;
-import com.kuri01.Game.Card.Model.TriPeaksLayout;
+import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardRenderer;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -40,11 +36,13 @@ public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private SpriteBatch gameBatch;
     private SpriteBatch uiBatch;
+    private SpriteBatch debugBatch;
     private BitmapFont font;
     private Card topCard;
     private CardSlot deckSlot;
     private TriPeaksLayoutRenderer triPeaksLayoutRenderer;
     private CardRenderer cardRenderer;
+    private CardGridRenderer cardGridRenderer;
     public static float cardWidth;
     public static float cardHeight;
     ShapeRenderer shapeRenderer;
@@ -71,6 +69,7 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         gameBatch = new SpriteBatch();
         uiBatch = new SpriteBatch();
+        debugBatch = new SpriteBatch();
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
         cardRenderer = new CardRenderer();
@@ -111,19 +110,15 @@ public class GameScreen extends ScreenAdapter {
         gameLogic.getLayoutPyramide().setCardWidth(cardWidth);
 
 
-
         topCard = gameLogic.getTopCard();
         //alle Renderer
 
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(gameLogic.getLayoutPyramide(), this);
+        cardGridRenderer = new CardGridRenderer(cardGrid, this);
 
 
-        //deckSlot = new CardSlot(0, 0, deck.getCards().getFirst());
-        //layoutPyramide.getMainGrid().applyToSlot(deckSlot, 0, 0);
-
-        skin = new Skin(Gdx.files.internal("uiskin.json")); // Stelle sicher, dass uiskin.json vorhanden ist
+        skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(viewport, uiBatch);
-        Gdx.input.setInputProcessor(stage); // damit Buttons funktionieren
 
         restartButton = new TextButton("Neustart", skin);
         restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
@@ -201,6 +196,11 @@ public class GameScreen extends ScreenAdapter {
             ;
         });
 
+
+        if (debug)
+            cardGridRenderer.render(shapeRenderer, debugBatch, font);
+
+
     }
 
 
@@ -230,6 +230,7 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         gameBatch.dispose();
         uiBatch.dispose();
+        debugBatch.dispose();
         batch.dispose();
         font.dispose();
         cardRenderer.dispose();
@@ -247,7 +248,6 @@ public class GameScreen extends ScreenAdapter {
     public void setTopCard(Card topCard) {
         this.topCard = topCard;
     }
-
 
 
     public float getScreenWidth() {
