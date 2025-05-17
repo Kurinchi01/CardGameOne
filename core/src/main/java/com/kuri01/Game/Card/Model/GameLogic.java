@@ -14,6 +14,8 @@ public class GameLogic {
     private TriPeaksLayout layoutPyramide;
     private GameScreen gameScreen;
     final Card tmpCard = new Card(Card.Suit.club, 1);
+    private int Points;
+    private int ComboCounter;
 
     public GameLogic(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -40,6 +42,8 @@ public class GameLogic {
 
         deckSlot = new CardSlot(0, 0, tmpCard);
         layoutPyramide.aplyToSlot(deckSlot);
+        Points = 0;
+        ComboCounter = 0;
     }
 
     public boolean isGameOver() {
@@ -84,12 +88,25 @@ public class GameLogic {
         this.layoutPyramide = layoutPyramide;
     }
 
+    public void increasePoints() {
+        Points = Points + 8000 * ComboCounter;
+    }
+
+    public void increaseComboCounter() {
+        ComboCounter++;
+    }
+
     public void drawNewCard() {
         if (!deck.isEmpty()) {
             topCardSlot = new CardSlot(4, 0, deck.draw());
             layoutPyramide.aplyToSlot(topCardSlot);
+            ComboCounter = 0;
         }
     }
 
+    public int getPoints()
+    {
+        return Points;
+    }
 
 }

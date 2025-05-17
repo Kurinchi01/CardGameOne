@@ -114,7 +114,7 @@ public class GameScreen extends ScreenAdapter {
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(gameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
 
-        deckcount = new Vector2(cardGrid.getPosition(0,0).x+0.5f*cardWidth,cardGrid.getPosition(0,0).y);
+        deckcount = new Vector2(cardGrid.getPosition(0, 0).x + 0.5f * cardWidth, cardGrid.getPosition(0, 0).y);
 
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -146,7 +146,6 @@ public class GameScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(multiplexer);
 
 
-
     }
 
 
@@ -161,7 +160,7 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.setProjectionMatrix(camera.combined);
         gameBatch.begin();
 
-        triPeaksLayoutRenderer.render(gameBatch,font);
+        triPeaksLayoutRenderer.render(gameBatch, font);
 
         gameBatch.end();
         // UI Rendern
@@ -197,12 +196,23 @@ public class GameScreen extends ScreenAdapter {
         gameLogic.drawNewCard();
     }
 
-    public int remainingCards()
-    {
+    public int remainingCards() {
         return gameLogic.getDeck().remainingCards();
     }
 
+    public void increasePoints() {
+        gameLogic.increasePoints();
+    }
 
+    public void increaseComboCounter()
+    {
+        gameLogic.increaseComboCounter();
+    }
+
+    public int getPoints()
+    {
+        return gameLogic.getPoints();
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -238,7 +248,7 @@ public class GameScreen extends ScreenAdapter {
 
     public void setDeckSlot(CardSlot deckSlot) {
         gameLogic.setDeckSlot(deckSlot);
-        if(deckSlot!=null)
+        if (deckSlot != null)
             gameLogic.getLayoutPyramide().aplyToSlot(deckSlot);
     }
 

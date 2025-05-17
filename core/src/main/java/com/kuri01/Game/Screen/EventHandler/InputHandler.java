@@ -49,6 +49,8 @@ public class InputHandler extends InputAdapter {
                         gameScreen.setTopCardSlot(new CardSlot(4, 0, card));
                         slot.get(i).card = null; // Karte vom Spielfeld entfernen
                         layout.isRemoved(i);
+                        gameScreen.increaseComboCounter();
+                        gameScreen.increasePoints();
                         return true;
                     }
                 }

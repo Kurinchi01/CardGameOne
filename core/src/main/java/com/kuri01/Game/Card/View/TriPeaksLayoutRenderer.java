@@ -48,7 +48,8 @@ public class TriPeaksLayoutRenderer extends Renderer {
         }
         font.getData().setScale(2f);
         font.draw(gameBatch, Integer.toString(getGameScreen().remainingCards()), getGameScreen().deckcount.x, getGameScreen().deckcount.y);
-        font.getData().setScale(1f);
+
+        font.draw(gameBatch,Integer.toString(getGameScreen().getPoints()),getGameScreen().deckcount.x,getGameScreen().deckcount.y+getGameScreen().deckcount.y*2.5f);
     }
 
 }
