@@ -37,7 +37,6 @@ public class InputHandler extends InputAdapter {
                 float x = slot.get(i).x;
                 float y = slot.get(i).y;
 
-
                 if (worldCoordinates.x >= x && worldCoordinates.x <= x + width &&
                     worldCoordinates.y >= y && worldCoordinates.y <= y + height) {
 
@@ -59,11 +58,6 @@ public class InputHandler extends InputAdapter {
         if (gameScreen.getDeckSlot() != null) {
             if (worldCoordinates.x >= gameScreen.getDeckSlot().x && worldCoordinates.x <= gameScreen.getDeckSlot().x + width &&
                 worldCoordinates.y >= gameScreen.getDeckSlot().y && worldCoordinates.y <= gameScreen.getDeckSlot().y + height) {
-
-                //debugg
-//            if (gameScreen.getDeckSlot().card != null) {
-//                System.out.println("Deck Karte " + gameScreen.getDeckSlot().card.getSuit() + " " + gameScreen.getDeckSlot().card.getValue() + " wurde angeklickt!");
-//            }
 
                 gameScreen.drawNewCard();
                 if (gameScreen.remainingCards() == 0) {
