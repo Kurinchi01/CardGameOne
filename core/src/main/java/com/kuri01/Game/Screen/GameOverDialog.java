@@ -43,13 +43,13 @@ public class GameOverDialog extends Dialog {
         getContentTable().add(exitBtn).expandX().fillX().pad(10).uniformX();
 
         // Setze eine feste Dialoggröße
-        this.setSize(600, 200); // Beispielwerte
+        //this.setSize(600, 200); // Beispielwerte
 
         // Zentriere den Dialog auf dem Bildschirm
-        this.setPosition(
-            (stage.getWidth() - this.getWidth()) / 2f,
-            (stage.getHeight() - this.getHeight()) / 2f
-        );
+//        this.setPosition(
+//            (stage.getWidth() - this.getWidth()) ,
+//            (stage.getHeight() - this.getHeight())
+//        );
     }
 
 
