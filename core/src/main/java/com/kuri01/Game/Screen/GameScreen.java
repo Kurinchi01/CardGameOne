@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,11 +31,11 @@ public class GameScreen extends ScreenAdapter {
     private Stage stage;
     private Skin skin;
     private TextButton restartButton;
-    private SpriteBatch batch;
     private SpriteBatch gameBatch;
     private SpriteBatch uiBatch;
     private SpriteBatch debugBatch;
     private BitmapFont font;
+    private BitmapFont BigFont;
     private TriPeaksLayoutRenderer triPeaksLayoutRenderer;
     private CardSpriteProvider cardSpriteProvider;
     private CardGridRenderer cardGridRenderer;
@@ -53,6 +54,7 @@ public class GameScreen extends ScreenAdapter {
     //Modell
     private GameLogic gameLogic;
     private CardGrid cardGrid;
+    public Vector2 deckcount;
 
     public GameScreen(Main game) {
         this.game = game;
@@ -61,11 +63,13 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         // init
-        batch = new SpriteBatch();
+
         gameBatch = new SpriteBatch();
         uiBatch = new SpriteBatch();
         debugBatch = new SpriteBatch();
         font = new BitmapFont();
+        BigFont = new BitmapFont();
+
         shapeRenderer = new ShapeRenderer();
         cardSpriteProvider = new CardSpriteProvider();
 
@@ -76,7 +80,9 @@ public class GameScreen extends ScreenAdapter {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 
-        batch.setProjectionMatrix(camera.combined);
+        gameBatch.setProjectionMatrix(camera.combined);
+        uiBatch.setProjectionMatrix(camera.combined);
+        debugBatch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
 
 
@@ -86,9 +92,9 @@ public class GameScreen extends ScreenAdapter {
 
         //Berechnete Koordinaten für den Screen
         float viewX = screenWidth * 0.1f;      // 10% Abstand links
-        float viewY = screenHeight * 0.1f;     // 10% Abstand unten
+        float viewY = screenHeight * 0.15f;     // 10% Abstand unten
         float viewWidth = screenWidth * 0.85f;  // 100% - 10% links - 5% rechts
-        float viewHeight = screenHeight * 0.85f; // 100% - 5% oben - 10% unten
+        float viewHeight = screenHeight * 0.75f; // 100% - 10% oben - 15% unten
 
         cardWidth = viewWidth / 28f * 2f;  //
         cardHeight = viewHeight / 5f * 2f;
@@ -108,11 +114,14 @@ public class GameScreen extends ScreenAdapter {
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(gameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
 
+        deckcount = new Vector2(cardGrid.getPosition(0,0).x+0.5f*cardWidth,cardGrid.getPosition(0,0).y);
+
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(viewport, uiBatch);
+        stage.setDebugAll(true);
 
-
+        BigFont.getData().setScale(2f);
 //        restartButton = new TextButton("Neustart", skin);
 //        restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
 //        restartButton.setPosition(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.9f); // oben links
@@ -137,23 +146,29 @@ public class GameScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(multiplexer);
 
 
+
     }
 
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
+        Gdx.gl.glClearColor(0, 0, 1, 1); // Rot
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
+        // Game Objekte Rendern
         gameBatch.setProjectionMatrix(camera.combined);
-
-
-
         gameBatch.begin();
-        triPeaksLayoutRenderer.render(gameBatch);
+
+        triPeaksLayoutRenderer.render(gameBatch,font);
 
         gameBatch.end();
+        // UI Rendern
+        uiBatch.begin();
+
+        uiBatch.end();
+
 
         stage.act(delta);
         stage.draw();
@@ -167,7 +182,7 @@ public class GameScreen extends ScreenAdapter {
                 );
 
                 dialog.show(stage);
-                dialog.setSize(dialog.getWidth()*2,dialog.getHeight()*2);
+                dialog.center();
             }
             ;
         });
@@ -216,7 +231,6 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.dispose();
         uiBatch.dispose();
         debugBatch.dispose();
-        batch.dispose();
         font.dispose();
         cardSpriteProvider.dispose();
         shapeRenderer.dispose();

@@ -1,6 +1,7 @@
 package com.kuri01.Game.Card.View;
 
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kuri01.Game.Card.Model.CardSlot;
 import com.kuri01.Game.Card.Model.TriPeaksLayout;
@@ -16,21 +17,19 @@ public class TriPeaksLayoutRenderer extends Renderer {
 
     }
 
-    public void setCardSize(float width, float height)
-    {
+    public void setCardSize(float width, float height) {
         triPeaksLayout.setCardWidth(width);
         triPeaksLayout.setCardHeight(height);
     }
 
-    public void render(SpriteBatch gameBatch)
-    {
+    public void render(SpriteBatch gameBatch, BitmapFont font) {
 
         for (CardSlot slot : triPeaksLayout.getPyramidCards()) {
             if (slot.card != null) {
                 gameBatch.draw(getGameScreen().getCardRenderer().getTexture(slot.card, slot.card.isFaceUp()), slot.x, slot.y, triPeaksLayout.getCardWidth(), triPeaksLayout.getCardHeight());
             }
             //debug
-           // System.out.println(slot.card+"_ " +slot.x+" , "+slot.y);
+            // System.out.println(slot.card+"_ " +slot.x+" , "+slot.y);
         }
 
         if (getGameScreen().getTopCardSlot() != null) {
@@ -47,6 +46,9 @@ public class TriPeaksLayoutRenderer extends Renderer {
             gameBatch.draw(getGameScreen().getCardRenderer().getTexture(getGameScreen().getDeckSlot().card, false), x, y, triPeaksLayout.getCardWidth(), triPeaksLayout.getCardHeight());
 
         }
+        font.getData().setScale(2f);
+        font.draw(gameBatch, Integer.toString(getGameScreen().remainingCards()), getGameScreen().deckcount.x, getGameScreen().deckcount.y);
+        font.getData().setScale(1f);
     }
 
 }
