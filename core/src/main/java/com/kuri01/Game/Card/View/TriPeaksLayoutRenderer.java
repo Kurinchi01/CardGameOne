@@ -1,6 +1,7 @@
 package com.kuri01.Game.Card.View;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kuri01.Game.Card.Model.CardSlot;
@@ -9,6 +10,8 @@ import com.kuri01.Game.Screen.GameScreen;
 
 public class TriPeaksLayoutRenderer extends Renderer {
     TriPeaksLayout triPeaksLayout;
+    private int displayedScore=0;
+    private float scoreLerpSpeed = 5f;
 
 
     public TriPeaksLayoutRenderer(TriPeaksLayout triPeaksLayout, GameScreen gameScreen) {
@@ -22,7 +25,7 @@ public class TriPeaksLayoutRenderer extends Renderer {
         triPeaksLayout.setCardHeight(height);
     }
 
-    public void render(SpriteBatch gameBatch, BitmapFont font) {
+    public void render(SpriteBatch gameBatch, BitmapFont font, float deltaTime) {
 
         for (CardSlot slot : triPeaksLayout.getPyramidCards()) {
             if (slot.card != null) {
@@ -46,10 +49,12 @@ public class TriPeaksLayoutRenderer extends Renderer {
             gameBatch.draw(getGameScreen().getCardRenderer().getTexture(getGameScreen().getDeckSlot().card, false), x, y, triPeaksLayout.getCardWidth(), triPeaksLayout.getCardHeight());
 
         }
+        displayedScore += (int) ((getGameScreen().getPoints() - displayedScore) * Math.min(1, scoreLerpSpeed * deltaTime));
+
         font.getData().setScale(2f);
         font.draw(gameBatch, Integer.toString(getGameScreen().remainingCards()), getGameScreen().deckcount.x, getGameScreen().deckcount.y);
 
-        font.draw(gameBatch,Integer.toString(getGameScreen().getPoints()),getGameScreen().deckcount.x,getGameScreen().deckcount.y+getGameScreen().deckcount.y*2.5f);
+        font.draw(gameBatch,Integer.toString(displayedScore),getGameScreen().deckcount.x,getGameScreen().deckcount.y+getGameScreen().deckcount.y*2.5f);
     }
 
 }

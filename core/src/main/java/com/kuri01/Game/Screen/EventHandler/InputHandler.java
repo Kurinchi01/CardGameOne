@@ -50,7 +50,12 @@ public class InputHandler extends InputAdapter {
                         slot.get(i).card = null; // Karte vom Spielfeld entfernen
                         layout.isRemoved(i);
                         gameScreen.increaseComboCounter();
-                        gameScreen.increasePoints();
+                        if (i < 3) {
+                            gameScreen.increasePoints(2);
+                            gameScreen.setPeak(i);
+                        } else {
+                            gameScreen.increasePoints(1);
+                        }
                         return true;
                     }
                 }

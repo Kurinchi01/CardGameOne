@@ -16,12 +16,16 @@ public class GameLogic {
     final Card tmpCard = new Card(Card.Suit.club, 1);
     private int Points;
     private int ComboCounter;
+    public boolean peak1, peak2, peak3;
 
     public GameLogic(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         //deck erstellen und mischen
         deck = new Deck();
         Collections.shuffle(deck.getCards());
+        peak1 = false;
+        peak2 = false;
+        peak3 = false;
 
 
         //ziehe die ersten 28 Karten
@@ -88,8 +92,9 @@ public class GameLogic {
         this.layoutPyramide = layoutPyramide;
     }
 
-    public void increasePoints() {
-        Points = Points + 8000 * ComboCounter;
+    //Value muss >0 sein, sonst keine Punkte
+    public void increasePoints(int value) {
+        Points = Points + 8000 * value * ComboCounter;
     }
 
     public void increaseComboCounter() {
@@ -104,8 +109,7 @@ public class GameLogic {
         }
     }
 
-    public int getPoints()
-    {
+    public int getPoints() {
         return Points;
     }
 

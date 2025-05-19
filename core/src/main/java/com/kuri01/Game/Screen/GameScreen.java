@@ -46,6 +46,7 @@ public class GameScreen extends ScreenAdapter {
     private OrthographicCamera camera;
     private Viewport viewport;
     private boolean gameOverDialogShown = false;
+    private boolean gameWonDialogShwon = false;
     float screenWidth;
     float screenHeight;
     boolean debug = false;
@@ -160,7 +161,7 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.setProjectionMatrix(camera.combined);
         gameBatch.begin();
 
-        triPeaksLayoutRenderer.render(gameBatch, font);
+        triPeaksLayoutRenderer.render(gameBatch, font,delta);
 
         gameBatch.end();
         // UI Rendern
@@ -183,7 +184,17 @@ public class GameScreen extends ScreenAdapter {
                 dialog.show(stage);
                 dialog.center();
             }
-            ;
+
+            if (gameLogic.peak1 && gameLogic.peak2 && gameLogic.peak3 && !gameWonDialogShwon) {
+                gameWonDialogShwon = true;
+                GameWonDialog dialog = new GameWonDialog(skin,
+                    () -> game.setScreen(new GameScreen(game))
+                );
+
+                dialog.show(stage);
+                dialog.center();
+            }
+
         });
 
 
@@ -200,17 +211,32 @@ public class GameScreen extends ScreenAdapter {
         return gameLogic.getDeck().remainingCards();
     }
 
-    public void increasePoints() {
-        gameLogic.increasePoints();
+    public void increasePoints(int value) {
+        gameLogic.increasePoints(value);
     }
 
-    public void increaseComboCounter()
-    {
+    public void setPeak(int value) {
+        switch (value) {
+            case 0:
+                gameLogic.peak1 = true;
+                break;
+            case 1:
+                gameLogic.peak2 = true;
+                break;
+            case 2:
+                gameLogic.peak3 = true;
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + value);
+        }
+    }
+
+    public void increaseComboCounter() {
         gameLogic.increaseComboCounter();
     }
 
-    public int getPoints()
-    {
+    public int getPoints() {
         return gameLogic.getPoints();
     }
 
