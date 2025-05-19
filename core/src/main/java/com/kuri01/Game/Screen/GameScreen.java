@@ -323,4 +323,12 @@ public class GameScreen extends ScreenAdapter {
     public void setCardRenderer(CardSpriteProvider cardSpriteProvider) {
         this.cardSpriteProvider = cardSpriteProvider;
     }
+
+    public boolean isGameWonDialogShwon() {
+        return gameWonDialogShwon;
+    }
+
+    public boolean isGameOverDialogShown() {
+        return gameOverDialogShown;
+    }
 }
