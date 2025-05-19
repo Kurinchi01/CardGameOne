@@ -6,6 +6,9 @@ public class Character {
     public float currentHp;
     public float attack;
 
+    public float atkIndicator = 0;
+    float attackCooldown = 5f;
+
     public Character(String name, float maxHp, float attack) {
         this.name = name;
         this.maxHp = maxHp;
@@ -51,6 +54,17 @@ public class Character {
 
     public void setAttack(float attack) {
         this.attack = attack;
+    }
+
+    public boolean increaseAtkIndicator() {
+        if (atkIndicator != 100f) {
+            atkIndicator += 100f/ attackCooldown;
+        }
+        if (atkIndicator >= 100f) {
+            atkIndicator = 0;
+            return true;
+        }
+        return false;
     }
 }
 

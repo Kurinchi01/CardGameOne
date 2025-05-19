@@ -7,7 +7,7 @@ import java.util.Random;
 
 
 public class Monster extends Character {
-    private float enemyAttackCooldown = 5f; // Gegner greift alle 5 Sekunden an
+    // Gegner greift alle 5 Sekunden an
 
     public enum Rarity {
         common(0.5f),
@@ -30,31 +30,46 @@ public class Monster extends Character {
     }
 
     public Rarity rarity;
+    Random r;
 
     public Monster(String name, int maxHp, int attack) {
         super(name, maxHp, attack);
-        Random r = new Random();
+        r = new Random();
         this.rarity = closest(r.nextFloat()).get();
+        this.setStats(this.rarity);
+
+    }
+
+    public void setStats(Rarity rarity) {
+
         switch (rarity) {
             case uncommon -> {
-                float tmp=r.nextFloat(0f,0.1f);
-                setAttack(getAttack() * (1f+tmp));
-                setMaxHp(getMaxHp() * (1f+tmp));
+                float tmp = r.nextFloat(0f, 0.1f);
+                setAttack(getAttack() * (1f + tmp));
+                maxHp = maxHp * (1f + tmp);
+                currentHp=maxHp;
+                attackCooldown = 6f;
             }
             case rare -> {
-                float tmp=r.nextFloat(0.1f,0.2f);
-                setAttack(getAttack() * (1f+tmp));
-                setMaxHp(getMaxHp() * (1f+tmp));
+                float tmp = r.nextFloat(0.1f, 0.2f);
+                setAttack(getAttack() * (1f + tmp));
+                maxHp = maxHp * (1f + tmp);
+                currentHp=maxHp;
+                attackCooldown = 7f;
             }
             case epic -> {
-                float tmp=r.nextFloat(0.2f,0.3f);
-                setAttack(getAttack() * (1f+tmp));
-                setMaxHp(getMaxHp() * (1f+tmp));
+                float tmp = r.nextFloat(0.2f, 0.3f);
+                setAttack(getAttack() * (1f + tmp));
+                maxHp = maxHp * (1f + tmp);
+                currentHp=maxHp;
+                attackCooldown = 8f;
             }
             case legendary -> {
-                float tmp=r.nextFloat(0.3f,0.5f);
-                setAttack(getAttack() * (1f+tmp));
-                setMaxHp(getMaxHp() * (1f+tmp));
+                float tmp = r.nextFloat(0.3f, 0.5f);
+                setAttack(getAttack() * (1f + tmp));
+                maxHp = maxHp * (1f + tmp);
+                currentHp=maxHp;
+                attackCooldown = 10f;
             }
         }
     }
