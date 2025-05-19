@@ -19,13 +19,13 @@ public class CardGameLogic {
 
     public CardGameLogic(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        createNewGame();
+        createNewRound();
 
         Points = 0;
         ComboCounter = 0;
     }
 
-    public void createNewGame() {
+    public void createNewRound() {
         //deck erstellen und mischen
         deck = new Deck();
       //  Collections.shuffle(deck.getCards());

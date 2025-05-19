@@ -14,13 +14,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kuri01.Game.Card.Model.CardGameLogic;
 import com.kuri01.Game.Card.Model.CardGrid;
 import com.kuri01.Game.Card.Model.CardSlot;
-import com.kuri01.Game.Card.Model.CardGameLogic;
 import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
+import com.kuri01.Game.RPG.Model.Character;
+import com.kuri01.Game.RPG.Model.Player;
+import com.kuri01.Game.RPG.Model.RPGLogic;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
 
 
@@ -56,14 +59,23 @@ public class GameScreen extends ScreenAdapter {
     private CardGameLogic cardGameLogic;
     private CardGrid cardGrid;
     public Vector2 deckcount;
+    public Player player;
+    RPGLogic rpgLogic;
 
     public GameScreen(Main game) {
         this.game = game;
+        player = new Player("Kuri01", 100, 10);
+
     }
 
     @Override
     public void show() {
-        // init
+
+        //dummy Player
+        //init RPG
+
+
+        // init Card
 
         gameBatch = new SpriteBatch();
         uiBatch = new SpriteBatch();
@@ -101,7 +113,7 @@ public class GameScreen extends ScreenAdapter {
         cardHeight = viewHeight / 5f * 2f;
 
 
-        //erzeuge Modells
+        //erzeuge Card Modells
 
         //CardGrid zuerst erzeugen, da in Gamelogic Konstukrot benötigt wird
         cardGrid = new CardGrid();
@@ -110,6 +122,10 @@ public class GameScreen extends ScreenAdapter {
 
         cardGameLogic.getLayoutPyramide().setCardHeight(cardHeight);
         cardGameLogic.getLayoutPyramide().setCardWidth(cardWidth);
+
+
+        //RPG Modell
+        rpgLogic = new RPGLogic(this);
 
         //alle Renderer
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(cardGameLogic.getLayoutPyramide(), this);
@@ -183,16 +199,16 @@ public class GameScreen extends ScreenAdapter {
 //                dialog.show(stage);
 //                dialog.center();
 
-                cardGameLogic.createNewGame();
+                cardGameLogic.createNewRound();
                 triPeaksLayoutRenderer.setTriPeaksLayout(cardGameLogic.getLayoutPyramide());
-                triPeaksLayoutRenderer.setCardSize(cardWidth,cardHeight);
+                triPeaksLayoutRenderer.setCardSize(cardWidth, cardHeight);
                 inputHandler.setLayout(cardGameLogic.getLayoutPyramide());
             }
 
             if (cardGameLogic.peak1 && cardGameLogic.peak2 && cardGameLogic.peak3) {
-                cardGameLogic.createNewGame();
+                cardGameLogic.createNewRound();
                 triPeaksLayoutRenderer.setTriPeaksLayout(cardGameLogic.getLayoutPyramide());
-                triPeaksLayoutRenderer.setCardSize(cardWidth,cardHeight);
+                triPeaksLayoutRenderer.setCardSize(cardWidth, cardHeight);
                 inputHandler.setLayout(cardGameLogic.getLayoutPyramide());
             }
 
@@ -215,10 +231,16 @@ public class GameScreen extends ScreenAdapter {
 
     public void increasePoints(int value) {
         cardGameLogic.increasePoints(value);
+        if (player.increaseAtkIndicator()) {
+            rpgLogic.monster.takeDamage(player.attack);
+        }
     }
 
     public void decreasePoints(int value) {
         cardGameLogic.decreasePoint(value);
+        if (rpgLogic.monster.increaseAtkIndicator()) {
+            player.takeDamage(rpgLogic.monster.attack);
+        }
     }
 
     public void setPeak(int value) {
