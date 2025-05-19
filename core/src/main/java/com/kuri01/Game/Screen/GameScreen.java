@@ -21,9 +21,9 @@ import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
-import com.kuri01.Game.RPG.Model.Character;
 import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.RPG.Model.RPGLogic;
+import com.kuri01.Game.RPG.View.CharacterRenderer;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
 
 
@@ -40,6 +40,7 @@ public class GameScreen extends ScreenAdapter {
     private BitmapFont font;
     private BitmapFont BigFont;
     private TriPeaksLayoutRenderer triPeaksLayoutRenderer;
+    private CharacterRenderer characterRenderer;
     private CardSpriteProvider cardSpriteProvider;
     private CardGridRenderer cardGridRenderer;
     public static float cardWidth;
@@ -52,15 +53,17 @@ public class GameScreen extends ScreenAdapter {
     private boolean gameWonDialogShwon = false;
     float screenWidth;
     float screenHeight;
-    boolean debug = false;
+    boolean debug = true;
     private final Main game;
 
     //Modell
     private CardGameLogic cardGameLogic;
     private CardGrid cardGrid;
     public Vector2 deckcount;
+    public Vector2 playerHP, monsterHP;
     public Player player;
-    RPGLogic rpgLogic;
+
+    public RPGLogic rpgLogic;
 
     public GameScreen(Main game) {
         this.game = game;
@@ -119,6 +122,8 @@ public class GameScreen extends ScreenAdapter {
         cardGrid = new CardGrid();
         cardGrid.initGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
         cardGameLogic = new CardGameLogic(this);
+        playerHP = cardGrid.getPosition(0, 2);
+        monsterHP = cardGrid.getPosition(0, 4);
 
         cardGameLogic.getLayoutPyramide().setCardHeight(cardHeight);
         cardGameLogic.getLayoutPyramide().setCardWidth(cardWidth);
@@ -130,6 +135,8 @@ public class GameScreen extends ScreenAdapter {
         //alle Renderer
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(cardGameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
+        characterRenderer = new CharacterRenderer(this);
+
 
         deckcount = new Vector2(cardGrid.getPosition(0, 0).x + 0.5f * cardWidth, cardGrid.getPosition(0, 0).y);
 
@@ -177,6 +184,7 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.begin();
 
         triPeaksLayoutRenderer.render(gameBatch, font, delta);
+        characterRenderer.render(gameBatch, font, delta);
 
         gameBatch.end();
         // UI Rendern

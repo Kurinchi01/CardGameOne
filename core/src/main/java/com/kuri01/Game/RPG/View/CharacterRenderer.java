@@ -1,0 +1,39 @@
+package com.kuri01.Game.RPG.View;
+
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.kuri01.Game.Card.View.Renderer;
+import com.kuri01.Game.Screen.GameScreen;
+
+public class CharacterRenderer extends Renderer {
+    private int displayedPlayerHP, displayedMonsterHP;
+    private float scoreLerpSpeed = 5f;
+    private float differencePlayerHP, differenceMonsterHP;
+
+    public CharacterRenderer(GameScreen gameScreen) {
+        super(gameScreen);
+        displayedPlayerHP = (int) gameScreen.player.currentHp;
+        displayedMonsterHP= (int) gameScreen.rpgLogic.monster.currentHp;
+    }
+
+    public void render(SpriteBatch gameBatch, BitmapFont font, float deltaTime) {
+        differencePlayerHP = getGameScreen().player.currentHp - displayedPlayerHP;
+        differenceMonsterHP = getGameScreen().rpgLogic.monster.currentHp - displayedMonsterHP;
+
+        if (Math.abs(differencePlayerHP) > 2f) {
+            displayedPlayerHP += (int) (differencePlayerHP * Math.min(1, scoreLerpSpeed * deltaTime));
+        } else
+            displayedPlayerHP = (int) getGameScreen().player.currentHp;
+
+        if (Math.abs(differenceMonsterHP) > 2f) {
+            displayedMonsterHP += (int) (differenceMonsterHP * Math.min(1, scoreLerpSpeed * deltaTime));
+        } else
+            displayedMonsterHP = (int) getGameScreen().rpgLogic.monster.currentHp;
+
+
+        font.getData().setScale(2f);
+
+        font.draw(gameBatch, Integer.toString((int) getGameScreen().player.currentHp), getGameScreen().playerHP.x, getGameScreen().playerHP.y + getGameScreen().getCardGrid().getCellHeight() / 2);
+        font.draw(gameBatch,Integer.toString((int)getGameScreen().rpgLogic.monster.currentHp),getGameScreen().monsterHP.x,getGameScreen().monsterHP.y);
+    }
+}

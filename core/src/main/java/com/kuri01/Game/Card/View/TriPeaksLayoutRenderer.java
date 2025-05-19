@@ -9,9 +9,7 @@ import com.kuri01.Game.Screen.GameScreen;
 
 public class TriPeaksLayoutRenderer extends Renderer {
     TriPeaksLayout triPeaksLayout;
-    private int displayedScore = 0;
-    private float scoreLerpSpeed = 5f;
-    private float difference;
+
 
 
     public TriPeaksLayoutRenderer(TriPeaksLayout triPeaksLayout, GameScreen gameScreen) {
@@ -50,21 +48,8 @@ public class TriPeaksLayoutRenderer extends Renderer {
 
         }
 
-        difference= getGameScreen().getPoints()-displayedScore;
-
-        if (!getGameScreen().isGameOverDialogShown() && !getGameScreen().isGameWonDialogShwon())
-            if (Math.abs(difference) > 10f) {
-                displayedScore += (int) (difference * Math.min(1, scoreLerpSpeed * deltaTime));
-            }
-            else
-                displayedScore = getGameScreen().getPoints();
-        else
-            displayedScore = getGameScreen().getPoints();
-
         font.getData().setScale(2f);
         font.draw(gameBatch, Integer.toString(getGameScreen().remainingCards()), getGameScreen().deckcount.x, getGameScreen().deckcount.y);
-
-        font.draw(gameBatch, Integer.toString(displayedScore), getGameScreen().deckcount.x, getGameScreen().deckcount.y + getGameScreen().deckcount.y * 2.5f);
     }
 
     public TriPeaksLayout getTriPeaksLayout() {
