@@ -97,6 +97,11 @@ public class GameLogic {
         Points = Points + 8000 * value * ComboCounter;
     }
 
+    public void decreasePoint(int value) {
+        int tmp = Points - 4000 * value;
+        Points = Math.max(tmp, 0);
+    }
+
     public void increaseComboCounter() {
         ComboCounter++;
     }

@@ -215,6 +215,11 @@ public class GameScreen extends ScreenAdapter {
         gameLogic.increasePoints(value);
     }
 
+    public void decreasePoints(int value)
+    {
+        gameLogic.decreasePoint(value);
+    }
+
     public void setPeak(int value) {
         switch (value) {
             case 0:

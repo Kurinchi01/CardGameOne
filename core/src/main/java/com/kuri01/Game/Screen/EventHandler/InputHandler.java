@@ -44,19 +44,24 @@ public class InputHandler extends InputAdapter {
 
                     Card tmpCard = gameScreen.getTopCardSlot().card;
 
-                    if (tmpCard != null && layout.isPlayable(card, tmpCard)) {
-                        // Karte ist spielbar
-                        gameScreen.setTopCardSlot(new CardSlot(4, 0, card));
-                        slot.get(i).card = null; // Karte vom Spielfeld entfernen
-                        layout.isRemoved(i);
-                        gameScreen.increaseComboCounter();
-                        if (i < 3) {
-                            gameScreen.increasePoints(2);
-                            gameScreen.setPeak(i);
-                        } else {
-                            gameScreen.increasePoints(1);
+                    if (tmpCard != null) {
+                        if(layout.isPlayable(card, tmpCard)) {
+                            // Karte ist spielbar
+                            gameScreen.setTopCardSlot(new CardSlot(4, 0, card));
+                            slot.get(i).card = null; // Karte vom Spielfeld entfernen
+                            layout.isRemoved(i);
+                            gameScreen.increaseComboCounter();
+                            if (i < 3) {
+                                gameScreen.increasePoints(2);
+                                gameScreen.setPeak(i);
+                            } else {
+                                gameScreen.increasePoints(1);
+                            }
+                            return true;
                         }
-                        return true;
+                        else{
+                            gameScreen.decreasePoints(1);
+                        }
                     }
                 }
             }
