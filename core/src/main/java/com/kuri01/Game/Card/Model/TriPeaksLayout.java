@@ -18,14 +18,19 @@ public class TriPeaksLayout {
     public TriPeaksLayout(List<Card> cards) {
 
         // Füge den Slots eine Karte hinzu
+        initGame(cards);
+
+    }
+
+    public void initGame(List<Card> cards)
+    {
+        // Füge den Slots eine Karte hinzu
         for (Card a : cards
         ) {
             CardSlot b = new CardSlot(0, 0, a);
             pyramidCards.add(b);
         }
-
     }
-
 
     //setze die Karten an die richtige Position und setze die richtigen Indexe für blockierte und blockierende Karten
     public void init(CardGrid MainGrid) {

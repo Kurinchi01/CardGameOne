@@ -10,8 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class GameWonDialog extends Dialog {
     public GameWonDialog( Skin skin, Runnable onNewGame) {
         super("Game Won!", skin);
-        TextButton newGameBtn = new TextButton("Neues Spiel", skin, "default");
+        this.setMovable(false);
 
+        TextButton newGameBtn = new TextButton("Neues Spiel", skin, "default");
 
         newGameBtn.addListener(new ClickListener() {
             @Override

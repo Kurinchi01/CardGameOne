@@ -83,5 +83,7 @@ public class InputHandler extends InputAdapter {
         return true;
     }
 
-
+    public void setLayout(TriPeaksLayout layout) {
+        this.layout = layout;
+    }
 }

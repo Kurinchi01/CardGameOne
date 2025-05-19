@@ -11,7 +11,7 @@ public class GameOverDialog extends Dialog {
 
     public GameOverDialog(Skin skin, Stage stage, Runnable onRestart, Runnable onNewGame, Runnable onExit) {
         super("Game Over", skin);
-
+        this.setMovable(false);
         TextButton dummyRestartBtn = new TextButton("Dummy Neustart", skin, "default");
         TextButton newGameBtn = new TextButton("Neues Spiel", skin, "default");
         TextButton exitBtn = new TextButton("Spiel beenden", skin, "default");

@@ -20,9 +20,16 @@ public class GameLogic {
 
     public GameLogic(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
+        createNewGame();
+
+        Points = 0;
+        ComboCounter = 0;
+    }
+
+    public void createNewGame() {
         //deck erstellen und mischen
         deck = new Deck();
-        Collections.shuffle(deck.getCards());
+      //  Collections.shuffle(deck.getCards());
         peak1 = false;
         peak2 = false;
         peak3 = false;
@@ -46,8 +53,7 @@ public class GameLogic {
 
         deckSlot = new CardSlot(0, 0, tmpCard);
         layoutPyramide.aplyToSlot(deckSlot);
-        Points = 0;
-        ComboCounter = 0;
+
     }
 
     public boolean isGameOver() {

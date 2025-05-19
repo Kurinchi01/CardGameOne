@@ -49,6 +49,7 @@ public class TriPeaksLayoutRenderer extends Renderer {
             gameBatch.draw(getGameScreen().getCardRenderer().getTexture(getGameScreen().getDeckSlot().card, false), x, y, triPeaksLayout.getCardWidth(), triPeaksLayout.getCardHeight());
 
         }
+
         difference= getGameScreen().getPoints()-displayedScore;
 
         if (!getGameScreen().isGameOverDialogShown() && !getGameScreen().isGameWonDialogShwon())
@@ -66,4 +67,11 @@ public class TriPeaksLayoutRenderer extends Renderer {
         font.draw(gameBatch, Integer.toString(displayedScore), getGameScreen().deckcount.x, getGameScreen().deckcount.y + getGameScreen().deckcount.y * 2.5f);
     }
 
+    public TriPeaksLayout getTriPeaksLayout() {
+        return triPeaksLayout;
+    }
+
+    public void setTriPeaksLayout(TriPeaksLayout triPeaksLayout) {
+        this.triPeaksLayout = triPeaksLayout;
+    }
 }

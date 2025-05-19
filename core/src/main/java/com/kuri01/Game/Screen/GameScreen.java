@@ -123,6 +123,7 @@ public class GameScreen extends ScreenAdapter {
         stage.setDebugAll(true);
 
         BigFont.getData().setScale(2f);
+
 //        restartButton = new TextButton("Neustart", skin);
 //        restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
 //        restartButton.setPosition(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.9f); // oben links
@@ -143,9 +144,7 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(inputHandler);
 
-
         Gdx.input.setInputProcessor(multiplexer);
-
 
     }
 
@@ -185,14 +184,11 @@ public class GameScreen extends ScreenAdapter {
                 dialog.center();
             }
 
-            if (gameLogic.peak1 && gameLogic.peak2 && gameLogic.peak3 && !gameWonDialogShwon) {
-                gameWonDialogShwon = true;
-                GameWonDialog dialog = new GameWonDialog(skin,
-                    () -> game.setScreen(new GameScreen(game))
-                );
-
-                dialog.show(stage);
-                dialog.center();
+            if (gameLogic.peak1 && gameLogic.peak2 && gameLogic.peak3) {
+                gameLogic.createNewGame();
+                triPeaksLayoutRenderer.setTriPeaksLayout(gameLogic.getLayoutPyramide());
+                triPeaksLayoutRenderer.setCardSize(cardWidth,cardHeight);
+                inputHandler.setLayout(gameLogic.getLayoutPyramide());
             }
 
         });
@@ -200,6 +196,7 @@ public class GameScreen extends ScreenAdapter {
 
         if (debug)
             cardGridRenderer.render(shapeRenderer, debugBatch, font);
+
 
     }
 
