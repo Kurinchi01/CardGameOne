@@ -161,7 +161,7 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.setProjectionMatrix(camera.combined);
         gameBatch.begin();
 
-        triPeaksLayoutRenderer.render(gameBatch, font,delta);
+        triPeaksLayoutRenderer.render(gameBatch, font, delta);
 
         gameBatch.end();
         // UI Rendern
@@ -215,8 +215,7 @@ public class GameScreen extends ScreenAdapter {
         gameLogic.increasePoints(value);
     }
 
-    public void decreasePoints(int value)
-    {
+    public void decreasePoints(int value) {
         gameLogic.decreasePoint(value);
     }
 
