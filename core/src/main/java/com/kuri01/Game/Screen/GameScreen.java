@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kuri01.Game.Card.Model.CardGrid;
 import com.kuri01.Game.Card.Model.CardSlot;
-import com.kuri01.Game.Card.Model.GameLogic;
+import com.kuri01.Game.Card.Model.CardGameLogic;
 import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
@@ -53,7 +53,7 @@ public class GameScreen extends ScreenAdapter {
     private final Main game;
 
     //Modell
-    private GameLogic gameLogic;
+    private CardGameLogic cardGameLogic;
     private CardGrid cardGrid;
     public Vector2 deckcount;
 
@@ -106,13 +106,13 @@ public class GameScreen extends ScreenAdapter {
         //CardGrid zuerst erzeugen, da in Gamelogic Konstukrot benötigt wird
         cardGrid = new CardGrid();
         cardGrid.initGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
-        gameLogic = new GameLogic(this);
+        cardGameLogic = new CardGameLogic(this);
 
-        gameLogic.getLayoutPyramide().setCardHeight(cardHeight);
-        gameLogic.getLayoutPyramide().setCardWidth(cardWidth);
+        cardGameLogic.getLayoutPyramide().setCardHeight(cardHeight);
+        cardGameLogic.getLayoutPyramide().setCardWidth(cardWidth);
 
         //alle Renderer
-        triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(gameLogic.getLayoutPyramide(), this);
+        triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(cardGameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
 
         deckcount = new Vector2(cardGrid.getPosition(0, 0).x + 0.5f * cardWidth, cardGrid.getPosition(0, 0).y);
@@ -136,7 +136,7 @@ public class GameScreen extends ScreenAdapter {
 //        });
 //        stage.addActor(restartButton);
 
-        inputHandler = new InputHandler(camera, gameLogic.getLayoutPyramide(), this); // Deine Kamera, z.B. orthographicCamera
+        inputHandler = new InputHandler(camera, cardGameLogic.getLayoutPyramide(), this); // Deine Kamera, z.B. orthographicCamera
         InputMultiplexer multiplexer = new InputMultiplexer();
 
 
@@ -172,23 +172,28 @@ public class GameScreen extends ScreenAdapter {
         stage.act(delta);
         stage.draw();
         Gdx.app.postRunnable(() -> {
-            if (gameLogic.isGameOver() && !gameOverDialogShown) {
-                gameOverDialogShown = true;
-                GameOverDialog dialog = new GameOverDialog(skin, stage,
-                    () -> System.out.println("Dummy Neustart"),
-                    () -> game.setScreen(new GameScreen(game)),
-                    () -> Gdx.app.exit()
-                );
+            if (cardGameLogic.isGameOver() && !gameOverDialogShown) {
+//                gameOverDialogShown = true;
+//                GameOverDialog dialog = new GameOverDialog(skin, stage,
+//                    () -> System.out.println("Dummy Neustart"),
+//                    () -> game.setScreen(new GameScreen(game)),
+//                    () -> Gdx.app.exit()
+//                );
+//
+//                dialog.show(stage);
+//                dialog.center();
 
-                dialog.show(stage);
-                dialog.center();
+                cardGameLogic.createNewGame();
+                triPeaksLayoutRenderer.setTriPeaksLayout(cardGameLogic.getLayoutPyramide());
+                triPeaksLayoutRenderer.setCardSize(cardWidth,cardHeight);
+                inputHandler.setLayout(cardGameLogic.getLayoutPyramide());
             }
 
-            if (gameLogic.peak1 && gameLogic.peak2 && gameLogic.peak3) {
-                gameLogic.createNewGame();
-                triPeaksLayoutRenderer.setTriPeaksLayout(gameLogic.getLayoutPyramide());
+            if (cardGameLogic.peak1 && cardGameLogic.peak2 && cardGameLogic.peak3) {
+                cardGameLogic.createNewGame();
+                triPeaksLayoutRenderer.setTriPeaksLayout(cardGameLogic.getLayoutPyramide());
                 triPeaksLayoutRenderer.setCardSize(cardWidth,cardHeight);
-                inputHandler.setLayout(gameLogic.getLayoutPyramide());
+                inputHandler.setLayout(cardGameLogic.getLayoutPyramide());
             }
 
         });
@@ -201,31 +206,31 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void drawNewCard() {
-        gameLogic.drawNewCard();
+        cardGameLogic.drawNewCard();
     }
 
     public int remainingCards() {
-        return gameLogic.getDeck().remainingCards();
+        return cardGameLogic.getDeck().remainingCards();
     }
 
     public void increasePoints(int value) {
-        gameLogic.increasePoints(value);
+        cardGameLogic.increasePoints(value);
     }
 
     public void decreasePoints(int value) {
-        gameLogic.decreasePoint(value);
+        cardGameLogic.decreasePoint(value);
     }
 
     public void setPeak(int value) {
         switch (value) {
             case 0:
-                gameLogic.peak1 = true;
+                cardGameLogic.peak1 = true;
                 break;
             case 1:
-                gameLogic.peak2 = true;
+                cardGameLogic.peak2 = true;
                 break;
             case 2:
-                gameLogic.peak3 = true;
+                cardGameLogic.peak3 = true;
                 break;
 
             default:
@@ -234,11 +239,11 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void increaseComboCounter() {
-        gameLogic.increaseComboCounter();
+        cardGameLogic.increaseComboCounter();
     }
 
     public int getPoints() {
-        return gameLogic.getPoints();
+        return cardGameLogic.getPoints();
     }
 
     @Override
@@ -274,22 +279,22 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void setDeckSlot(CardSlot deckSlot) {
-        gameLogic.setDeckSlot(deckSlot);
+        cardGameLogic.setDeckSlot(deckSlot);
         if (deckSlot != null)
-            gameLogic.getLayoutPyramide().aplyToSlot(deckSlot);
+            cardGameLogic.getLayoutPyramide().aplyToSlot(deckSlot);
     }
 
     public CardSlot getDeckSlot() {
-        return gameLogic.getDeckSlot();
+        return cardGameLogic.getDeckSlot();
     }
 
     public CardSlot getTopCardSlot() {
-        return gameLogic.getTopCardSlot();
+        return cardGameLogic.getTopCardSlot();
     }
 
     public void setTopCardSlot(CardSlot topCardSlot) {
-        gameLogic.setTopCardSlot(topCardSlot);
-        gameLogic.getLayoutPyramide().aplyToSlot(topCardSlot);
+        cardGameLogic.setTopCardSlot(topCardSlot);
+        cardGameLogic.getLayoutPyramide().aplyToSlot(topCardSlot);
     }
 
 

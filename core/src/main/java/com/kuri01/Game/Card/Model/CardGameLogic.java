@@ -4,10 +4,9 @@ package com.kuri01.Game.Card.Model;
 import com.kuri01.Game.Screen.GameScreen;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class GameLogic {
+public class CardGameLogic {
     private Deck deck;
     private CardSlot topCardSlot;
     private CardSlot deckSlot;
@@ -18,7 +17,7 @@ public class GameLogic {
     private int ComboCounter;
     public boolean peak1, peak2, peak3;
 
-    public GameLogic(GameScreen gameScreen) {
+    public CardGameLogic(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         createNewGame();
 
