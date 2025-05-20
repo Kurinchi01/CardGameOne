@@ -7,14 +7,14 @@ public class Character {
     public float attack;
 
     float attackCooldown = 5f;
-    public AttackBar attackBar;
+    public ProgressBar progressBar;
 
-    public Character(String name, float maxHp, float attack, AttackBar attackBar) {
+    public Character(String name, float maxHp, float attack, ProgressBar progressBar) {
         this.name = name;
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.attack = attack;
-        this.attackBar = attackBar;
+        this.progressBar = progressBar;
     }
 
     public boolean isAlive() {
@@ -57,16 +57,17 @@ public class Character {
         this.attack = attack;
     }
 
-    public AttackBar getAttackBar() {
-        return attackBar;
+    public ProgressBar getAttackBar() {
+        return progressBar;
     }
 
-    public void setAttackBar(AttackBar attackBar) {
-        this.attackBar = attackBar;
+    //nur für Monster anwende, da Monster nach erzeugung erst eine Rarity bekommen und Fillspeed der AttackBar von dieser abhängt
+    public void setAttackBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
     }
 
     public boolean increaseAtkIndicator() {
-       return attackBar.update();
+       return progressBar.updateIncrease();
     }
 }
 

@@ -21,10 +21,10 @@ import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
-import com.kuri01.Game.RPG.Model.AttackBar;
+import com.kuri01.Game.RPG.Model.ProgressBar;
 import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.RPG.Model.RPGLogic;
-import com.kuri01.Game.RPG.View.AttackBarRenderer;
+import com.kuri01.Game.RPG.View.ProgressBarRenderer;
 import com.kuri01.Game.RPG.View.CharacterRenderer;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
 
@@ -55,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
     private boolean gameWonDialogShwon = false;
     float screenWidth;
     float screenHeight;
-    boolean debug = true;
+    boolean debug = false;
     private final Main game;
 
     //Modell
@@ -64,14 +64,16 @@ public class GameScreen extends ScreenAdapter {
     public Vector2 deckcount;
     public Vector2 playerHP, monsterHP;
     public Player player;
-    public AttackBarRenderer attackBarRenderer;
-    public AttackBar playerAttackBar,monsterAttackBar;
+    public ProgressBarRenderer progressBarRenderer;
+    public ProgressBar playerProgressBar, monsterProgressBar;
 
     public RPGLogic rpgLogic;
 
     public GameScreen(Main game) {
         this.game = game;
-        player = new Player("Kuri01", 100, 10, new AttackBar(5f));
+
+        //dummy Player
+        player = new Player("Kuri01", 100, 10, new ProgressBar(5f));
 
     }
 
@@ -116,7 +118,7 @@ public class GameScreen extends ScreenAdapter {
         float viewWidth = screenWidth * 0.85f;  // 100% - 10% links - 5% rechts
         float viewHeight = screenHeight * 0.75f; // 100% - 10% oben - 15% unten
 
-        cardWidth = viewWidth / 28f * 2f;  //
+        cardWidth = viewWidth / 28f * 2f;
         cardHeight = viewHeight / 5f * 2f;
 
 
@@ -136,10 +138,14 @@ public class GameScreen extends ScreenAdapter {
         //RPG Modell
         rpgLogic = new RPGLogic(this);
 
+        playerProgressBar =player.getAttackBar();
+        monsterProgressBar =rpgLogic.monster.getAttackBar();
+
         //alle Renderer
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(cardGameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
         characterRenderer = new CharacterRenderer(this);
+        progressBarRenderer = new ProgressBarRenderer(this);
 
 
         deckcount = new Vector2(cardGrid.getPosition(0, 0).x + 0.5f * cardWidth, cardGrid.getPosition(0, 0).y);
@@ -191,6 +197,8 @@ public class GameScreen extends ScreenAdapter {
         characterRenderer.render(gameBatch, font, delta);
 
         gameBatch.end();
+        progressBarRenderer.renderAttackBar(shapeRenderer, playerProgressBar, playerHP.x, playerHP.y, cardWidth, cardHeight*0.05f);
+        progressBarRenderer.renderAttackBar(shapeRenderer, monsterProgressBar, monsterHP.x, monsterHP.y,  cardWidth, cardHeight*0.05f);
         // UI Rendern
         uiBatch.begin();
 
