@@ -19,7 +19,7 @@ class RPGLogicTest {
     void init() {
         gameScreen = new GameScreen(new Main());
         rpgLogic = new RPGLogic(gameScreen);
-        rpgLogic.player = new Player("dummy", 100, 10);
+        rpgLogic.player = new Player("dummy", 100, 10, new AttackBar(5f));
     }
 
     @Test
