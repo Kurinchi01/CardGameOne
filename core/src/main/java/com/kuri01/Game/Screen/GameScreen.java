@@ -21,8 +21,10 @@ import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
+import com.kuri01.Game.RPG.Model.AttackBar;
 import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.RPG.Model.RPGLogic;
+import com.kuri01.Game.RPG.View.AttackBarRenderer;
 import com.kuri01.Game.RPG.View.CharacterRenderer;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
 
@@ -62,12 +64,14 @@ public class GameScreen extends ScreenAdapter {
     public Vector2 deckcount;
     public Vector2 playerHP, monsterHP;
     public Player player;
+    public AttackBarRenderer attackBarRenderer;
+    public AttackBar playerAttackBar,monsterAttackBar;
 
     public RPGLogic rpgLogic;
 
     public GameScreen(Main game) {
         this.game = game;
-        player = new Player("Kuri01", 100, 10);
+        player = new Player("Kuri01", 100, 10, new AttackBar(5f));
 
     }
 

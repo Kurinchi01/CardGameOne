@@ -33,7 +33,7 @@ public class Monster extends Character {
     Random r;
 
     public Monster(String name, int maxHp, int attack) {
-        super(name, maxHp, attack);
+        super(name, maxHp, attack, null);
         r = new Random();
         this.rarity = closest(r.nextFloat()).get();
         this.setStats(this.rarity);

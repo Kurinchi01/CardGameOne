@@ -6,14 +6,15 @@ public class Character {
     public float currentHp;
     public float attack;
 
-    public float atkIndicator = 0;
     float attackCooldown = 5f;
+    public AttackBar attackBar;
 
-    public Character(String name, float maxHp, float attack) {
+    public Character(String name, float maxHp, float attack, AttackBar attackBar) {
         this.name = name;
         this.maxHp = maxHp;
         this.currentHp = maxHp;
         this.attack = attack;
+        this.attackBar = attackBar;
     }
 
     public boolean isAlive() {
@@ -56,15 +57,16 @@ public class Character {
         this.attack = attack;
     }
 
+    public AttackBar getAttackBar() {
+        return attackBar;
+    }
+
+    public void setAttackBar(AttackBar attackBar) {
+        this.attackBar = attackBar;
+    }
+
     public boolean increaseAtkIndicator() {
-        if (atkIndicator != 100f) {
-            atkIndicator += 100f/ attackCooldown;
-        }
-        if (atkIndicator >= 100f) {
-            atkIndicator = 0;
-            return true;
-        }
-        return false;
+       return attackBar.update();
     }
 }
 
