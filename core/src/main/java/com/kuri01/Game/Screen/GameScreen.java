@@ -21,11 +21,12 @@ import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
-import com.kuri01.Game.RPG.Model.ProgressBar;
 import com.kuri01.Game.RPG.Model.Player;
+import com.kuri01.Game.RPG.Model.ProgressBar;
 import com.kuri01.Game.RPG.Model.RPGLogic;
-import com.kuri01.Game.RPG.View.ProgressBarRenderer;
 import com.kuri01.Game.RPG.View.CharacterRenderer;
+import com.kuri01.Game.RPG.View.MonsterSpriteProvider;
+import com.kuri01.Game.RPG.View.ProgressBarRenderer;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
 
 
@@ -44,6 +45,7 @@ public class GameScreen extends ScreenAdapter {
     private TriPeaksLayoutRenderer triPeaksLayoutRenderer;
     private CharacterRenderer characterRenderer;
     private CardSpriteProvider cardSpriteProvider;
+    private MonsterSpriteProvider monsterSpriteProvider;
     private CardGridRenderer cardGridRenderer;
     public static float cardWidth;
     public static float cardHeight;
@@ -73,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
         this.game = game;
 
         //dummy Player
-        player = new Player("Kuri01", 100, 10, new ProgressBar(5f));
+        player = new Player("Kuri01", 100, 10, new ProgressBar(20f));
 
     }
 
@@ -94,6 +96,8 @@ public class GameScreen extends ScreenAdapter {
 
         shapeRenderer = new ShapeRenderer();
         cardSpriteProvider = new CardSpriteProvider();
+        monsterSpriteProvider = new MonsterSpriteProvider();
+
 
         //deck erstellen und mischen
         camera = new OrthographicCamera();
@@ -138,13 +142,14 @@ public class GameScreen extends ScreenAdapter {
         //RPG Modell
         rpgLogic = new RPGLogic(this);
 
-        playerProgressBar =player.getAttackBar();
-        monsterProgressBar =rpgLogic.monster.getAttackBar();
+
+        playerProgressBar = player.getAttackBar();
+        monsterProgressBar = rpgLogic.monster.getAttackBar();
 
         //alle Renderer
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(cardGameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
-        characterRenderer = new CharacterRenderer(this);
+        characterRenderer = new CharacterRenderer(this, monsterSpriteProvider);
         progressBarRenderer = new ProgressBarRenderer(this);
 
 
@@ -194,11 +199,14 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.begin();
 
         triPeaksLayoutRenderer.render(gameBatch, font, delta);
-        characterRenderer.render(gameBatch, font, delta);
+        characterRenderer.render(gameBatch, font, rpgLogic.monster, delta);
 
         gameBatch.end();
-        progressBarRenderer.renderAttackBar(shapeRenderer, playerProgressBar, playerHP.x, playerHP.y, cardWidth, cardHeight*0.05f);
-        progressBarRenderer.renderAttackBar(shapeRenderer, monsterProgressBar, monsterHP.x, monsterHP.y,  cardWidth, cardHeight*0.05f);
+
+        progressBarRenderer.renderAttackBar(shapeRenderer, playerProgressBar, playerHP.x, playerHP.y, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderAttackBar(shapeRenderer, monsterProgressBar, monsterHP.x, monsterHP.y, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderHPBar(shapeRenderer, player.hpBar, playerHP.x, playerHP.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderHPBar(shapeRenderer, rpgLogic.monster.hpBar, monsterHP.x, monsterHP.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
         // UI Rendern
         uiBatch.begin();
 
@@ -230,6 +238,11 @@ public class GameScreen extends ScreenAdapter {
                 triPeaksLayoutRenderer.setTriPeaksLayout(cardGameLogic.getLayoutPyramide());
                 triPeaksLayoutRenderer.setCardSize(cardWidth, cardHeight);
                 inputHandler.setLayout(cardGameLogic.getLayoutPyramide());
+            }
+
+            if (!rpgLogic.monster.isAlive()) {
+                rpgLogic.createMonster();
+                monsterProgressBar = rpgLogic.monster.progressBar;
             }
 
         });
@@ -318,6 +331,7 @@ public class GameScreen extends ScreenAdapter {
         font.dispose();
         cardSpriteProvider.dispose();
         shapeRenderer.dispose();
+        monsterSpriteProvider.dispose();
     }
 
     public void setDeckSlot(CardSlot deckSlot) {

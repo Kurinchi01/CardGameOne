@@ -2,13 +2,14 @@ package com.kuri01.Game.RPG.Model;
 
 public class ProgressBar {
     private float value = 0f;
-    private final float maxValue = 100f;
+    private float maxValue;
     private final float fillSpeed; // z.B. 20f pro Sekunde
 
     private boolean ready = false;
 
     public ProgressBar(float fillSpeed) {
         this.fillSpeed = fillSpeed;
+        maxValue = 100f;
     }
 
 
@@ -32,6 +33,13 @@ public class ProgressBar {
         return ready;
     }
 
+    public float getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(float maxValue) {
+        this.maxValue = maxValue;
+    }
 
     public boolean isReady() {
         return ready;

@@ -7,7 +7,7 @@ public class Character {
     public float attack;
 
     float attackCooldown = 5f;
-    public ProgressBar progressBar;
+    public ProgressBar progressBar, hpBar;
 
     public Character(String name, float maxHp, float attack, ProgressBar progressBar) {
         this.name = name;
@@ -15,6 +15,9 @@ public class Character {
         this.currentHp = maxHp;
         this.attack = attack;
         this.progressBar = progressBar;
+        this.hpBar = new ProgressBar(0);
+        hpBar.resetDecrease();
+        hpBar.setMaxValue(maxHp);
     }
 
     public boolean isAlive() {
@@ -23,6 +26,7 @@ public class Character {
 
     public void takeDamage(float dmg) {
         currentHp = Math.max(0, currentHp - dmg);
+        hpBar.updateDecrease();
     }
 
     public String getName() {
@@ -67,7 +71,14 @@ public class Character {
     }
 
     public boolean increaseAtkIndicator() {
-       return progressBar.updateIncrease();
+
+        boolean tmp = progressBar.updateIncrease();
+        if(progressBar.isReady())
+        {
+            progressBar.resetIncrease();
+
+        }
+        return tmp;
     }
 }
 

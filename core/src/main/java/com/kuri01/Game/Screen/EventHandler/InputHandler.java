@@ -52,7 +52,8 @@ public class InputHandler extends InputAdapter {
                             layout.isRemoved(i);
                             gameScreen.increaseComboCounter();
                             if (i < 3) {
-                                gameScreen.increasePoints(2);
+                                gameScreen.increasePoints(1);
+                                gameScreen.increasePoints(1);
                                 gameScreen.setPeak(i);
                             } else {
                                 gameScreen.increasePoints(1);
@@ -72,6 +73,7 @@ public class InputHandler extends InputAdapter {
                 worldCoordinates.y >= gameScreen.getDeckSlot().y && worldCoordinates.y <= gameScreen.getDeckSlot().y + height) {
 
                 gameScreen.drawNewCard();
+                gameScreen.decreasePoints(1);
                 if (gameScreen.remainingCards() == 0) {
                     gameScreen.setDeckSlot(null);
                 }
