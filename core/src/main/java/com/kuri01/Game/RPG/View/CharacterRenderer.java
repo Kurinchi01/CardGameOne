@@ -38,9 +38,9 @@ public class CharacterRenderer extends Renderer {
 //            displayedMonsterHP = (int) getGameScreen().rpgLogic.monster.currentHp;
 
         System.out.println("geladen");
-        Texture texture = spriteProvider.getTexture(monster);
+        Texture texture = spriteProvider.getCurrentFrame(getGameScreen().rpgLogic.monster,deltaTime);
         if (texture != null) {
-            gameBatch.draw(texture, getGameScreen().monsterHP.x, getGameScreen().monsterHP.y + getGameScreen().getCardGrid().getCellHeight() * 0.5f);
+            gameBatch.draw(texture, getGameScreen().monsterHP.x, getGameScreen().monsterHP.y + getGameScreen().getCardGrid().getCellHeight() * 0.1f,getGameScreen().getCardGrid().getCellWidth()*2.5f,getGameScreen().getCardGrid().getCellHeight()*2f);
         }
 
         font.getData().setScale(2f);

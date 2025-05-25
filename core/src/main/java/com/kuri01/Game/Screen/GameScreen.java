@@ -21,6 +21,7 @@ import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
+import com.kuri01.Game.RPG.Model.Monster;
 import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.RPG.Model.ProgressBar;
 import com.kuri01.Game.RPG.Model.RPGLogic;
@@ -75,7 +76,8 @@ public class GameScreen extends ScreenAdapter {
         this.game = game;
 
         //dummy Player
-        player = new Player("Kuri01", 100, 10, new ProgressBar(20f));
+        player = new Player("Kuri01", 100, 20, new ProgressBar(20f));
+
 
     }
 
@@ -96,7 +98,11 @@ public class GameScreen extends ScreenAdapter {
 
         shapeRenderer = new ShapeRenderer();
         cardSpriteProvider = new CardSpriteProvider();
-        monsterSpriteProvider = new MonsterSpriteProvider();
+        monsterSpriteProvider = new MonsterSpriteProvider(cardWidth, cardHeight);
+        // Lade alle Texturen
+        for (Monster.Rarity rarity : Monster.Rarity.values()) {
+            monsterSpriteProvider.registerAllMonster(rarity);
+        }
 
 
         //deck erstellen und mischen
@@ -145,6 +151,8 @@ public class GameScreen extends ScreenAdapter {
 
         playerProgressBar = player.getAttackBar();
         monsterProgressBar = rpgLogic.monster.getAttackBar();
+        player.hpBar.setFillSpeed(rpgLogic.monster.attack);
+        rpgLogic.monster.hpBar.setFillSpeed(player.attack);
 
         //alle Renderer
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(cardGameLogic.getLayoutPyramide(), this);
@@ -243,10 +251,11 @@ public class GameScreen extends ScreenAdapter {
             if (!rpgLogic.monster.isAlive()) {
                 rpgLogic.createMonster();
                 monsterProgressBar = rpgLogic.monster.progressBar;
+                player.hpBar.setFillSpeed(rpgLogic.monster.attack);
+                rpgLogic.monster.hpBar.setFillSpeed(player.attack);
             }
 
         });
-
 
         if (debug)
             cardGridRenderer.render(shapeRenderer, debugBatch, font);
@@ -266,6 +275,7 @@ public class GameScreen extends ScreenAdapter {
         cardGameLogic.increasePoints(value);
         if (player.increaseAtkIndicator()) {
             rpgLogic.monster.takeDamage(player.attack);
+            monsterSpriteProvider.triggerSpecialFrameFor(rpgLogic.monster);
         }
     }
 

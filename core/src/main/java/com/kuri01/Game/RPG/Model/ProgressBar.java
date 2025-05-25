@@ -3,7 +3,7 @@ package com.kuri01.Game.RPG.Model;
 public class ProgressBar {
     private float value = 0f;
     private float maxValue;
-    private final float fillSpeed; // z.B. 20f pro Sekunde
+    private float fillSpeed; // z.B. 20f pro Sekunde
 
     private boolean ready = false;
 
@@ -35,6 +35,14 @@ public class ProgressBar {
 
     public float getMaxValue() {
         return maxValue;
+    }
+
+    public float getFillSpeed() {
+        return fillSpeed;
+    }
+
+    public void setFillSpeed(float fillSpeed) {
+        this.fillSpeed = fillSpeed;
     }
 
     public void setMaxValue(float maxValue) {

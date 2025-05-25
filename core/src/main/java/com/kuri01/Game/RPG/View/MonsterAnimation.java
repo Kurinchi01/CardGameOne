@@ -3,15 +3,14 @@ package com.kuri01.Game.RPG.View;
 import com.badlogic.gdx.graphics.Texture;
 
 public class MonsterAnimation {
-
     private final Texture[] idleFrames;
     private final Texture specialFrame;
     private float stateTime = 0f;
-    private float frameDuration = 0.5f;
+    private final float frameDuration = 0.5f;
     private int currentIdleIndex = 0;
 
     private boolean showSpecial = false;
-    private float specialDuration = 0.3f; // z.B. 0.3 Sekunden für das dritte Frame
+    private float specialDuration = 0.3f;
     private float specialTimeRemaining = 0f;
 
     public MonsterAnimation(Texture frame1, Texture frame2, Texture specialFrame) {
@@ -52,5 +51,4 @@ public class MonsterAnimation {
         }
     }
 }
-
 
