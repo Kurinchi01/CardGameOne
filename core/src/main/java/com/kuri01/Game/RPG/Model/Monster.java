@@ -44,7 +44,7 @@ public class Monster extends Character {
 
         switch (rarity) {
             case uncommon -> {
-                float tmp = r.nextFloat(0f, 0.1f);
+                @SuppressWarnings("NewApi") float tmp = r.nextFloat(0f, 0.1f);
                 setAttack(getAttack() * (1f + tmp));
                 maxHp = maxHp * (1f + tmp);
                 currentHp=maxHp;

@@ -50,12 +50,13 @@ public class MonsterSpriteProvider {
                 monsterAnimations.computeIfAbsent(rarity, k -> {
                     return (List<MonsterAnimation>) new ArrayList<MonsterAnimation>();
                 });
-                monsterAnimations.get(rarity).addFirst(new MonsterAnimation(new Texture(f1), new Texture(f2), new Texture(f3)));
+                monsterAnimations.get(rarity).add(new MonsterAnimation(new Texture(f1), new Texture(f2), new Texture(f3)));
                 return;
             }
         }
         Gdx.app.error("MonsterSpriteProvider", "Keine passenden Texturen für " + rarity);
     }
+
 
 
     public Texture getCurrentFrame(Monster monster, float delta) {
