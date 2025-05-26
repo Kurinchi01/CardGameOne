@@ -65,7 +65,7 @@ public class GameScreen extends ScreenAdapter {
     private CardGameLogic cardGameLogic;
     private CardGrid cardGrid;
     public Vector2 deckcount;
-    public Vector2 playerHP, monsterHP;
+    public Vector2 playerBarPosition, monsterBarPosition;
     public Player player;
     public ProgressBarRenderer progressBarRenderer;
     public ProgressBar playerProgressBar, monsterProgressBar;
@@ -138,8 +138,8 @@ public class GameScreen extends ScreenAdapter {
         cardGrid = new CardGrid();
         cardGrid.initGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
         cardGameLogic = new CardGameLogic(this);
-        playerHP = cardGrid.getPosition(0, 2);
-        monsterHP = cardGrid.getPosition(0, 4);
+        playerBarPosition = cardGrid.getPosition(0, 2);
+        monsterBarPosition = cardGrid.getPosition(0, 4);
 
         cardGameLogic.getLayoutPyramide().setCardHeight(cardHeight);
         cardGameLogic.getLayoutPyramide().setCardWidth(cardWidth);
@@ -211,10 +211,10 @@ public class GameScreen extends ScreenAdapter {
 
         gameBatch.end();
 
-        progressBarRenderer.renderAttackBar(shapeRenderer, playerProgressBar, playerHP.x, playerHP.y, cardWidth, cardHeight * 0.05f);
-        progressBarRenderer.renderAttackBar(shapeRenderer, monsterProgressBar, monsterHP.x, monsterHP.y, cardWidth, cardHeight * 0.05f);
-        progressBarRenderer.renderHPBar(shapeRenderer, player.hpBar, playerHP.x, playerHP.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
-        progressBarRenderer.renderHPBar(shapeRenderer, rpgLogic.monster.hpBar, monsterHP.x, monsterHP.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderAttackBar(shapeRenderer, playerProgressBar, playerBarPosition.x, playerBarPosition.y, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderAttackBar(shapeRenderer, monsterProgressBar, monsterBarPosition.x, monsterBarPosition.y, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderHPBar(shapeRenderer, player.hpBar, playerBarPosition.x, playerBarPosition.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderHPBar(shapeRenderer, rpgLogic.monster.hpBar, monsterBarPosition.x, monsterBarPosition.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
         // UI Rendern
         uiBatch.begin();
 

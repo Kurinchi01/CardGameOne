@@ -40,12 +40,12 @@ public class CharacterRenderer extends Renderer {
         System.out.println("geladen");
         Texture texture = spriteProvider.getCurrentFrame(getGameScreen().rpgLogic.monster,deltaTime);
         if (texture != null) {
-            gameBatch.draw(texture, getGameScreen().monsterHP.x, getGameScreen().monsterHP.y + getGameScreen().getCardGrid().getCellHeight() * 0.1f,getGameScreen().getCardGrid().getCellWidth()*2.5f,getGameScreen().getCardGrid().getCellHeight()*2f);
+            gameBatch.draw(texture, getGameScreen().monsterBarPosition.x, getGameScreen().monsterBarPosition.y + getGameScreen().getCardGrid().getCellHeight() * 0.1f);
         }
 
         font.getData().setScale(2f);
 
-        font.draw(gameBatch, Integer.toString((int) getGameScreen().player.currentHp), getGameScreen().playerHP.x, getGameScreen().playerHP.y + getGameScreen().getCardGrid().getCellHeight() / 2);
-        font.draw(gameBatch, Integer.toString((int) getGameScreen().rpgLogic.monster.currentHp), getGameScreen().monsterHP.x, getGameScreen().monsterHP.y);
+        font.draw(gameBatch, Integer.toString((int) getGameScreen().player.currentHp), getGameScreen().playerBarPosition.x, getGameScreen().playerBarPosition.y + getGameScreen().getCardGrid().getCellHeight() / 2);
+        font.draw(gameBatch, Integer.toString((int) getGameScreen().rpgLogic.monster.currentHp), getGameScreen().monsterBarPosition.x, getGameScreen().monsterBarPosition.y);
     }
 }
