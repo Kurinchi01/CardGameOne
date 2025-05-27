@@ -1,5 +1,9 @@
 package com.kuri01.Game.RPG.Model;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Optional;
+
 public enum Rarity {
     common(0.5f),
     uncommon(0.3f),
@@ -13,4 +17,8 @@ public enum Rarity {
         this.chance = f;
     }
 
+    public static Optional<Rarity> closest(float f) {
+        return Arrays.stream(Rarity.values())
+            .min(Comparator.comparingDouble(type -> Math.abs(type.chance - f)));
+    }
 }

@@ -1,5 +1,7 @@
 package com.kuri01.Game.RPG.Model;
 
+import static com.kuri01.Game.RPG.Model.Rarity.closest;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
@@ -9,25 +11,9 @@ import java.util.Random;
 public class Monster extends Character {
     // Gegner greift alle 5 Sekunden an
 
-    public enum Rarity {
-        common(0.5f),
-        uncommon(0.3f),
-        rare(0.2f),
-        epic(0.1f),
-        legendary(0.002f);
 
-        private final float chance;
 
-        Rarity(float f) {
-            this.chance = f;
-        }
 
-    }
-
-    public static Optional<Rarity> closest(float f) {
-        return Arrays.stream(Rarity.values())
-            .min(Comparator.comparingDouble(type -> Math.abs(type.chance - f)));
-    }
 
     public Rarity rarity;
     Random r;

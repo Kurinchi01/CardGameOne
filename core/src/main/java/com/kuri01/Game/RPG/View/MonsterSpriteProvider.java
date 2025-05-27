@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.kuri01.Game.RPG.Model.Monster;
+import com.kuri01.Game.RPG.Model.Rarity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,10 +13,10 @@ import java.util.Map;
 import java.util.Random;
 
 public class MonsterSpriteProvider {
-    private final Map<Monster.Rarity, List<MonsterAnimation>> monsterAnimations = new HashMap<>();
+    private final Map<Rarity, List<MonsterAnimation>> monsterAnimations = new HashMap<>();
     private final float targetWidth;
     private final float targetHeight;
-    private final Random random = new Random();
+
     int chosenTextureIndex = -1;
 
     public MonsterSpriteProvider(float targetWidth, float targetHeight) {
@@ -24,7 +25,7 @@ public class MonsterSpriteProvider {
         this.targetHeight = targetHeight;
     }
 
-    public void registerAllMonster(Monster.Rarity rarity) {
+    public void registerAllMonster(Rarity rarity) {
 
         String rarityFolder = "monster/" + rarity.name().toLowerCase();
         FileHandle dir = Gdx.files.internal(rarityFolder);
@@ -47,27 +48,25 @@ public class MonsterSpriteProvider {
             FileHandle f3 = dir.child(baseName + "-c.png");
 
             if (f1.exists() && f2.exists() && f3.exists()) {
-                monsterAnimations.computeIfAbsent(rarity, k -> {
-                    return (List<MonsterAnimation>) new ArrayList<MonsterAnimation>();
-                });
+                monsterAnimations.computeIfAbsent(rarity, k -> new ArrayList<MonsterAnimation>());
                 monsterAnimations.get(rarity).add(new MonsterAnimation(new Texture(f1), new Texture(f2), new Texture(f3)));
-                return;
+
             }
         }
         Gdx.app.error("MonsterSpriteProvider", "Keine passenden Texturen für " + rarity);
     }
 
-
+    public Map<Rarity, List<MonsterAnimation>> getMonsterAnimations() {
+        return monsterAnimations;
+    }
 
     public Texture getCurrentFrame(Monster monster, float delta) {
-        if (chosenTextureIndex < 0) {
-            chosenTextureIndex = random.nextInt(0, monsterAnimations.get(monster.rarity).size());
-        }
 
         MonsterAnimation anim = monsterAnimations.get(monster.rarity).get(chosenTextureIndex);
         if (anim == null) return null;
         return anim.getCurrentFrame(delta);
     }
+
 
     public void triggerSpecialFrameFor(Monster monster) {
         MonsterAnimation anim = monsterAnimations.get(monster.rarity).get(chosenTextureIndex);
@@ -84,6 +83,14 @@ public class MonsterSpriteProvider {
             }
             ;
         }
+    }
+
+    public int getChosenTextureIndex() {
+        return chosenTextureIndex;
+    }
+
+    public void setChosenTextureIndex(int chosenTextureIndex) {
+        this.chosenTextureIndex = chosenTextureIndex;
     }
 
     public float getTargetWidth() {

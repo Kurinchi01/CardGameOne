@@ -37,15 +37,17 @@ public class CharacterRenderer extends Renderer {
 //        } else
 //            displayedMonsterHP = (int) getGameScreen().rpgLogic.monster.currentHp;
 
-        System.out.println("geladen");
+
         Texture texture = spriteProvider.getCurrentFrame(getGameScreen().rpgLogic.monster,deltaTime);
         if (texture != null) {
-            gameBatch.draw(texture, getGameScreen().monsterBarPosition.x, getGameScreen().monsterBarPosition.y + getGameScreen().getCardGrid().getCellHeight() * 0.1f);
+
+           //gameBatch.draw(texture, getGameScreen().monsterBarPosition.x, getGameScreen().monsterBarPosition.y);
+            gameBatch.draw(texture, (getGameScreen().monsterBarPosition.x - (texture.getWidth() / 2f)) + (getGameScreen().cardWidth * 0.5f), getGameScreen().monsterBarPosition.y);
         }
 
         font.getData().setScale(2f);
 
-        font.draw(gameBatch, Integer.toString((int) getGameScreen().player.currentHp), getGameScreen().playerBarPosition.x, getGameScreen().playerBarPosition.y + getGameScreen().getCardGrid().getCellHeight() / 2);
+        font.draw(gameBatch, Integer.toString((int) getGameScreen().player.currentHp), getGameScreen().playerBarPosition.x, getGameScreen().playerBarPosition.y);
         font.draw(gameBatch, Integer.toString((int) getGameScreen().rpgLogic.monster.currentHp), getGameScreen().monsterBarPosition.x, getGameScreen().monsterBarPosition.y);
     }
 }

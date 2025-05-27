@@ -25,8 +25,8 @@ public class InputHandler extends InputAdapter {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Bildschirmkoordinaten in Weltkoordinaten umwandeln
         Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
-        float width = GameScreen.cardWidth;
-        float height = GameScreen.cardHeight;
+        float width = gameScreen.cardWidth;
+        float height = gameScreen.cardHeight;
 
         // Durch alle Karten-Slots gehen
         for (int i = 0; i < layout.getPyramidCards().size(); i++) {

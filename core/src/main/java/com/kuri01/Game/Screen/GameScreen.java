@@ -9,9 +9,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kuri01.Game.Card.Model.CardGameLogic;
@@ -25,10 +27,13 @@ import com.kuri01.Game.RPG.Model.Monster;
 import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.RPG.Model.ProgressBar;
 import com.kuri01.Game.RPG.Model.RPGLogic;
+import com.kuri01.Game.RPG.Model.Rarity;
 import com.kuri01.Game.RPG.View.CharacterRenderer;
 import com.kuri01.Game.RPG.View.MonsterSpriteProvider;
 import com.kuri01.Game.RPG.View.ProgressBarRenderer;
 import com.kuri01.Game.Screen.EventHandler.InputHandler;
+
+import java.util.Random;
 
 
 /**
@@ -48,8 +53,8 @@ public class GameScreen extends ScreenAdapter {
     private CardSpriteProvider cardSpriteProvider;
     private MonsterSpriteProvider monsterSpriteProvider;
     private CardGridRenderer cardGridRenderer;
-    public static float cardWidth;
-    public static float cardHeight;
+    public float cardWidth;
+    public  float cardHeight;
     ShapeRenderer shapeRenderer;
     private InputHandler inputHandler;
     private OrthographicCamera camera;
@@ -58,6 +63,7 @@ public class GameScreen extends ScreenAdapter {
     private boolean gameWonDialogShwon = false;
     float screenWidth;
     float screenHeight;
+    private final Random random = new Random();
     boolean debug = false;
     private final Main game;
 
@@ -100,9 +106,10 @@ public class GameScreen extends ScreenAdapter {
         cardSpriteProvider = new CardSpriteProvider();
         monsterSpriteProvider = new MonsterSpriteProvider(cardWidth, cardHeight);
         // Lade alle Texturen
-        for (Monster.Rarity rarity : Monster.Rarity.values()) {
+        for (Rarity rarity : Rarity.values()) {
             monsterSpriteProvider.registerAllMonster(rarity);
         }
+
 
 
         //deck erstellen und mischen
@@ -138,8 +145,7 @@ public class GameScreen extends ScreenAdapter {
         cardGrid = new CardGrid();
         cardGrid.initGrid(28, 5, cardWidth * 0.5f, cardHeight * 0.5f, viewX, viewY);
         cardGameLogic = new CardGameLogic(this);
-        playerBarPosition = cardGrid.getPosition(0, 2);
-        monsterBarPosition = cardGrid.getPosition(0, 4);
+
 
         cardGameLogic.getLayoutPyramide().setCardHeight(cardHeight);
         cardGameLogic.getLayoutPyramide().setCardWidth(cardWidth);
@@ -154,6 +160,8 @@ public class GameScreen extends ScreenAdapter {
         player.hpBar.setFillSpeed(rpgLogic.monster.attack);
         rpgLogic.monster.hpBar.setFillSpeed(player.attack);
 
+        monsterSpriteProvider.setChosenTextureIndex(random.nextInt(monsterSpriteProvider.getMonsterAnimations().get(rpgLogic.monster.rarity).size()));
+
         //alle Renderer
         triPeaksLayoutRenderer = new TriPeaksLayoutRenderer(cardGameLogic.getLayoutPyramide(), this);
         cardGridRenderer = new CardGridRenderer(cardGrid, this);
@@ -163,6 +171,9 @@ public class GameScreen extends ScreenAdapter {
 
         deckcount = new Vector2(cardGrid.getPosition(0, 0).x + 0.5f * cardWidth, cardGrid.getPosition(0, 0).y);
 
+        playerBarPosition = new Vector2(cardGrid.getPosition(0, 0).x,cardGrid.getPosition(0, 0).y-cardHeight*0.2f);
+
+        monsterBarPosition = cardGrid.getPosition(0, 3);
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(viewport, uiBatch);
@@ -170,17 +181,20 @@ public class GameScreen extends ScreenAdapter {
 
         BigFont.getData().setScale(2f);
 
-//        restartButton = new TextButton("Neustart", skin);
-//        restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
-//        restartButton.setPosition(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.9f); // oben links
-//
-//        restartButton.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                game.setScreen(new GameScreen(game)); // Neustart des Screens
-//            }
-//        });
-//        stage.addActor(restartButton);
+        restartButton = new TextButton("Neustart", skin);
+        restartButton.setSize(Gdx.graphics.getWidth() * 0.25f, Gdx.graphics.getHeight() * 0.08f);
+        restartButton.setPosition(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.9f); // oben links
+
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                rpgLogic.createMonster();
+                monsterProgressBar = rpgLogic.monster.progressBar;
+                player.hpBar.setFillSpeed(rpgLogic.monster.attack);
+                rpgLogic.monster.hpBar.setFillSpeed(player.attack);
+            }
+        });
+        stage.addActor(restartButton);
 
         inputHandler = new InputHandler(camera, cardGameLogic.getLayoutPyramide(), this); // Deine Kamera, z.B. orthographicCamera
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -212,8 +226,9 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.end();
 
         progressBarRenderer.renderAttackBar(shapeRenderer, playerProgressBar, playerBarPosition.x, playerBarPosition.y, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderHPBar(shapeRenderer, player.hpBar, playerBarPosition.x, playerBarPosition.y+cardHeight*0.05f, cardWidth, cardHeight * 0.05f);
+
         progressBarRenderer.renderAttackBar(shapeRenderer, monsterProgressBar, monsterBarPosition.x, monsterBarPosition.y, cardWidth, cardHeight * 0.05f);
-        progressBarRenderer.renderHPBar(shapeRenderer, player.hpBar, playerBarPosition.x, playerBarPosition.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
         progressBarRenderer.renderHPBar(shapeRenderer, rpgLogic.monster.hpBar, monsterBarPosition.x, monsterBarPosition.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
         // UI Rendern
         uiBatch.begin();
@@ -249,7 +264,9 @@ public class GameScreen extends ScreenAdapter {
             }
 
             if (!rpgLogic.monster.isAlive()) {
+
                 rpgLogic.createMonster();
+                monsterSpriteProvider.setChosenTextureIndex(random.nextInt(monsterSpriteProvider.getMonsterAnimations().size()));
                 monsterProgressBar = rpgLogic.monster.progressBar;
                 player.hpBar.setFillSpeed(rpgLogic.monster.attack);
                 rpgLogic.monster.hpBar.setFillSpeed(player.attack);
