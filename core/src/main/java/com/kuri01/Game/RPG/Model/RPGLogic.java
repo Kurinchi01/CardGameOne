@@ -20,7 +20,7 @@ public class RPGLogic {
     }
 
     public void createMonster() {
-        monster = new Monster("monster", 100, 5);
+        //monster = new Monster("monster", 100, 5);
         monster.setAttackBar(new ProgressBar(100f/monster.getChargeRate()));
 
     }

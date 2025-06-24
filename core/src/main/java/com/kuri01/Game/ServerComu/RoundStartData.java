@@ -25,6 +25,9 @@ public class RoundStartData {
         this.topCard = topCard;
     }
 
+    public RoundStartData() {
+    }
+
     public String getRoundId() {
         return roundId;
     }

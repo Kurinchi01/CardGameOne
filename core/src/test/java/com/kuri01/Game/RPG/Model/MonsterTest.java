@@ -10,7 +10,7 @@ class MonsterTest {
     @Test
     void closest() {
         for (int i = 0; i < 1000; i++) {
-            monster = new Monster("Monster" + i, 100, 5);
+           // monster = new Monster("Monster" + i, 100, 5);
             switch (monster.rarity)
             {
                 case common -> cCount++;
