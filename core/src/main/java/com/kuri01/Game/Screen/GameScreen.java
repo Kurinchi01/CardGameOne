@@ -76,6 +76,7 @@ public class GameScreen extends ScreenAdapter {
 
     public RPGLogic rpgLogic;
     boolean touched=false;
+    private String jwtToken = null;
 
     public GameScreen(Main game) {
         this.game = game;
@@ -88,6 +89,14 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        networkManager.devLogin("Kuri01", (loginResponse) -> {
+            Gdx.app.log("TEST", "Login erfolgreich! JWT erhalten.");
+            this.jwtToken = loginResponse.getJwtToken();
+
+            // Speichere das Token in den Preferences für zukünftige Sitzungen
+            Gdx.app.getPreferences("MeinSpielPrefs").putString("jwt_token", this.jwtToken).flush();
+
+        }, (error) -> Gdx.app.error("TEST", "Login fehlgeschlagen", error));
 
 //        //dummy Player
 //        //init RPG
@@ -277,22 +286,15 @@ public class GameScreen extends ScreenAdapter {
 //        if (debug)
 //            cardGridRenderer.render(shapeRenderer, debugBatch, font);
 //
-        if (Gdx.input.isTouched()&&!touched) {
+        if (Gdx.input.isTouched()&&!touched &&this.jwtToken != null) {
             touched=true;
-            Gdx.app.log("TEST", "Starte den Kommunikations-Test...");
+            Gdx.app.log("TEST", "Starte Runde mit Authentifizierung...");
 
-            // Rufe die startNewRound-Methode auf
-            networkManager.startNewRound(1L, (startData) -> {
-                // Dieser Code wird ausgeführt, wenn die ANTWORT vom Server kommt
+            // Übergebe das gespeicherte JWT an die Methode
+            networkManager.startNewRound(1, this.jwtToken, (startData) -> {
                 Gdx.app.log("TEST", "Runde gestartet! ID: " + startData.getRoundId());
 
-                // Direkt im Anschluss rufen wir endRound auf
-                networkManager.endRound(startData.getRoundId(), (belohnung) -> {
-                    Gdx.app.log("TEST", "Runde beendet! Belohnung erhalten: " + belohnung.toString());
-                    Gdx.app.log("TEST", "WALKING SKELETON ERFOLGREICH!");
-                }, (error) -> Gdx.app.error("TEST", "Fehler beim Beenden.", error));
-
-            }, (error) -> Gdx.app.error("TEST", "Fehler beim Starten.", error));
+            }, (error) -> Gdx.app.error("TEST", "Rundenstart fehlgeschlagen", error));
         }
     }
 

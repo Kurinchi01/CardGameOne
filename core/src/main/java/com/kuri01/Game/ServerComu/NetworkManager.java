@@ -3,7 +3,9 @@ package com.kuri01.Game.ServerComu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -12,89 +14,160 @@ import java.util.function.Consumer;
 /**
  * Verwaltet die gesamte Netzwerkkommunikation mit dem Spiel-Server.
  * Diese Klasse kapselt die Komplexität von HTTP-Anfragen und JSON-Verarbeitung.
+ * Sie ist dafür verantwortlich, Anfragen zu senden und die Antworten asynchron zu verarbeiten.
  */
 public class NetworkManager {
 
     // Die Basis-URL deines lokal laufenden Servers.
+    // 10.0.2.2 ist die spezielle IP-Adresse, um vom Android-Emulator auf den localhost deines Computers zuzugreifen.
+    // Wenn du den Desktop-Client testest, verwende stattdessen "http://localhost:8080/api".
     private final String BASE_URL = "http://10.0.2.2:8080/api";
+
     // Eine Instanz des JSON-Parsers von LibGDX.
-    private final Json json = new Json();
+    private final Json json = new Json(JsonWriter.OutputType.json);
+
 
     /**
-     * Sendet eine Anfrage an den Server, um eine neue Runde für ein bestimmtes Kapitel zu starten.
-     *
-     * @param chapterId Die ID des zu startenden Kapitels.
-     * @param successCallback Eine Funktion (Callback), die bei einer erfolgreichen Antwort mit den Rundendaten aufgerufen wird.
-     * @param errorCallback Eine Funktion, die im Fehlerfall mit der Fehlermeldung aufgerufen wird.
+     * Ein unsicherer Login nur für Entwicklungszwecke.
+     * @param username Ein beliebiger Benutzername, um einen Spieler zu finden oder zu erstellen.
+     * @param successCallback Callback, der bei Erfolg die LoginResponse (mit dem JWT) erhält.
+     * @param errorCallback Callback für den Fehlerfall.
      */
-    public void startNewRound(long chapterId, final Consumer<RoundStartData> successCallback, final Consumer<Throwable> errorCallback) {
+    public void devLogin(String username, final Consumer<LoginResponse> successCallback, final Consumer<Throwable> errorCallback) {
+        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.POST);
+        request.setUrl(BASE_URL + "/auth/dev/login");
+        request.setHeader("Content-Type", "application/json");
+
+        DevLoginRequest loginRequest = new DevLoginRequest(username);
+        String requestBodyJson = json.toJson(loginRequest);
+        request.setContent(requestBodyJson);
+        Gdx.app.log("NetworkManager-DEBUG", "Sende folgenden Body: " + requestBodyJson);
+        sendRequest(request, LoginResponse.class, successCallback, errorCallback, "DevLogin");
+    }
+
+    /**
+     * Startet eine neue Runde für ein gegebenes Kapitel. Benötigt ein JWT zur Authentifizierung.
+     * @param chapterId Die ID des zu startenden Kapitels.
+     * @param jwtToken Das Authentifizierungs-Token des Spielers.
+     * @param successCallback Callback für die erfolgreiche Antwort.
+     * @param errorCallback Callback für den Fehlerfall.
+     */
+    public void startNewRound(long chapterId, String jwtToken, final Consumer<RoundStartData> successCallback, final Consumer<Throwable> errorCallback) {
         Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.POST);
         request.setUrl(BASE_URL + "/rounds/start/" + chapterId);
 
+        // Fügt das JWT zum Authorization-Header hinzu. Dies ist der "Ausweis" für den Server.
+        request.setHeader("Authorization", "Bearer " + jwtToken);
+
+        sendRequest(request, RoundStartData.class, successCallback, errorCallback, "StartRound");
+    }
+
+    /**
+     * Beendet eine Runde. Benötigt ein JWT zur Authentifizierung.
+     * @param roundId Die ID der zu beendenden Runde.
+     * @param jwtToken Das Authentifizierungs-Token des Spielers.
+     * @param successCallback Callback für die erfolgreiche Antwort (erhält eine Liste der Belohnungs-Items).
+     * @param errorCallback Callback für den Fehlerfall.
+     */
+    public void endRound(String roundId, String jwtToken, final Consumer<List<Item>> successCallback, final Consumer<Throwable> errorCallback) {
+        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.POST);
+        request.setUrl(BASE_URL + "/rounds/" + roundId + "/end");
+        request.setHeader("Content-Type", "application/json");
+        request.setHeader("Authorization", "Bearer " + jwtToken);
+
+        // Erstelle den Request-Body
+        RoundEndRequest endRequest = new RoundEndRequest(RoundOutcome.WIN, Collections.emptyList(), 120.0);
+        request.setContent(json.toJson(endRequest));
+
+        // Wir benutzen hier eine spezielle Hilfsmethode, da gdx-json Listen anders behandelt.
+        sendRequestWithList(request, Item.class, successCallback, errorCallback, "EndRound");
+    }
+
+    /**
+     * Private Hilfsmethode, um eine Anfrage zu senden und die Antwort zu verarbeiten.
+     * Dies vermeidet Code-Wiederholung.
+     * @param request Die vorbereitete HTTP-Anfrage.
+     * @param responseType Der Klassentyp der erwarteten Antwort.
+     * @param successCallback Der Callback für den Erfolgsfall.
+     * @param errorCallback Der Callback für den Fehlerfall.
+     * @param logTag Ein Tag für die Log-Ausgaben.
+     * @param <T> Der generische Typ der Antwort.
+     */
+    private <T> void sendRequest(Net.HttpRequest request, Class<T> responseType, Consumer<T> successCallback, Consumer<Throwable> errorCallback, String logTag) {
         Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                String responseString = httpResponse.getResultAsString();
-                Gdx.app.log("NetworkManager", "Runde gestartet Antwort: " + responseString);
-
-                // Wandle den JSON-String in unser RoundStartData-Objekt um.
-                final RoundStartData data = json.fromJson(RoundStartData.class, responseString);
-
-                // Führe den Erfolgs-Callback im Haupt-Thread von LibGDX aus.
-                Gdx.app.postRunnable(() -> successCallback.accept(data));
+                int statusCode = httpResponse.getStatus().getStatusCode();
+                if (statusCode >= 200 && statusCode < 300) {
+                    String responseString = httpResponse.getResultAsString();
+                    Gdx.app.log(logTag, "Erfolgreiche Antwort: " + responseString);
+                    try {
+                        final T data = json.fromJson(responseType, responseString);
+                        // Führe den Erfolgs-Callback im Haupt-Thread von LibGDX aus.
+                        Gdx.app.postRunnable(() -> successCallback.accept(data));
+                    } catch (Exception e) {
+                        Gdx.app.error(logTag, "Fehler beim Parsen der JSON-Antwort", e);
+                        Gdx.app.postRunnable(() -> errorCallback.accept(e));
+                    }
+                } else {
+                    String errorMsg = "Server antwortete mit Fehlercode: " + statusCode + " - " + httpResponse.getResultAsString();
+                    Gdx.app.error(logTag, errorMsg);
+                    Gdx.app.postRunnable(() -> errorCallback.accept(new RuntimeException(errorMsg)));
+                }
             }
 
             @Override
             public void failed(Throwable t) {
-                Gdx.app.error("NetworkManager", "Fehler beim Starten der Runde", t);
+                Gdx.app.error(logTag, "Netzwerkfehler", t);
                 Gdx.app.postRunnable(() -> errorCallback.accept(t));
             }
 
             @Override
             public void cancelled() {
-                Gdx.app.error("NetworkManager", "Anfrage zum Starten der Runde wurde abgebrochen.");
+                String errorMsg = "Anfrage wurde abgebrochen.";
+                Gdx.app.error(logTag, errorMsg);
+                Gdx.app.postRunnable(() -> errorCallback.accept(new RuntimeException(errorMsg)));
             }
         });
     }
 
     /**
-     * Sendet eine Anfrage an den Server, um eine laufende Runde zu beenden.
-     *
-     * @param roundId Die ID der zu beendenden Runde.
-     * @param successCallback Eine Funktion, die bei Erfolg mit der Liste der Belohnungen aufgerufen wird.
-     * @param errorCallback Eine Funktion für den Fehlerfall.
+     * Eine spezielle Version von sendRequest, die eine Liste von Objekten verarbeiten kann.
      */
-    public void endRound(String roundId, final Consumer<List<Item>> successCallback, final Consumer<Throwable> errorCallback) {
-        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.POST);
-        request.setUrl(BASE_URL + "/rounds/" + roundId + "/end");
-        request.setHeader("Content-Type", "application/json");
-
-        // Erstelle den Request-Body (die Daten, die wir an den Server senden).
-        // Für den "Walking Skeleton" verwenden wir feste Werte.
-        RoundEndRequest endRequest = new RoundEndRequest(RoundOutcome.WIN, Collections.emptyList(), 120.0);
-        String requestBodyJson = json.toJson(endRequest);
-        request.setContent(requestBodyJson);
-
+    private <T> void sendRequestWithList(Net.HttpRequest request, Class<T> listContentType, Consumer<List<T>> successCallback, Consumer<Throwable> errorCallback, String logTag) {
         Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                String responseString = httpResponse.getResultAsString();
-                Gdx.app.log("NetworkManager", "Runde beendet Antwort: " + responseString);
-
-                // Hier parsen wir eine Liste von Items.
-                final List<Item> data = json.fromJson(List.class, Item.class, responseString);
-                Gdx.app.postRunnable(() -> successCallback.accept(data));
+                int statusCode = httpResponse.getStatus().getStatusCode();
+                if (statusCode >= 200 && statusCode < 300) {
+                    String responseString = httpResponse.getResultAsString();
+                    Gdx.app.log(logTag, "Erfolgreiche Antwort: " + responseString);
+                    try {
+                        // gdx-json benötigt für Listen den Typ der Liste und den Typ des Inhalts.
+                        final List<T> data = json.fromJson(List.class, listContentType, responseString);
+                        Gdx.app.postRunnable(() -> successCallback.accept(data));
+                    } catch (Exception e) {
+                        Gdx.app.error(logTag, "Fehler beim Parsen der JSON-Liste", e);
+                        Gdx.app.postRunnable(() -> errorCallback.accept(e));
+                    }
+                } else {
+                    // ... Fehlerbehandlung wie oben
+                    String errorMsg = "Server antwortete mit Fehlercode: " + statusCode;
+                    Gdx.app.error(logTag, errorMsg);
+                    Gdx.app.postRunnable(() -> errorCallback.accept(new RuntimeException(errorMsg)));
+                }
             }
-
             @Override
             public void failed(Throwable t) {
-                Gdx.app.error("NetworkManager", "Fehler beim Beenden der Runde", t);
+                Gdx.app.error(logTag, "Netzwerkfehler", t);
                 Gdx.app.postRunnable(() -> errorCallback.accept(t));
             }
 
             @Override
             public void cancelled() {
-                Gdx.app.error("NetworkManager", "Anfrage zum Beenden der Runde wurde abgebrochen.");
+                String errorMsg = "Anfrage wurde abgebrochen.";
+                Gdx.app.error(logTag, errorMsg);
+                Gdx.app.postRunnable(() -> errorCallback.accept(new RuntimeException(errorMsg)));
             }
         });
     }
