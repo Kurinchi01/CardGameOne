@@ -9,9 +9,14 @@ public class Card {
 
     }
 
-    private final Suit suit;
-    private final int value; // 1 = Ass, 11 = Bube, 12 = Dame, 13 = König
+    private  Suit suit;
+    private  int value; // 1 = Ass, 11 = Bube, 12 = Dame, 13 = König
     private boolean faceUp;
+
+
+    //Wichtig! Leerer Konstruktor für JPA
+    public Card() {
+    }
 
     public Card(Suit suit, int value) {
         this.suit = suit;

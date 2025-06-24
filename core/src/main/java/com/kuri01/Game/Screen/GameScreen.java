@@ -23,7 +23,6 @@ import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
 import com.kuri01.Game.Main;
-import com.kuri01.Game.RPG.Model.Monster;
 import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.RPG.Model.ProgressBar;
 import com.kuri01.Game.RPG.Model.RPGLogic;
