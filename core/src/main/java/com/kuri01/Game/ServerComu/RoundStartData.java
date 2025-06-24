@@ -16,7 +16,7 @@ public class RoundStartData {
 
 
 
-    // Beispiel-Konstruktor:
+    //reines Datenpaket zum senden an den Server
     public RoundStartData(String roundId, List<Monster> monster, List<Card> triPeaksCards, List<Card> deckCards, Card topCard) {
         this.roundId = roundId;
         this.monster = monster;
@@ -25,6 +25,25 @@ public class RoundStartData {
         this.topCard = topCard;
     }
 
+    public String getRoundId() {
+        return roundId;
+    }
+
+    public List<Monster> getMonster() {
+        return monster;
+    }
+
+    public List<Card> getTriPeaksCards() {
+        return triPeaksCards;
+    }
+
+    public List<Card> getDeckCards() {
+        return deckCards;
+    }
+
+    public Card getTopCard() {
+        return topCard;
+    }
 }
 
 

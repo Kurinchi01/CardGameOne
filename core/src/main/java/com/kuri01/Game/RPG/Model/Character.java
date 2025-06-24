@@ -5,24 +5,23 @@ public class Character {
     private String name;
     private float maxHp;
     private float attack;
+    private float chargeRate;
+
+
+    //Client Only
     private float currentHp;
 
-
-    private float chargeRate = 5f;
     private ProgressBar progressBar, hpBar;
 
     //wichtig für JSON Parsen
     protected Character() {
     }
-    public Character(String name, float maxHp, float attack, ProgressBar progressBar) {
+
+    public Character(String name, float maxHp, float attack) {
         this.name = name;
         this.maxHp = maxHp;
-        this.currentHp = maxHp;
         this.attack = attack;
-        this.progressBar = progressBar;
-        this.hpBar = new ProgressBar(0);
-        hpBar.resetDecrease();
-        hpBar.setMaxValue(maxHp);
+        chargeRate = 5;
     }
 
     public boolean isAlive() {
