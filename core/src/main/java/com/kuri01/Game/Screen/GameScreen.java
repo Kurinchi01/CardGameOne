@@ -157,8 +157,8 @@ public class GameScreen extends ScreenAdapter {
 
         playerProgressBar = player.getAttackBar();
         monsterProgressBar = rpgLogic.monster.getAttackBar();
-        player.hpBar.setFillSpeed(rpgLogic.monster.attack);
-        rpgLogic.monster.hpBar.setFillSpeed(player.attack);
+        player.getHpBar().setFillSpeed(rpgLogic.monster.getAttack());
+        rpgLogic.monster.getHpBar().setFillSpeed(player.getAttack());
 
         monsterSpriteProvider.setChosenTextureIndex(random.nextInt(monsterSpriteProvider.getMonsterAnimations().get(rpgLogic.monster.rarity).size()));
 
@@ -189,9 +189,9 @@ public class GameScreen extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 rpgLogic.createMonster();
-                monsterProgressBar = rpgLogic.monster.progressBar;
-                player.hpBar.setFillSpeed(rpgLogic.monster.attack);
-                rpgLogic.monster.hpBar.setFillSpeed(player.attack);
+                monsterProgressBar = rpgLogic.monster.getProgressBar();
+                player.getHpBar().setFillSpeed(rpgLogic.monster.getAttack());
+                rpgLogic.monster.getHpBar().setFillSpeed(player.getAttack());
             }
         });
         stage.addActor(restartButton);
@@ -226,10 +226,10 @@ public class GameScreen extends ScreenAdapter {
         gameBatch.end();
 
         progressBarRenderer.renderAttackBar(shapeRenderer, playerProgressBar, playerBarPosition.x, playerBarPosition.y, cardWidth, cardHeight * 0.05f);
-        progressBarRenderer.renderHPBar(shapeRenderer, player.hpBar, playerBarPosition.x, playerBarPosition.y+cardHeight*0.05f, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderHPBar(shapeRenderer, player.getHpBar(), playerBarPosition.x, playerBarPosition.y+cardHeight*0.05f, cardWidth, cardHeight * 0.05f);
 
         progressBarRenderer.renderAttackBar(shapeRenderer, monsterProgressBar, monsterBarPosition.x, monsterBarPosition.y, cardWidth, cardHeight * 0.05f);
-        progressBarRenderer.renderHPBar(shapeRenderer, rpgLogic.monster.hpBar, monsterBarPosition.x, monsterBarPosition.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
+        progressBarRenderer.renderHPBar(shapeRenderer, rpgLogic.monster.getHpBar(), monsterBarPosition.x, monsterBarPosition.y + cardHeight * 0.05f, cardWidth, cardHeight * 0.05f);
         // UI Rendern
         uiBatch.begin();
 
@@ -267,9 +267,9 @@ public class GameScreen extends ScreenAdapter {
 
                 rpgLogic.createMonster();
                 monsterSpriteProvider.setChosenTextureIndex(random.nextInt(monsterSpriteProvider.getMonsterAnimations().size()));
-                monsterProgressBar = rpgLogic.monster.progressBar;
-                player.hpBar.setFillSpeed(rpgLogic.monster.attack);
-                rpgLogic.monster.hpBar.setFillSpeed(player.attack);
+                monsterProgressBar = rpgLogic.monster.getProgressBar();
+                player.getHpBar().setFillSpeed(rpgLogic.monster.getAttack());
+                rpgLogic.monster.getHpBar().setFillSpeed(player.getAttack());
             }
 
         });
@@ -291,7 +291,7 @@ public class GameScreen extends ScreenAdapter {
     public void increasePoints(int value) {
         cardGameLogic.increasePoints(value);
         if (player.increaseAtkIndicator()) {
-            rpgLogic.monster.takeDamage(player.attack);
+            rpgLogic.monster.takeDamage(player.getAttack());
             monsterSpriteProvider.triggerSpecialFrameFor(rpgLogic.monster);
         }
     }
@@ -299,7 +299,7 @@ public class GameScreen extends ScreenAdapter {
     public void decreasePoints(int value) {
         cardGameLogic.decreasePoint(value);
         if (rpgLogic.monster.increaseAtkIndicator()) {
-            player.takeDamage(rpgLogic.monster.attack);
+            player.takeDamage(rpgLogic.monster.getAttack());
         }
     }
 

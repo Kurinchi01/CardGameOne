@@ -21,16 +21,16 @@ public class RPGLogic {
 
     public void createMonster() {
         monster = new Monster("monster", 100, 5);
-        monster.setAttackBar(new ProgressBar(100f/monster.attackCooldown));
+        monster.setAttackBar(new ProgressBar(100f/monster.getChargeRate()));
 
     }
 
     public void playerTakeDmg() {
-        player.takeDamage(monster.attack);
+        player.takeDamage(monster.getAttack());
     }
 
     public void monsterTakeDmg() {
-        monster.takeDamage(player.attack);
+        monster.takeDamage(player.getAttack());
     }
 
 }

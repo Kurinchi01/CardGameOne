@@ -1,14 +1,19 @@
 package com.kuri01.Game.RPG.Model;
 
 public class Character {
-    public String name;
-    public float maxHp;
-    public float currentHp;
-    public float attack;
+    private Long id;
+    private String name;
+    private float maxHp;
+    private float attack;
+    private float currentHp;
 
-    float attackCooldown = 5f;
-    public ProgressBar progressBar, hpBar;
 
+    private float chargeRate = 5f;
+    private ProgressBar progressBar, hpBar;
+
+    //wichtig für JSON Parsen
+    protected Character() {
+    }
     public Character(String name, float maxHp, float attack, ProgressBar progressBar) {
         this.name = name;
         this.maxHp = maxHp;
@@ -31,6 +36,14 @@ public class Character {
 
     public String getName() {
         return name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -67,6 +80,30 @@ public class Character {
 
     //nur für Monster anwende, da Monster nach erzeugung erst eine Rarity bekommen und Fillspeed der AttackBar von dieser abhängt
     public void setAttackBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public float getChargeRate() {
+        return chargeRate;
+    }
+
+    public void setChargeRate(float chargeRate) {
+        this.chargeRate = chargeRate;
+    }
+
+    public ProgressBar getHpBar() {
+        return hpBar;
+    }
+
+    public void setHpBar(ProgressBar hpBar) {
+        this.hpBar = hpBar;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
         this.progressBar = progressBar;
     }
 

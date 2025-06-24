@@ -18,8 +18,8 @@ public class CharacterRenderer extends Renderer {
     public CharacterRenderer(GameScreen gameScreen, MonsterSpriteProvider spriteProvider) {
         super(gameScreen);
 
-        displayedPlayerHP = (int) gameScreen.player.currentHp;
-        displayedMonsterHP = (int) gameScreen.rpgLogic.monster.currentHp;
+        displayedPlayerHP = (int) gameScreen.player.getCurrentHp();
+        displayedMonsterHP = (int) gameScreen.rpgLogic.monster.getCurrentHp();
         this.spriteProvider = spriteProvider;
     }
 
@@ -47,7 +47,7 @@ public class CharacterRenderer extends Renderer {
 
         font.getData().setScale(2f);
 
-        font.draw(gameBatch, Integer.toString((int) getGameScreen().player.currentHp), getGameScreen().playerBarPosition.x, getGameScreen().playerBarPosition.y);
-        font.draw(gameBatch, Integer.toString((int) getGameScreen().rpgLogic.monster.currentHp), getGameScreen().monsterBarPosition.x, getGameScreen().monsterBarPosition.y);
+        font.draw(gameBatch, Integer.toString((int) getGameScreen().player.getCurrentHp()), getGameScreen().playerBarPosition.x, getGameScreen().playerBarPosition.y);
+        font.draw(gameBatch, Integer.toString((int) getGameScreen().rpgLogic.monster.getCurrentHp()), getGameScreen().monsterBarPosition.x, getGameScreen().monsterBarPosition.y);
     }
 }
