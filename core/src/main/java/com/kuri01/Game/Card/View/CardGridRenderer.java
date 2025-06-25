@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.kuri01.Game.Card.Model.CardGrid;
-import com.kuri01.Game.Screen.GameScreen;
+import com.kuri01.Game.Screen.prototypeGameScreen;
 
 public class CardGridRenderer extends Renderer {
     private CardGrid grid;
 
-    public CardGridRenderer(CardGrid grid, GameScreen gameScreen)
+    public CardGridRenderer(CardGrid grid, prototypeGameScreen prototypeGameScreen)
     {
-        super(gameScreen);
+        super(prototypeGameScreen);
         this.grid=grid;
     }
 

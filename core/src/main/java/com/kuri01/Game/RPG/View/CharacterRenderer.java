@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kuri01.Game.Card.View.Renderer;
 import com.kuri01.Game.RPG.Model.Monster;
-import com.kuri01.Game.Screen.GameScreen;
+import com.kuri01.Game.Screen.prototypeGameScreen;
 
 public class CharacterRenderer extends Renderer {
 
@@ -15,11 +15,11 @@ public class CharacterRenderer extends Renderer {
 
     private final MonsterSpriteProvider spriteProvider;
 
-    public CharacterRenderer(GameScreen gameScreen, MonsterSpriteProvider spriteProvider) {
-        super(gameScreen);
+    public CharacterRenderer(prototypeGameScreen prototypeGameScreen, MonsterSpriteProvider spriteProvider) {
+        super(prototypeGameScreen);
 
-        displayedPlayerHP = (int) gameScreen.player.getCurrentHp();
-        displayedMonsterHP = (int) gameScreen.rpgLogic.monster.getCurrentHp();
+        displayedPlayerHP = (int) prototypeGameScreen.player.getCurrentHp();
+        displayedMonsterHP = (int) prototypeGameScreen.rpgLogic.monster.getCurrentHp();
         this.spriteProvider = spriteProvider;
     }
 

@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.kuri01.Game.Card.Model.Card;
 import com.kuri01.Game.Card.Model.CardSlot;
 import com.kuri01.Game.Card.Model.TriPeaksLayout;
-import com.kuri01.Game.Screen.GameScreen;
+import com.kuri01.Game.Screen.prototypeGameScreen;
 
 import java.util.List;
 
@@ -14,19 +14,19 @@ public class InputHandler extends InputAdapter {
 
     private final Camera camera;
     private TriPeaksLayout layout;
-    GameScreen gameScreen;
+    prototypeGameScreen prototypeGameScreen;
 
-    public InputHandler(Camera camera, TriPeaksLayout layout, GameScreen gameScreen) {
+    public InputHandler(Camera camera, TriPeaksLayout layout, prototypeGameScreen prototypeGameScreen) {
         this.camera = camera;
         this.layout = layout;
-        this.gameScreen = gameScreen;
+        this.prototypeGameScreen = prototypeGameScreen;
     }
 
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Bildschirmkoordinaten in Weltkoordinaten umwandeln
         Vector3 worldCoordinates = camera.unproject(new Vector3(screenX, screenY, 0));
-        float width = gameScreen.cardWidth;
-        float height = gameScreen.cardHeight;
+        float width = prototypeGameScreen.cardWidth;
+        float height = prototypeGameScreen.cardHeight;
 
         // Durch alle Karten-Slots gehen
         for (int i = 0; i < layout.getPyramidCards().size(); i++) {
@@ -42,40 +42,40 @@ public class InputHandler extends InputAdapter {
 
                     //Klicken auf Karte erkannt
 
-                    Card tmpCard = gameScreen.getTopCardSlot().card;
+                    Card tmpCard = prototypeGameScreen.getTopCardSlot().card;
 
                     if (tmpCard != null) {
                         if(layout.isPlayable(card, tmpCard)) {
                             // Karte ist spielbar
-                            gameScreen.setTopCardSlot(new CardSlot(4, 0, card));
+                            prototypeGameScreen.setTopCardSlot(new CardSlot(4, 0, card));
                             slot.get(i).card = null; // Karte vom Spielfeld entfernen
                             layout.isRemoved(i);
-                            gameScreen.increaseComboCounter();
+                            prototypeGameScreen.increaseComboCounter();
                             if (i < 3) {
-                                gameScreen.increasePoints(1);
-                                gameScreen.increasePoints(1);
-                                gameScreen.setPeak(i);
+                                prototypeGameScreen.increasePoints(1);
+                                prototypeGameScreen.increasePoints(1);
+                                prototypeGameScreen.setPeak(i);
                             } else {
-                                gameScreen.increasePoints(1);
+                                prototypeGameScreen.increasePoints(1);
                             }
                             return true;
                         }
                         else{
-                            gameScreen.decreasePoints(1);
+                            prototypeGameScreen.decreasePoints(1);
                         }
                     }
                 }
             }
         }
 
-        if (gameScreen.getDeckSlot() != null) {
-            if (worldCoordinates.x >= gameScreen.getDeckSlot().x && worldCoordinates.x <= gameScreen.getDeckSlot().x + width &&
-                worldCoordinates.y >= gameScreen.getDeckSlot().y && worldCoordinates.y <= gameScreen.getDeckSlot().y + height) {
+        if (prototypeGameScreen.getDeckSlot() != null) {
+            if (worldCoordinates.x >= prototypeGameScreen.getDeckSlot().x && worldCoordinates.x <= prototypeGameScreen.getDeckSlot().x + width &&
+                worldCoordinates.y >= prototypeGameScreen.getDeckSlot().y && worldCoordinates.y <= prototypeGameScreen.getDeckSlot().y + height) {
 
-                gameScreen.drawNewCard();
-                gameScreen.decreasePoints(1);
-                if (gameScreen.remainingCards() == 0) {
-                    gameScreen.setDeckSlot(null);
+                prototypeGameScreen.drawNewCard();
+                prototypeGameScreen.decreasePoints(1);
+                if (prototypeGameScreen.remainingCards() == 0) {
+                    prototypeGameScreen.setDeckSlot(null);
                 }
 
             }

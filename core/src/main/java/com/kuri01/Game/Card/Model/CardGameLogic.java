@@ -1,7 +1,7 @@
 package com.kuri01.Game.Card.Model;
 
 
-import com.kuri01.Game.Screen.GameScreen;
+import com.kuri01.Game.Screen.prototypeGameScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +11,14 @@ public class CardGameLogic {
     private CardSlot topCardSlot;
     private CardSlot deckSlot;
     private TriPeaksLayout layoutPyramide;
-    private GameScreen gameScreen;
+    private prototypeGameScreen prototypeGameScreen;
     final Card tmpCard = new Card(Card.Suit.club, 1);
     private int Points;
     private int ComboCounter;
     public boolean peak1, peak2, peak3;
 
-    public CardGameLogic(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
+    public CardGameLogic(prototypeGameScreen prototypeGameScreen) {
+        this.prototypeGameScreen = prototypeGameScreen;
         createNewRound();
 
         Points = 0;
@@ -44,7 +44,7 @@ public class CardGameLogic {
 
         //erzeuge pyramidLayout und übergebe gezogene 28 Karten an layoutklasse
         layoutPyramide = new TriPeaksLayout(tmpCardList);
-        layoutPyramide.init(gameScreen.getCardGrid());
+        layoutPyramide.init(prototypeGameScreen.getCardGrid());
 
         topCardSlot = new CardSlot(4, 0, deck.draw());
         topCardSlot.card.setFaceUp(true);

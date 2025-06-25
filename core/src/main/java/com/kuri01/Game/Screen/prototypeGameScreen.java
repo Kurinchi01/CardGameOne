@@ -36,7 +36,7 @@ import java.util.Random;
 /**
  * First screen of the application. Displayed after the application is created.
  */
-public class GameScreen extends ScreenAdapter {
+public class prototypeGameScreen extends ScreenAdapter {
     private Stage stage;
     private Skin skin;
     private TextButton restartButton;
@@ -78,7 +78,7 @@ public class GameScreen extends ScreenAdapter {
     boolean touched=false;
     private String jwtToken = null;
 
-    public GameScreen(Main game) {
+    public prototypeGameScreen(Main game) {
         this.game = game;
 
         //dummy Player

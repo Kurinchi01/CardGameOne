@@ -1,20 +1,20 @@
 package com.kuri01.Game.Card.View;
 
-import com.kuri01.Game.Screen.GameScreen;
+import com.kuri01.Game.Screen.prototypeGameScreen;
 
 
 public abstract class Renderer {
 
-    private GameScreen gameScreen;
-    public Renderer(GameScreen gameScreen) {
-        this.gameScreen=gameScreen;
+    private prototypeGameScreen prototypeGameScreen;
+    public Renderer(prototypeGameScreen prototypeGameScreen) {
+        this.prototypeGameScreen = prototypeGameScreen;
     }
 
-    public GameScreen getGameScreen() {
-        return gameScreen;
+    public prototypeGameScreen getGameScreen() {
+        return prototypeGameScreen;
     }
 
-    public void setGameScreen(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
+    public void setGameScreen(prototypeGameScreen prototypeGameScreen) {
+        this.prototypeGameScreen = prototypeGameScreen;
     }
 }

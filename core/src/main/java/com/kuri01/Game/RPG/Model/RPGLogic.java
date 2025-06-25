@@ -1,22 +1,22 @@
 package com.kuri01.Game.RPG.Model;
 
-import com.kuri01.Game.Screen.GameScreen;
+import com.kuri01.Game.Screen.prototypeGameScreen;
 
 public class RPGLogic {
 
-    private GameScreen gameScreen;
+    private prototypeGameScreen prototypeGameScreen;
 
     Player player;
     public Monster monster;
 
-    public RPGLogic(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
-        this.player = gameScreen.player;
+    public RPGLogic(prototypeGameScreen prototypeGameScreen) {
+        this.prototypeGameScreen = prototypeGameScreen;
+        this.player = prototypeGameScreen.player;
         this.createMonster();
     }
 
-    public GameScreen getGameScreen() {
-        return gameScreen;
+    public prototypeGameScreen getGameScreen() {
+        return prototypeGameScreen;
     }
 
     public void createMonster() {

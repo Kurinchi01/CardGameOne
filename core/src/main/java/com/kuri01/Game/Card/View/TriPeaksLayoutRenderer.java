@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kuri01.Game.Card.Model.CardSlot;
 import com.kuri01.Game.Card.Model.TriPeaksLayout;
-import com.kuri01.Game.Screen.GameScreen;
+import com.kuri01.Game.Screen.prototypeGameScreen;
 
 public class TriPeaksLayoutRenderer extends Renderer {
     TriPeaksLayout triPeaksLayout;
 
 
 
-    public TriPeaksLayoutRenderer(TriPeaksLayout triPeaksLayout, GameScreen gameScreen) {
-        super(gameScreen);
+    public TriPeaksLayoutRenderer(TriPeaksLayout triPeaksLayout, prototypeGameScreen prototypeGameScreen) {
+        super(prototypeGameScreen);
         this.triPeaksLayout = triPeaksLayout;
 
     }
