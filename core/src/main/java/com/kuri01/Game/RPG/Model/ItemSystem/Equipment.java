@@ -7,6 +7,7 @@ public class Equipment {
     private EquipmentItem necklace;
     private EquipmentItem ring;
     private EquipmentItem shoes;
+    //wichtig für JSON Parsen
     public Equipment() {
     }
 

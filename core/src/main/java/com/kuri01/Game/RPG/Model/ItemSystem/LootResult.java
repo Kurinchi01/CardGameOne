@@ -1,6 +1,5 @@
-package com.kuri01.Game.ServerComu;
+package com.kuri01.Game.RPG.Model.ItemSystem;
 
-import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.Rarity;
 
 import java.util.List;
