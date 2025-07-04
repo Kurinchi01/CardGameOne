@@ -8,7 +8,7 @@ import com.kuri01.Game.Screen.MainMenuScreen;
 import com.kuri01.Game.ServerComu.NetworkManager;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends Game {
+public class MainGameClass extends Game {
 
     // Diese Objekte sind für alle Screens zugänglich
     public Skin skin;

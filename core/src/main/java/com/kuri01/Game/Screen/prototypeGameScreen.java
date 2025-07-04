@@ -19,7 +19,7 @@ import com.kuri01.Game.Card.Model.CardSlot;
 import com.kuri01.Game.Card.View.CardGridRenderer;
 import com.kuri01.Game.Card.View.CardSpriteProvider;
 import com.kuri01.Game.Card.View.TriPeaksLayoutRenderer;
-import com.kuri01.Game.Main;
+import com.kuri01.Game.MainGameClass;
 import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.RPG.Model.ProgressBar;
 import com.kuri01.Game.RPG.Model.RPGLogic;
@@ -62,7 +62,7 @@ public class prototypeGameScreen extends ScreenAdapter {
     float screenHeight;
     private final Random random = new Random();
     boolean debug = false;
-    private final Main game;
+    private final MainGameClass game;
 
     //Modell
     private CardGameLogic cardGameLogic;
@@ -78,7 +78,7 @@ public class prototypeGameScreen extends ScreenAdapter {
     boolean touched=false;
     private String jwtToken = null;
 
-    public prototypeGameScreen(Main game) {
+    public prototypeGameScreen(MainGameClass game) {
         this.game = game;
 
         //dummy Player

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
+import com.kuri01.Game.RPG.Model.Player;
 
 
 import java.util.Collections;
@@ -170,5 +171,13 @@ public class NetworkManager {
                 Gdx.app.postRunnable(() -> errorCallback.accept(new RuntimeException(errorMsg)));
             }
         });
+    }
+
+    public void getPlayerProfile(String jwtToken, final Consumer<Player> successCallback, final Consumer<Throwable> errorCallback) {
+        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
+        request.setUrl(BASE_URL + "/character/me");
+        request.setHeader("Authorization", "Bearer " + jwtToken);
+
+        sendRequest(request, Player.class, successCallback, errorCallback, "GetPlayerProfile");
     }
 }
