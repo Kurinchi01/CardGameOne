@@ -1,6 +1,7 @@
 package com.kuri01.Game.RPG.Model;
 
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
+import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +10,7 @@ public class Player extends Character {
     private Equipment equipment;
     private int experiencePoints;
     private int level;
-
+    private Inventory inventory;
     // Wichtig für Rolle des Spielers
     private Set<String> roles = new HashSet<>();
     public Player(String name, int maxHp, int attack) {
@@ -17,6 +18,18 @@ public class Player extends Character {
     }
 
     public Player() {
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setInventoryItems(Inventory inventory) {
+        this.inventory = inventory;
     }
 
     public Equipment getEquipment() {

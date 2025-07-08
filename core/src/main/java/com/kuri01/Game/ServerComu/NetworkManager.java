@@ -177,6 +177,8 @@ public class NetworkManager {
         Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
         request.setUrl(BASE_URL + "/character/me");
         request.setHeader("Authorization", "Bearer " + jwtToken);
+        String requestBodyJson = request.getContent();
+        Gdx.app.log("NetworkManager-DEBUG", "Sende folgenden Body: " + requestBodyJson);
 
         sendRequest(request, Player.class, successCallback, errorCallback, "GetPlayerProfile");
     }
