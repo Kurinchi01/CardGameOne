@@ -1,6 +1,12 @@
 package com.kuri01.Game.RPG.Model;
 
+import com.kuri01.Game.RPG.Model.ItemSystem.DTO.EquipmentDTO;
+import com.kuri01.Game.RPG.Model.ItemSystem.DTO.ItemDTO;
+import com.kuri01.Game.RPG.Model.ItemSystem.DTO.PlayerDTO;
+import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentItem;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
+import com.kuri01.Game.RPG.Model.ItemSystem.LootChest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +16,7 @@ public class ModelFactory {
     /**
      * Konvertiert ein PlayerDTO in ein vollwertiges, clientseitiges Player-Modell.
      */
-    public static Player createPlayerFromDTO(Player dto) {
+    public static Player createPlayerFromDTO(PlayerDTO dto) {
         if (dto == null) return null;
 
         Player player = new Player();
@@ -25,37 +31,89 @@ public class ModelFactory {
         player.setCurrentHp(dto.getMaxHp());
 
         // Konvertiere auch die verschachtelten Objekte
-        if (dto.getEquipment() != null) {
-            player.setEquipment(dto.getEquipment());
+        if (dto.getEquipmentDTO() != null) {
+            player.setEquipment(createEquipmentFromDTO(dto.getEquipmentDTO()));
         }
-        if (dto.getInventoryItems() != null) {
-            List<Item> inventory = dto.getInventoryItems().stream()
-                .map(ModelFactory::createItemFromDTO)
-                .collect(Collectors.toList());
-            player.setInventoryItems(inventory);
+
+        if (dto.getInventoryItemsDTO() != null) {
+            player.setInventoryItems(
+                (com.kuri01.Game.RPG.Model.ItemSystem.Inventory) dto.getInventoryItemsDTO().stream()
+                    .map(ModelFactory::createItemFromDTO) // Wandelt jeden ItemDTO um
+                    .collect(Collectors.toList())
+            );
         }
 
         return player;
+    }
+
+    /**
+     * Konvertiert ein EquipmentDTO in ein clientseitiges Equipment-Modell.
+     * @param dto Das vom Server erhaltene EquipmentDTO.
+     * @return Ein initialisiertes, clientseitiges Equipment-Objekt.
+     */
+    public static Equipment createEquipmentFromDTO(EquipmentDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        Equipment equipment = new Equipment();
+        // Wandle jedes Item im DTO in ein clientseitiges Item-Modell um.
+        equipment.setWeapon((EquipmentItem) createItemFromDTO(dto.getWeapon()));
+        equipment.setHelmet((EquipmentItem)createItemFromDTO(dto.getHelmet()));
+        equipment.setArmor((EquipmentItem)createItemFromDTO(dto.getArmor()));
+        equipment.setNecklace((EquipmentItem)createItemFromDTO(dto.getNecklace()));
+        equipment.setRing((EquipmentItem)createItemFromDTO(dto.getRing()));
+        equipment.setShoes((EquipmentItem)createItemFromDTO(dto.getShoes()));
+        return equipment;
     }
 
 
     /**
      * Konvertiert ein ItemDTO in ein clientseitiges Item-Modell.
      */
+    /**
+     * Konvertiert einen einzelnen ItemDTO in das passende clientseitige Item-Modell.
+     * Diese Methode ist besonders wichtig, da sie die Vererbung auf der Client-Seite nachbildet.
+     * @param dto Das vom Server erhaltene ItemDTO.
+     * @return Ein initialisiertes Item-Objekt (z.B. EquipmentItem, LootChest etc.).
+     */
     public static Item createItemFromDTO(ItemDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
 
-        // TODO: Hier könntest du basierend auf dto.getItemType()
-        // unterschiedliche Sub-Klassen erstellen (EquipmentItem, ConsumableItem etc.)
-        EquipmentItem item = new EquipmentItem();
+        // Wir nutzen das 'itemType'-Feld, um zu entscheiden, welche Art von Item wir erstellen müssen.
+        Item item;
+        switch (dto.getItemType()) {
+            case "EQUIPMENT":
+                EquipmentItem equipItem = new EquipmentItem();
+                equipItem.setEquipmentSlot(dto.getEquipmentSlot());
+                equipItem.setStats(dto.getStats());
+                item = equipItem;
+                break;
+            case "CHEST":
+                // Annahme: Du hast eine clientseitige LootChest-Klasse, die von Item erbt.
+                item = new LootChest();
+                break;
+//            case "CONSUMABLE":
+//                // Annahme: Du hast eine clientseitige ConsumableItem-Klasse.
+//                ConsumableItem consumable = new ConsumableItem();
+//                consumable.setEffect(dto.getEffect());
+//                consumable.setEffectValue(dto.getEffectValue());
+//                item = consumable;
+//                break;
+            default:
+                // Fallback für unbekannte oder generische Item-Typen
+                item = new Item();
+                break;
+        }
+
+        // Fülle die Basis-Felder, die alle Items gemeinsam haben.
         item.setId(dto.getId());
         item.setName(dto.getName());
         item.setDescription(dto.getDescription());
         item.setRarity(dto.getRarity());
-        item.setIconName(dto.getIconName());
-        item.setQuantity(dto.getQuantity());
-        item.setEquipmentSlot(dto.getEquipmentSlot());
-        item.setStats(dto.getStats());
+//        item.setIconName(dto.getIconName());
+//        item.setQuantity(dto.getQuantity());
 
         return item;
     }

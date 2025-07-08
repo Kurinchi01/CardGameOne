@@ -22,4 +22,7 @@ public class EquipmentItem extends Item {
         return stats;
     }
 
+    public void setStats(Map<String, Integer> stats) {
+        this.stats = stats;
+    }
 }
