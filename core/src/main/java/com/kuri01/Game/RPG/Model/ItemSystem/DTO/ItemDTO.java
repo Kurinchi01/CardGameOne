@@ -6,6 +6,7 @@ package com.kuri01.Game.RPG.Model.ItemSystem.DTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
 import com.kuri01.Game.RPG.Model.Rarity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ItemDTO {
@@ -15,7 +16,7 @@ public class ItemDTO {
     private Rarity rarity;
     private String itemType;
     private EquipmentSlot equipmentSlot; // Nur für EquipmentItems relevant
-    private Map<String, Integer> stats;  // Nur für EquipmentItems relevant
+    private HashMap<String, Integer> stats;  // Nur für EquipmentItems relevant
 
     // --- Leerer Konstruktor ---
     public ItemDTO() {
@@ -40,11 +41,11 @@ public class ItemDTO {
         this.id = id;
     }
 
-    public Map<String, Integer> getStats() {
+    public HashMap<String, Integer> getStats() {
         return stats;
     }
 
-    public void setStats(Map<String, Integer> stats) {
+    public void setStats(HashMap<String, Integer> stats) {
         this.stats = stats;
     }
 

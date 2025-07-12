@@ -1,19 +1,23 @@
 package com.kuri01.Game;
 
 import com.badlogic.gdx.Game;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.kuri01.Game.RPG.Model.Player;
 import com.kuri01.Game.Screen.MainMenuScreen;
 import com.kuri01.Game.ServerComu.NetworkManager;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
+ */
 public class MainGameClass extends Game {
 
     // Diese Objekte sind für alle Screens zugänglich
     public Skin skin;
+    private Player player;
     public NetworkManager networkManager;
     public String jwtToken; // Hier speichern wir das Token nach dem Login
+
     @Override
     public void create() {
         skin = new Skin(Gdx.files.internal("skin/uiskin.json")); // Passe den Pfad an
@@ -25,8 +29,18 @@ public class MainGameClass extends Game {
     }
 
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         skin.dispose();
     }
+
+    public void setCurrentPlayer(Player livePlayer) {
+        this.player = livePlayer;
+    }
+
+
+    public Player getCurrentPlayer() {
+        return player;
+    }
+
+
 }

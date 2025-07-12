@@ -5,11 +5,12 @@ import com.kuri01.Game.RPG.Model.ItemSystem.DTO.ItemDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.DTO.PlayerDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentItem;
+import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
+import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.LootChest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ModelFactory {
 
@@ -26,6 +27,8 @@ public class ModelFactory {
         player.setExperiencePoints(dto.getExperiencePoints());
         player.setMaxHp(dto.getMaxHp());
         player.setAttack(dto.getAttack());
+        Inventory tmp = new Inventory(player);
+        player.setInventory(tmp);
 
         // HP werden zu Beginn auf MAX gesetzt.
         player.setCurrentHp(dto.getMaxHp());
@@ -35,12 +38,27 @@ public class ModelFactory {
             player.setEquipment(createEquipmentFromDTO(dto.getEquipmentDTO()));
         }
 
-        if (dto.getInventoryItemsDTO() != null) {
-            player.setInventoryItems(
-                (com.kuri01.Game.RPG.Model.ItemSystem.Inventory) dto.getInventoryItemsDTO().stream()
-                    .map(ModelFactory::createItemFromDTO) // Wandelt jeden ItemDTO um
-                    .collect(Collectors.toList())
-            );
+        if (dto.getInventoryItemsDTO() != null && player.getInventory() != null) {
+            // Hole die Liste der leeren Slots aus dem neu erstellten Player-Modell
+            List<InventorySlot> playerSlots = player.getInventory().getSlots();
+            // Hole die Liste der Item-Daten vom Server
+            List<ItemDTO> receivedItems = dto.getInventoryItemsDTO();
+
+            // Gehe durch die empfangenen Items und fülle die Slots der Reihe nach auf
+            for (int i = 0; i < receivedItems.size(); i++) {
+                // Stelle sicher, dass wir nicht mehr Items haben als Plätze vorhanden sind
+                if (i < playerSlots.size()) {
+                    ItemDTO itemDTO = receivedItems.get(i);
+                    if (itemDTO != null) {
+                        // Wandle den ItemDTO in ein "lebendiges" Item-Modell um
+                        Item liveItem = ModelFactory.createItemFromDTO(itemDTO);
+
+                        // Setze das Item und die Anzahl im passenden Slot
+                        playerSlots.get(i).setItem(liveItem);
+                        //playerSlots.get(i).setQuantity(itemDTO.getQuantity());
+                    }
+                }
+            }
         }
 
         return player;
@@ -48,6 +66,7 @@ public class ModelFactory {
 
     /**
      * Konvertiert ein EquipmentDTO in ein clientseitiges Equipment-Modell.
+     *
      * @param dto Das vom Server erhaltene EquipmentDTO.
      * @return Ein initialisiertes, clientseitiges Equipment-Objekt.
      */
@@ -58,11 +77,11 @@ public class ModelFactory {
         Equipment equipment = new Equipment();
         // Wandle jedes Item im DTO in ein clientseitiges Item-Modell um.
         equipment.setWeapon((EquipmentItem) createItemFromDTO(dto.getWeapon()));
-        equipment.setHelmet((EquipmentItem)createItemFromDTO(dto.getHelmet()));
-        equipment.setArmor((EquipmentItem)createItemFromDTO(dto.getArmor()));
-        equipment.setNecklace((EquipmentItem)createItemFromDTO(dto.getNecklace()));
-        equipment.setRing((EquipmentItem)createItemFromDTO(dto.getRing()));
-        equipment.setShoes((EquipmentItem)createItemFromDTO(dto.getShoes()));
+        equipment.setHelmet((EquipmentItem) createItemFromDTO(dto.getHelmet()));
+        equipment.setArmor((EquipmentItem) createItemFromDTO(dto.getArmor()));
+        equipment.setNecklace((EquipmentItem) createItemFromDTO(dto.getNecklace()));
+        equipment.setRing((EquipmentItem) createItemFromDTO(dto.getRing()));
+        equipment.setShoes((EquipmentItem) createItemFromDTO(dto.getShoes()));
         return equipment;
     }
 
@@ -73,6 +92,7 @@ public class ModelFactory {
     /**
      * Konvertiert einen einzelnen ItemDTO in das passende clientseitige Item-Modell.
      * Diese Methode ist besonders wichtig, da sie die Vererbung auf der Client-Seite nachbildet.
+     *
      * @param dto Das vom Server erhaltene ItemDTO.
      * @return Ein initialisiertes Item-Objekt (z.B. EquipmentItem, LootChest etc.).
      */
