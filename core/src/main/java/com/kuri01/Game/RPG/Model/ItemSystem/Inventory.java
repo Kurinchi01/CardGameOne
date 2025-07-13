@@ -6,15 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
-    public final Player player;
+    private Player player;
     private int capacity;
     private List<InventorySlot> slots = new ArrayList<>();
 
-    public Inventory(Player player)
-    {
-        this.player=player;
+    public Inventory(int capacity) {
+        this.slots = new ArrayList<>(capacity);
+        // Erstelle die korrekte Anzahl an leeren Slots
+        for (int i = 0; i < capacity; i++) {
+            this.slots.add(new InventorySlot(this));
+        }
+        this.capacity = capacity;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
     public int getCapacity() {
         return capacity;

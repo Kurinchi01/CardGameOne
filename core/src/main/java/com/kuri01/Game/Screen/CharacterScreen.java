@@ -132,7 +132,7 @@ public class CharacterScreen extends ScreenAdapter {
                 InventorySlot slot = slots.get(i);
                 // Erstelle ein UI-Element für den Slot (siehe Hilfsmethode/Klasse unten)
                 // und füge es zur Tabelle hinzu.
-                Gdx.app.log("CharacterScreen-UI", slot.getItem().getName());
+
                 inventoryTable.add(new InventorySlotUI(slot, game.skin)).pad(5);
 
                 // Nach 5 Elementen, beginne eine neue Reihe

@@ -10,6 +10,8 @@ public class Item {
     private String name;
     private String description;
 
+    private int quantity;
+
 
 
 //    String[] prefixE = {"Dunkle",
@@ -34,8 +36,16 @@ public class Item {
 //        "des Kobolds",
 //        "des Kriegers"};
 
-    //ring
+
     public Item() {
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public Long getId() {

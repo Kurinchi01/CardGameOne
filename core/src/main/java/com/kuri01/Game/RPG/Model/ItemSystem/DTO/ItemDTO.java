@@ -15,6 +15,7 @@ public class ItemDTO {
     private String description;
     private Rarity rarity;
     private String itemType;
+    private int quantity;
     private EquipmentSlot equipmentSlot; // Nur für EquipmentItems relevant
     private HashMap<String, Integer> stats;  // Nur für EquipmentItems relevant
 
@@ -24,6 +25,14 @@ public class ItemDTO {
 
     // --- Getter & Setter ---
 
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public String getItemType() {
         return itemType;

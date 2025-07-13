@@ -19,7 +19,7 @@ public class InventorySlotUI extends Stack {
             // Hintergrundbild für den Slot
             Image tmp = new Image(skin, "EmptySlot");
             add(tmp); // Annahme: "slot-background" ist in deiner Skin definiert
-            Gdx.app.log("UI Loading",tmp.getName());
+
             if (slot != null && slot.getItem() != null) {
                 Gdx.app.log("UI Loading", slot.getItem().getName());
                 // Item-Icon hinzufügen

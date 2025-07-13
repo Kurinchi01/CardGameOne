@@ -1,6 +1,7 @@
 package com.kuri01.Game.RPG.Model;
 
 import com.kuri01.Game.RPG.Model.ItemSystem.DTO.EquipmentDTO;
+import com.kuri01.Game.RPG.Model.ItemSystem.DTO.InventorySlotDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.DTO.ItemDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.DTO.PlayerDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
@@ -27,8 +28,7 @@ public class ModelFactory {
         player.setExperiencePoints(dto.getExperiencePoints());
         player.setMaxHp(dto.getMaxHp());
         player.setAttack(dto.getAttack());
-        Inventory tmp = new Inventory(player);
-        player.setInventory(tmp);
+
 
         // HP werden zu Beginn auf MAX gesetzt.
         player.setCurrentHp(dto.getMaxHp());
@@ -38,28 +38,25 @@ public class ModelFactory {
             player.setEquipment(createEquipmentFromDTO(dto.getEquipmentDTO()));
         }
 
-        if (dto.getInventoryItemsDTO() != null && player.getInventory() != null) {
-            // Hole die Liste der leeren Slots aus dem neu erstellten Player-Modell
-            List<InventorySlot> playerSlots = player.getInventory().getSlots();
-            // Hole die Liste der Item-Daten vom Server
-            List<ItemDTO> receivedItems = dto.getInventoryItemsDTO();
+        if (dto.getInventory() != null) {
+            // 1. Erstelle das Client-Inventar mit der korrekten Größe vom Server.
+            Inventory inventory = new Inventory(dto.getInventory().getCapacity());
 
-            // Gehe durch die empfangenen Items und fülle die Slots der Reihe nach auf
-            for (int i = 0; i < receivedItems.size(); i++) {
-                // Stelle sicher, dass wir nicht mehr Items haben als Plätze vorhanden sind
-                if (i < playerSlots.size()) {
-                    ItemDTO itemDTO = receivedItems.get(i);
-                    if (itemDTO != null) {
-                        // Wandle den ItemDTO in ein "lebendiges" Item-Modell um
-                        Item liveItem = ModelFactory.createItemFromDTO(itemDTO);
+            // 2. Gehe durch die vom Server gesendeten, belegten Slots.
+            for (InventorySlotDTO slotDTO : dto.getInventory().getSlots()) {
+                // 3. Finde den entsprechenden leeren Slot im Client-Modell.
+                InventorySlot clientSlot = inventory.getSlots().get(slotDTO.getSlotIndex());
 
-                        // Setze das Item und die Anzahl im passenden Slot
-                        playerSlots.get(i).setItem(liveItem);
-                        //playerSlots.get(i).setQuantity(itemDTO.getQuantity());
-                    }
+                // 4. Befülle den Slot mit dem Item.
+                if (clientSlot != null && slotDTO.getItem() != null) {
+                    clientSlot.setItem(createItemFromDTO(slotDTO.getItem()));
+                    clientSlot.setQuantity(slotDTO.getQuantity());
                 }
             }
+            // 5. Weise das fertig befüllte Inventar dem Spieler zu.
+            player.setInventory(inventory);
         }
+
 
         return player;
     }
@@ -132,8 +129,8 @@ public class ModelFactory {
         item.setName(dto.getName());
         item.setDescription(dto.getDescription());
         item.setRarity(dto.getRarity());
-//        item.setIconName(dto.getIconName());
-//        item.setQuantity(dto.getQuantity());
+      //  item.setIconName(dto.getIconName());
+        item.setQuantity(dto.getQuantity());
 
         return item;
     }

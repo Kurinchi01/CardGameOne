@@ -14,7 +14,7 @@ public class PlayerDTO {
 
     // --- Zusammengesetzte Objekte ---
     private EquipmentDTO equipmentDTO;
-    private List<ItemDTO> inventoryItemsDTO;
+    private InventoryDTO inventory;
 
     // --- Leerer Konstruktor ---
 
@@ -30,12 +30,12 @@ public class PlayerDTO {
         this.id = id;
     }
 
-    public List<ItemDTO> getInventoryItemsDTO() {
-        return inventoryItemsDTO;
+    public InventoryDTO getInventory() {
+        return inventory;
     }
 
-    public void setInventoryItemsDTO(List<ItemDTO> inventoryItemsDTO) {
-        this.inventoryItemsDTO = inventoryItemsDTO;
+    public void setInventory(InventoryDTO inventory) {
+        this.inventory = inventory;
     }
 
     public EquipmentDTO getEquipmentDTO() {
