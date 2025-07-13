@@ -6,21 +6,21 @@ filter: Linear, Linear
 repeat: none
 DungeonFont
   rotate: false
-  xy: 1, 480
+  xy: 1, 483
   size: 504, 28
   orig: 504, 28
   offset: 0, 0
   index: -1
 check-off
   rotate: false
-  xy: 193, 351
+  xy: 1, 5
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 textfield
   rotate: false
-  xy: 193, 351
+  xy: 1, 5
   size: 14, 14
   split: 3, 3, 3, 3
   orig: 14, 14
@@ -28,14 +28,14 @@ textfield
   index: -1
 check-on
   rotate: false
-  xy: 227, 385
+  xy: 264, 154
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 507, 505
+  xy: 280, 165
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -43,14 +43,14 @@ cursor
   index: -1
 default
   rotate: false
-  xy: 1, 401
+  xy: 1, 404
   size: 254, 77
   orig: 254, 77
   offset: 0, 0
   index: -1
 default-pane
   rotate: false
-  xy: 1, 25
+  xy: 193, 267
   size: 5, 3
   split: 1, 1, 1, 1
   orig: 5, 3
@@ -58,7 +58,7 @@ default-pane
   index: -1
 default-rect-pad
   rotate: false
-  xy: 1, 25
+  xy: 193, 267
   size: 5, 3
   split: 1, 1, 1, 1
   orig: 5, 3
@@ -66,7 +66,7 @@ default-rect-pad
   index: -1
 default-pane-noborder
   rotate: false
-  xy: 99, 147
+  xy: 99, 150
   size: 1, 1
   split: 0, 0, 0, 0
   orig: 1, 1
@@ -74,7 +74,7 @@ default-pane-noborder
   index: -1
 default-rect
   rotate: false
-  xy: 193, 346
+  xy: 308, 415
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -82,7 +82,7 @@ default-rect
   index: -1
 default-rect-down
   rotate: false
-  xy: 209, 362
+  xy: 324, 431
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -90,7 +90,7 @@ default-rect-down
   index: -1
 default-round
   rotate: false
-  xy: 478, 458
+  xy: 499, 439
   size: 12, 20
   split: 5, 5, 5, 4
   pad: 4, 4, 1, 1
@@ -99,7 +99,7 @@ default-round
   index: -1
 default-round-down
   rotate: false
-  xy: 103, 208
+  xy: 483, 423
   size: 12, 20
   split: 5, 5, 5, 4
   pad: 4, 4, 1, 1
@@ -108,7 +108,7 @@ default-round-down
   index: -1
 default-round-large
   rotate: false
-  xy: 103, 230
+  xy: 483, 461
   size: 20, 20
   split: 5, 5, 5, 4
   orig: 20, 20
@@ -116,7 +116,7 @@ default-round-large
   index: -1
 default-scroll
   rotate: false
-  xy: 1, 30
+  xy: 286, 414
   size: 20, 20
   split: 2, 2, 2, 2
   orig: 20, 20
@@ -124,7 +124,7 @@ default-scroll
   index: -1
 default-select
   rotate: false
-  xy: 257, 411
+  xy: 257, 414
   size: 27, 20
   split: 4, 14, 4, 4
   orig: 27, 20
@@ -132,7 +132,7 @@ default-select
   index: -1
 default-select-selection
   rotate: false
-  xy: 227, 380
+  xy: 507, 508
   size: 3, 3
   split: 1, 1, 1, 1
   orig: 3, 3
@@ -140,7 +140,7 @@ default-select-selection
   index: -1
 default-slider
   rotate: false
-  xy: 257, 401
+  xy: 257, 404
   size: 8, 8
   split: 2, 2, 2, 2
   orig: 8, 8
@@ -148,14 +148,14 @@ default-slider
   index: -1
 default-slider-knob
   rotate: false
-  xy: 125, 232
+  xy: 17, 1
   size: 9, 18
   orig: 9, 18
   offset: 0, 0
   index: -1
 default-splitpane
   rotate: false
-  xy: 23, 47
+  xy: 264, 149
   size: 5, 3
   split: 0, 5, 0, 0
   orig: 5, 3
@@ -163,7 +163,7 @@ default-splitpane
   index: -1
 default-splitpane-vertical
   rotate: false
-  xy: 243, 394
+  xy: 483, 416
   size: 3, 5
   split: 0, 0, 0, 5
   orig: 3, 5
@@ -171,7 +171,7 @@ default-splitpane-vertical
   index: -1
 default-window
   rotate: false
-  xy: 449, 449
+  xy: 235, 139
   size: 27, 29
   split: 4, 3, 20, 3
   orig: 27, 29
@@ -179,79 +179,179 @@ default-window
   index: -1
 selection
   rotate: false
-  xy: 302, 430
+  xy: 103, 154
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 tree-minus
   rotate: false
-  xy: 286, 417
+  xy: 483, 445
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 tree-plus
   rotate: false
-  xy: 449, 433
+  xy: 308, 420
   size: 14, 14
   orig: 14, 14
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 286, 412
+  xy: 28, 16
   size: 3, 3
   orig: 3, 3
   offset: 0, 0
   index: -1
 blue_button00
   rotate: false
-  xy: 1, 350
+  xy: 1, 353
   size: 190, 49
   orig: 190, 49
   offset: 0, 0
   index: -1
 blue_button01
   rotate: false
-  xy: 257, 433
+  xy: 257, 436
   size: 190, 45
   orig: 190, 45
   offset: 0, 0
   index: -1
 blue_panel
   rotate: false
-  xy: 1, 150
+  xy: 1, 153
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 green_button00
   rotate: false
-  xy: 1, 252
+  xy: 1, 255
   size: 190, 49
   orig: 190, 49
   offset: 0, 0
   index: -1
 grey_button00
   rotate: false
-  xy: 1, 303
+  xy: 1, 306
   size: 190, 45
   orig: 190, 45
   offset: 0, 0
   index: -1
-EmptySlot
+ArmorSlot
   rotate: false
-  xy: 193, 367
+  xy: 201, 170
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-Dialog1
+EmptySlot
   rotate: false
-  xy: 1, 52
+  xy: 235, 204
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+HelmetSlot
+  rotate: false
+  xy: 235, 170
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+NecklaceSlot
+  rotate: false
+  xy: 269, 204
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+RingSlot
+  rotate: false
+  xy: 269, 170
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ShieldSlot
+  rotate: false
+  xy: 449, 415
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ShoeSlot
+  rotate: false
+  xy: 201, 204
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+WeaponSlot
+  rotate: false
+  xy: 201, 136
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+BarBackground
+  rotate: false
+  xy: 193, 272
+  size: 96, 32
+  split: 3, 2, 9, 9
+  pad: 8, 8, 14, 14
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+Charge
+  rotate: false
+  xy: 201, 238
+  size: 96, 32
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+HP
+  rotate: false
+  xy: 1, 21
+  size: 96, 32
+  split: 9, 9, 15, 15
+  pad: 0, 0, 0, 0
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+Knob
+  rotate: false
+  xy: 449, 449
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Frame1
+  rotate: false
+  xy: 103, 157
   size: 96, 96
-  split: 32, 32, 32, 32
+  split: 25, 25, 25, 24
+  pad: 25, 25, 26, 24
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+Frame2
+  rotate: false
+  xy: 1, 55
+  size: 96, 96
+  split: 30, 30, 30, 30
+  pad: 31, 30, 32, 32
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+Frame3
+  rotate: false
+  xy: 193, 306
+  size: 96, 96
+  split: 27, 27, 26, 27
+  pad: 27, 27, 28, 29
   orig: 96, 96
   offset: 0, 0
   index: -1
