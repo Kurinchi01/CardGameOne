@@ -11,6 +11,7 @@ public class Item {
     private String description;
 
     private int quantity;
+    private String iconName;
 
 
 
@@ -38,6 +39,14 @@ public class Item {
 
 
     public Item() {
+    }
+
+    public String getIconName() {
+        return iconName;
+    }
+
+    public void setIconName(String iconName) {
+        this.iconName = iconName;
     }
 
     public int getQuantity() {

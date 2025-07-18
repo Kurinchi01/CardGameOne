@@ -2,20 +2,22 @@ package com.kuri01.Game.Screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kuri01.Game.MainGameClass;
-import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
-import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentItem;
-import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
-import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ModelFactory;
 import com.kuri01.Game.RPG.Model.Player;
-
-import java.util.List;
 
 public class CharacterScreen extends ScreenAdapter {
 
@@ -23,48 +25,81 @@ public class CharacterScreen extends ScreenAdapter {
     private Player livePlayer;
     private final Stage stage;
 
-    private Label playerNameLabel;
-    private Label levelLabel;
-    private Label statsLabel;
-    private Table equipmentTable;
-    private Table inventoryTable;
+
+    private InventoryView inventoryView;
+    private EquipmentView equipmentView;
     private static final float VIRTUAL_WIDTH = 1920;
     private static final float VIRTUAL_HEIGHT = 1080;
+    private Label playerNameLabel, playerLvlLabel, goldAmountLabel, candyAmountLabel;
+    private Table invTableForScrollPane;
+
+
     public CharacterScreen(MainGameClass game) {
         this.game = game;
         this.stage = new Stage(new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT));
 
+        //Mit SkinComposer erstellt
+
         Table mainTable = new Table();
+        mainTable.setBackground(game.skin.getDrawable("ForestBackground1"));
         mainTable.setFillParent(true);
+
+        mainTable.add(createTopBar()).growX().minHeight(128.0f).maxHeight(196f);
+        mainTable.row();
+
+        Table table1 = new Table();
+
+        Table table2 = new Table();
+
+        table2.add(createEquipmentFrameTable()).grow().minSize(128.0f).maxSize(512.0f);
+
+        //Filler Table
+        Table table3 = new Table();
+        table3.setName("fillerTable");
+        table2.add(table3).growX();
+
+        table2.add(createEquipmentStatsTable()).grow();
+
+        table1.add(table2).grow().align(Align.left).minHeight(256.0f).maxHeight(352.0f);
+        table1.row();
+
+        //invTable
+        invTableForScrollPane = new Table(game.skin);
+
+
+        ScrollPane scrollPane = new ScrollPane(null, game.skin, "inventory");
+        scrollPane.setClamp(true);
+        scrollPane.setScrollingDisabled(true, false);
+
+        scrollPane.setActor(invTableForScrollPane);
+
+
+
+        table1.add(scrollPane).grow().minHeight(128.0f).maxHeight(512f);
+
+        mainTable.add(table1).grow();
+
+        mainTable.row();
+
+
+        mainTable.add(createBottomRow()).growX().minHeight(128.0f).maxHeight(196f);
         stage.addActor(mainTable);
 
 
-        // Erstelle die UI-Elemente mit Platzhalter-Text
-        playerNameLabel = new Label("Lade Spieler...", game.skin);
-        levelLabel = new Label("Level: ?", game.skin);
-        statsLabel = new Label("Angriff: ?\nVerteidigung: ?", game.skin);
-        playerNameLabel.setFontScale(5);
-        levelLabel.setFontScale(5);
-        statsLabel.setFontScale(5);
-//
-//        mainTable.add(playerNameLabel).pad(10);
-//        mainTable.add(levelLabel).pad(10);
-//        mainTable.row();
-//        mainTable.add(statsLabel).colspan(2).pad(10);
-//        mainTable.setDebug(true);
-
-        inventoryTable = new Table(game.skin);
-        equipmentTable = new Table(game.skin);
-        mainTable.add(new Label("Ausrüstung", game.skin));
-        mainTable.add(new Label("Inventar", game.skin));
-        mainTable.row();
-        mainTable.add(equipmentTable).grow();
-        mainTable.add(inventoryTable).grow();
+        DebugAll(mainTable);
 
 
+        inventoryView = new InventoryView(game.skin, invTableForScrollPane, stage);
+        equipmentView = new EquipmentView(game.skin, mainTable.findActor("equipmentFrame"));
 
-        // Hier später die UI für Inventar und Equipment hinzufügen
 
+    }
+
+    public void DebugAll(Group actor) {
+        for (Actor a : actor.getChildren()
+        ) {
+            a.debug();
+        }
     }
 
     @Override
@@ -87,7 +122,7 @@ public class CharacterScreen extends ScreenAdapter {
 
         }, (error) -> {
             Gdx.app.error("CharacterScreen", "Konnte Spielerprofil nicht laden", error);
-            playerNameLabel.setText("Fehler beim Laden");
+
         });
 
 
@@ -96,70 +131,209 @@ public class CharacterScreen extends ScreenAdapter {
 
     private void updateUiWithPlayerData() {
         Gdx.app.log("CharacterScreen", "Spielerdaten erhalten: " + this.livePlayer.getName());
-        // Diese Methode verwendet jetzt unser lokales 'livePlayer'-Objekt.
+        // Diese Methode verwendet lokales 'livePlayer'-Objekt.
         if (this.livePlayer == null) return;
+
+        //Erst nach erhalt der Spieler Daten wird das Inventar in der View gesetzt
+        inventoryView.setInventory(this.livePlayer.getInventory());
 
         // 1. Aktualisiere die einfachen Labels
         playerNameLabel.setText(this.livePlayer.getName());
-        levelLabel.setText("Level: " + this.livePlayer.getLevel());
+        playerLvlLabel.setText("Level: " + this.livePlayer.getLevel());
         float totalAttack = this.livePlayer.getTotalStat("ATTACK");
         float totalDefense = this.livePlayer.getTotalStat("DEFENSE");
-        statsLabel.setText(String.format("Angriff: %.0f\nVerteidigung: %.0f", totalAttack, totalDefense));
+        //statsLabel.setText(String.format("Angriff: %.0f\nVerteidigung: %.0f", totalAttack, totalDefense));
 
         // 2. Leere die Tabellen, um sie neu zu befüllen
-        equipmentTable.clear();
-        inventoryTable.clear();
+        equipmentView.clearTable();
+        inventoryView.clearTable();
 
         // 3. Befülle die Ausrüstungs-Tabelle
-        Equipment equipment = this.livePlayer.getEquipment();
-        if (equipment != null) {
-            // Erstelle für jeden Slot eine Anzeige
-            createEquipmentSlot(EquipmentSlot.WEAPON, equipment.getWeapon());
-            createEquipmentSlot(EquipmentSlot.HELMET, equipment.getHelmet());
-            createEquipmentSlot(EquipmentSlot.ARMOR, equipment.getArmor());
-            createEquipmentSlot(EquipmentSlot.RING, equipment.getRing());
-            createEquipmentSlot(EquipmentSlot.NECKLACE, equipment.getNecklace());
-            createEquipmentSlot(EquipmentSlot.SHOES, equipment.getShoes());
+        Gdx.app.log("UI Loading", "Lade das Equipment");
+        equipmentView.fillEquipment(this.livePlayer.getEquipment());
 
-        }
-        Gdx.app.log("UI Loading", livePlayer.getInventory().toString());
 
         // 4. Befülle die Inventar-Tabelle
-        if (this.livePlayer.getInventory() != null) {
-            List<InventorySlot> slots = this.livePlayer.getInventory().getSlots();
-            int columns = 5; // z.B. 5 Spalten pro Reihe im Inventar
-            for (int i = 0; i < slots.size(); i++) {
-                InventorySlot slot = slots.get(i);
-                // Erstelle ein UI-Element für den Slot (siehe Hilfsmethode/Klasse unten)
-                // und füge es zur Tabelle hinzu.
-
-                inventoryTable.add(new InventorySlotUI(slot, game.skin)).pad(5);
-
-                // Nach 5 Elementen, beginne eine neue Reihe
-                if ((i + 1) % columns == 0) {
-                    inventoryTable.row();
-                }
-            }
-        }
+        Gdx.app.log("UI Loading", "Lade das Inventar");
+        inventoryView.fillInventory(this.livePlayer.getInventory().getSlots());
         Gdx.app.log("UI Loading", "Only Debugpoint");
+        DebugAll(invTableForScrollPane);
     }
 
-    /**
-     * Hilfsmethode, um einen einzelnen Ausrüstungs-Slot zur UI hinzuzufügen.
-     */
-    private void createEquipmentSlot(EquipmentSlot slotType, EquipmentItem item) {
-        equipmentTable.add(new Label(slotType.getDisplayName() + ":", game.skin)).left();
+    private Table createBottomRow() {
+        Table table1 = new Table();
+        table1.setBackground(game.skin.getDrawable("BottomRow"));
 
-        if (item != null) {
-            // TODO: Hole die Textur aus deinem AssetManager
-            // Image itemIcon = new Image(assetManager.get("icons/" + item.getIconName() + ".png"));
-            // Wir benutzen einen Platzhalter:
-            Label itemLabel = new Label(item.getName(), game.skin);
-            equipmentTable.add(itemLabel).left();
-        } else {
-            equipmentTable.add(new Label("- Leer -", game.skin)).left();
-        }
-        equipmentTable.row();
+        Image image = new Image(game.skin, "Inventory");
+        image.setScaling(Scaling.fit);
+        table1.add(image).growY().uniformX().expandX().fillX();
+
+        image = new Image(game.skin, "StoryPlay");
+        image.setScaling(Scaling.fit);
+        table1.add(image).growY().uniformX().expandX().fillX();
+
+        image = new Image(game.skin, "Battle");
+        image.setScaling(Scaling.fit);
+        table1.add(image).growY().uniformX().expandX().fillX();
+
+        image = new Image(game.skin, "Shop");
+        image.setScaling(Scaling.fit);
+        table1.add(image).growY().uniformX().expandX().fillX();
+        return table1;
+    }
+
+
+    /**
+     * TODO:
+     * Labeles für tatsächliche Statuswerte des Spielers in createEquipmentStatsTable hinzufügen!
+     **/
+    private Table createEquipmentStatsTable() {
+        Table table3 = new Table();
+        table3.setName("equipmentStatsFrame");
+        table3.setBackground(game.skin.getDrawable("Frame2"));
+        return table3;
+    }
+
+    private Table createEquipmentFrameTable() {
+        Table table1 = new Table();
+        table1.setName("equipmentFrame");
+        table1.setBackground(game.skin.getDrawable("Frame1"));
+
+        Table table2 = new Table();
+
+
+        Table table = new Table();
+        Image image = new Image();
+        image.setName("helmetImage");
+        table.setName("helmetSlot");
+        table.setBackground(game.skin.getDrawable("HelmetSlot"));
+
+
+        table.add(image).grow();
+        table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
+
+
+        table = new Table();
+        table.setName("necklaceSlot");
+
+
+        image = new Image();
+        image.setName("necklaceImage");
+        table.setName("necklaceSlot");
+        table.setBackground(game.skin.getDrawable("NecklaceSlot"));
+        table.add(image).grow();
+
+
+        table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
+        table1.add(table2).grow();
+
+        table1.row();
+        table2 = new Table();
+
+        table = new Table();
+        table.setName("weaponSlot");
+
+        image = new Image();
+        image.setName("weaponImage");
+        table.setName("weaponSlot");
+        table.setBackground(game.skin.getDrawable("WeaponSlot"));
+        table.add(image).grow();
+
+        table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
+
+        table = new Table();
+        table.setName("armorSlot");
+
+        image = new Image();
+        image.setName("armorImage");
+        table.setName("armorSlot");
+        table.setBackground(game.skin.getDrawable("ArmorSlot"));
+        table.add(image).grow();
+
+        table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
+
+        table = new Table();
+        table.setName("shieldSlot");
+
+        image = new Image();
+        image.setName("shieldImage");
+        table.setName("shieldSlot");
+        table.setBackground(game.skin.getDrawable("ShieldSlot"));
+        table.add(image).grow();
+
+        table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
+        table1.add(table2).grow();
+
+        table1.row();
+        table = new Table();
+        table.setName("shoesSlot");
+
+        image = new Image();
+        image.setName("shoesImage");
+        table.setName("shoesSlot");
+        table.setBackground(game.skin.getDrawable("ShoesSlot"));
+        table.add(image).grow();
+
+        table1.add(table).grow().minSize(32.0f).maxSize(128.0f);
+
+        return table1;
+
+    }
+
+    private Table createTopBar() {
+        Table table1 = new Table();
+        table1.setBackground(game.skin.getDrawable("TopRow"));
+
+        Table table2 = new Table();
+
+        Image image = new Image(game.skin, "HelmetSlot");
+        image.setName("playerAvatar");
+        table2.add(image).grow().align(Align.left).maxSize(64.0f).uniformX();
+
+        Table table3 = new Table();
+
+        playerNameLabel = new Label("Lorem ipsum", game.skin);
+        playerNameLabel.setName("playerName");
+        playerNameLabel.setFontScale(2f);
+        table3.add(playerNameLabel).grow();
+
+        playerLvlLabel = new Label("Lorem ipsum", game.skin);
+        playerLvlLabel.setName("playerLevel");
+        playerLvlLabel.setAlignment(Align.center);
+        playerLvlLabel.setFontScale(2f);
+        table3.add(playerLvlLabel).grow();
+        table2.add(table3).grow();
+
+        table3 = new Table();
+
+        Table table4 = new Table();
+
+        image = new Image(game.skin, "GoldCoin");
+        image.setName("goldCoinIcon");
+        image.setScaling(Scaling.fit);
+        table4.add(image).minSize(64f).maxSize(64f);
+
+        goldAmountLabel = new Label("Lorem ipsum", game.skin);
+        goldAmountLabel.setName("goldAmount");
+        goldAmountLabel.setFontScale(2f);
+        table4.add(goldAmountLabel).grow().padLeft(16.0f);
+        table3.add(table4).grow();
+
+        table4 = new Table();
+
+        image = new Image(game.skin, "Candy");
+        image.setName("candyImage");
+        image.setScaling(Scaling.fit);
+        table4.add(image).minSize(64f).maxSize(64f);
+
+        candyAmountLabel = new Label("Lorem ipsum", game.skin);
+        candyAmountLabel.setName("candyAmount");
+        candyAmountLabel.setFontScale(2f);
+        table4.add(candyAmountLabel).grow().padLeft(16.0f);
+        table3.add(table4).grow();
+        table2.add(table3).grow();
+        table1.add(table2).grow().uniform();
+        return table1;
     }
 
     @Override

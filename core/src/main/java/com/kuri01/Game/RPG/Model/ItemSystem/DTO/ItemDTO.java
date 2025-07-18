@@ -17,7 +17,8 @@ public class ItemDTO {
     private String itemType;
     private int quantity;
     private EquipmentSlot equipmentSlot; // Nur für EquipmentItems relevant
-    private HashMap<String, Integer> stats;  // Nur für EquipmentItems relevant
+    private HashMap<String, Integer> stats;
+    private String iconName;// Nur für EquipmentItems relevant
 
     // --- Leerer Konstruktor ---
     public ItemDTO() {
@@ -88,5 +89,13 @@ public class ItemDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIconName() {
+        return iconName;
+    }
+
+    public void setIconName(String iconName) {
+        this.iconName = iconName;
     }
 }

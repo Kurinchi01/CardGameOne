@@ -728,6 +728,26 @@ atlasData: {
 			hidden: false
 		}
 		{
+			file: E:/Projekte/IMG for Games/RPG UI pack - Demo (by Franuka)/Single Icons/ShoeSlot.png
+			bgColor: {
+				r: 1
+				g: 1
+				b: 1
+				a: 1
+			}
+			tint: null
+			tintName: null
+			name: ShoeSlot
+			tiled: false
+			minWidth: -1
+			minHeight: -1
+			customized: false
+			tenPatchData: null
+			tvgData: null
+			type: TEXTURE
+			hidden: false
+		}
+		{
 			file: E:/Projekte/IMG for Games/RPG UI pack - Demo (by Franuka)/Single Icons/ArmorSlot.png
 			bgColor: {
 				r: 1
@@ -1247,26 +1267,6 @@ atlasData: {
 			type: NINE_PATCH
 			hidden: false
 		}
-		{
-			file: E:/Projekte/IMG for Games/Using for Game/User Interface Icons/ShoesSlot.png
-			bgColor: {
-				r: 1
-				g: 1
-				b: 1
-				a: 1
-			}
-			tint: null
-			tintName: null
-			name: ShoesSlot
-			tiled: false
-			minWidth: -1
-			minHeight: -1
-			customized: false
-			tenPatchData: null
-			tvgData: null
-			type: TEXTURE
-			hidden: false
-		}
 	]
 	fontDrawables: [
 		{
@@ -1360,7 +1360,7 @@ jsonData: {
 			name: DungeonFont
 			flip: false
 			markupEnabled: false
-			scaling: 12
+			scaling: -1
 			file: C:/Users/User/.skincomposer/preview fonts/DungeonFont.fnt
 		}
 	]
@@ -2290,51 +2290,6 @@ jsonData: {
 					}
 				}
 				deletable: false
-				parent: null
-			}
-			{
-				class: com.ray3k.skincomposer.data.StyleData
-				name: inventory
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-				properties: {
-					background: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: background
-						optional: true
-						value: Frame3
-					}
-					corner: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: corner
-						optional: true
-						value: null
-					}
-					hScroll: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: hScroll
-						optional: true
-						value: null
-					}
-					hScrollKnob: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: hScrollKnob
-						optional: true
-						value: null
-					}
-					vScroll: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: vScroll
-						optional: true
-						value: null
-					}
-					vScrollKnob: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: vScrollKnob
-						optional: true
-						value: null
-					}
-				}
-				deletable: true
 				parent: null
 			}
 		]
@@ -3287,39 +3242,6 @@ jsonData: {
 				deletable: true
 				parent: null
 			}
-			{
-				class: com.ray3k.skincomposer.data.StyleData
-				name: itemView
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Window
-				properties: {
-					background: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: background
-						optional: true
-						value: Frame1
-					}
-					titleFont: {
-						type: com.badlogic.gdx.graphics.g2d.BitmapFont
-						name: titleFont
-						optional: false
-						value: DungeonFont
-					}
-					titleFontColor: {
-						type: com.badlogic.gdx.graphics.Color
-						name: titleFontColor
-						optional: true
-						value: black
-					}
-					stageBackground: {
-						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
-						name: stageBackground
-						optional: true
-						value: null
-					}
-				}
-				deletable: true
-				parent: null
-			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.Touchpad: [
 			{
@@ -3373,7 +3295,7 @@ preferences: {
 	}
 	last-scene-composer-json: {
 		class: java.lang.String
-		value: E:/Projekte/Games/CardGameOne/assets/Backup/itemView.java
+		value: E:/Projekte/Games/CardGameOne/assets/skin/characterScreen.json
 	}
 }
 saveFile: E:/Projekte/Games/CardGameOne/assets/skin/uiskin.scmp
@@ -3389,75 +3311,30 @@ sceneComposer: {
 						cells: [
 							{
 								child: {
-									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
-									cells: [
-										{
-											child: {
-												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
-												name: itemImage
-												drawable: {
-													file: E:/Projekte/IMG for Games/Using for Game/Shikashi's Fantasy Icons Pack v2/Shikashi's Fantasy Icons Pack v2/single Icons/items/helmet/BasicHelmet.png
-													bgColor: {
-														r: 1
-														g: 1
-														b: 1
-														a: 1
-													}
-													tint: null
-													tintName: null
-													name: BasicHelmet
-													tiled: false
-													minWidth: -1
-													minHeight: -1
-													customized: false
-													tenPatchData: null
-													tvgData: null
-													type: TEXTURE
-													hidden: false
-												}
-												scaling: stretch
-												touchable: enabled
-												visible: true
-											}
-											row: 0
-											column: 0
-											padLeft: 0
-											padRight: 0
-											padTop: 0
-											padBottom: 0
-											spaceLeft: 0
-											spaceRight: 0
-											spaceTop: 0
-											spaceBottom: 0
-											expandX: true
-											expandY: true
-											fillX: true
-											fillY: true
-											growX: true
-											growY: true
-											alignment: 1
-											minWidth: 64
-											minHeight: 64
-											maxWidth: 64
-											maxHeight: 64
-											preferredWidth: 64
-											preferredHeight: 64
-											uniformX: false
-											uniformY: false
-											colSpan: 1
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+									name: playerAvatar
+									drawable: {
+										file: E:/Projekte/IMG for Games/RPG UI pack - Demo (by Franuka)/Single Icons/HelmetSlot.png
+										bgColor: {
+											r: 1
+											g: 1
+											b: 1
+											a: 1
 										}
-									]
-									name: imageTable
-									background: null
-									color: null
-									padLeft: 0
-									padRight: 0
-									padTop: 0
-									padBottom: 0
-									paddingEnabled: false
-									alignment: 1
-									fillParent: false
-									touchable: childrenOnly
+										tint: null
+										tintName: null
+										name: HelmetSlot
+										tiled: false
+										minWidth: -1
+										minHeight: -1
+										customized: false
+										tenPatchData: null
+										tvgData: null
+										type: TEXTURE
+										hidden: false
+									}
+									scaling: stretch
+									touchable: enabled
 									visible: true
 								}
 								row: 0
@@ -3471,86 +3348,12 @@ sceneComposer: {
 								spaceTop: 0
 								spaceBottom: 0
 								expandX: true
-								expandY: true
-								fillX: true
-								fillY: true
-								growX: true
-								growY: true
-								alignment: 2
-								minWidth: -1
-								minHeight: -1
-								maxWidth: -1
-								maxHeight: -1
-								preferredWidth: -1
-								preferredHeight: -1
-								uniformX: false
-								uniformY: false
-								colSpan: 1
-							}
-							{
-								child: {
-									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
-									cells: [
-										{
-											child: null
-											row: 0
-											column: 0
-											padLeft: 0
-											padRight: 0
-											padTop: 0
-											padBottom: 0
-											spaceLeft: 0
-											spaceRight: 0
-											spaceTop: 0
-											spaceBottom: 0
-											expandX: false
-											expandY: false
-											fillX: false
-											fillY: false
-											growX: false
-											growY: false
-											alignment: 1
-											minWidth: 16
-											minHeight: 16
-											maxWidth: 16
-											maxHeight: 16
-											preferredWidth: 16
-											preferredHeight: 16
-											uniformX: false
-											uniformY: false
-											colSpan: 1
-										}
-									]
-									name: null
-									background: null
-									color: null
-									padLeft: 0
-									padRight: 0
-									padTop: 0
-									padBottom: 0
-									paddingEnabled: false
-									alignment: 1
-									fillParent: false
-									touchable: childrenOnly
-									visible: true
-								}
-								row: 1
-								column: 0
-								padLeft: 0
-								padRight: 0
-								padTop: 0
-								padBottom: 0
-								spaceLeft: 0
-								spaceRight: 0
-								spaceTop: 0
-								spaceBottom: 0
-								expandX: true
 								expandY: false
-								fillX: true
+								fillX: false
 								fillY: false
-								growX: true
+								growX: false
 								growY: false
-								alignment: 1
+								alignment: 8
 								minWidth: -1
 								minHeight: -1
 								maxWidth: -1
@@ -3568,7 +3371,7 @@ sceneComposer: {
 										{
 											child: {
 												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimLabel
-												name: null
+												name: playerName
 												style: {
 													name: default
 													clazz: com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -3595,12 +3398,178 @@ sceneComposer: {
 													deletable: false
 													parent: null
 												}
-												text: Lorem ipsum
+												text: Spieler Name
 												textAlignment: 8
 												ellipsis: false
 												ellipsisString: ...
 												wrap: false
 												color: null
+												touchable: enabled
+												visible: true
+											}
+											row: 0
+											column: 0
+											padLeft: 0
+											padRight: 16
+											padTop: 0
+											padBottom: 0
+											spaceLeft: 0
+											spaceRight: 0
+											spaceTop: 0
+											spaceBottom: 0
+											expandX: false
+											expandY: false
+											fillX: false
+											fillY: false
+											growX: false
+											growY: false
+											alignment: 1
+											minWidth: -1
+											minHeight: -1
+											maxWidth: -1
+											maxHeight: -1
+											preferredWidth: -1
+											preferredHeight: -1
+											uniformX: false
+											uniformY: false
+											colSpan: 1
+										}
+										{
+											child: {
+												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimLabel
+												name: playerLevel
+												style: {
+													name: default
+													clazz: com.badlogic.gdx.scenes.scene2d.ui.Label
+													properties: {
+														font: {
+															type: com.badlogic.gdx.graphics.g2d.BitmapFont
+															name: font
+															optional: false
+															value: DungeonFont
+														}
+														fontColor: {
+															type: com.badlogic.gdx.graphics.Color
+															name: fontColor
+															optional: true
+															value: white
+														}
+														background: {
+															type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
+															name: background
+															optional: true
+															value: null
+														}
+													}
+													deletable: false
+													parent: null
+												}
+												text: Level
+												textAlignment: 8
+												ellipsis: false
+												ellipsisString: ...
+												wrap: false
+												color: null
+												touchable: enabled
+												visible: true
+											}
+											row: 0
+											column: 1
+											padLeft: 0
+											padRight: 0
+											padTop: 0
+											padBottom: 0
+											spaceLeft: 0
+											spaceRight: 0
+											spaceTop: 0
+											spaceBottom: 0
+											expandX: false
+											expandY: false
+											fillX: false
+											fillY: false
+											growX: false
+											growY: false
+											alignment: 1
+											minWidth: -1
+											minHeight: -1
+											maxWidth: -1
+											maxHeight: -1
+											preferredWidth: -1
+											preferredHeight: -1
+											uniformX: false
+											uniformY: false
+											colSpan: 1
+										}
+									]
+									name: null
+									background: null
+									color: null
+									padLeft: 0
+									padRight: 0
+									padTop: 0
+									padBottom: 0
+									paddingEnabled: false
+									alignment: 1
+									fillParent: false
+									touchable: childrenOnly
+									visible: true
+								}
+								row: 0
+								column: 1
+								padLeft: 0
+								padRight: 0
+								padTop: 0
+								padBottom: 0
+								spaceLeft: 0
+								spaceRight: 0
+								spaceTop: 0
+								spaceBottom: 0
+								expandX: true
+								expandY: false
+								fillX: false
+								fillY: false
+								growX: false
+								growY: false
+								alignment: 1
+								minWidth: -1
+								minHeight: -1
+								maxWidth: -1
+								maxHeight: -1
+								preferredWidth: -1
+								preferredHeight: -1
+								uniformX: false
+								uniformY: false
+								colSpan: 1
+							}
+							{
+								child: {
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
+									cells: [
+										{
+											child: {
+												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+												name: goldIcon
+												drawable: {
+													file: E:/Projekte/IMG for Games/Using for Game/Shikashi's Fantasy Icons Pack v2/Shikashi's Fantasy Icons Pack v2/single Icons/items/GoldCoin.png
+													bgColor: {
+														r: 1
+														g: 1
+														b: 1
+														a: 1
+													}
+													tint: null
+													tintName: null
+													name: GoldCoin
+													tiled: false
+													minWidth: -1
+													minHeight: -1
+													customized: false
+													tenPatchData: null
+													tvgData: null
+													type: TEXTURE
+													hidden: false
+												}
+												scaling: stretch
 												touchable: enabled
 												visible: true
 											}
@@ -3631,8 +3600,448 @@ sceneComposer: {
 											uniformY: false
 											colSpan: 1
 										}
+										{
+											child: {
+												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimLabel
+												name: goldText
+												style: {
+													name: default
+													clazz: com.badlogic.gdx.scenes.scene2d.ui.Label
+													properties: {
+														font: {
+															type: com.badlogic.gdx.graphics.g2d.BitmapFont
+															name: font
+															optional: false
+															value: DungeonFont
+														}
+														fontColor: {
+															type: com.badlogic.gdx.graphics.Color
+															name: fontColor
+															optional: true
+															value: white
+														}
+														background: {
+															type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
+															name: background
+															optional: true
+															value: null
+														}
+													}
+													deletable: false
+													parent: null
+												}
+												text: GoldAmount
+												textAlignment: 8
+												ellipsis: false
+												ellipsisString: ...
+												wrap: false
+												color: null
+												touchable: enabled
+												visible: true
+											}
+											row: 0
+											column: 1
+											padLeft: 0
+											padRight: 0
+											padTop: 0
+											padBottom: 0
+											spaceLeft: 0
+											spaceRight: 0
+											spaceTop: 0
+											spaceBottom: 0
+											expandX: false
+											expandY: false
+											fillX: false
+											fillY: false
+											growX: false
+											growY: false
+											alignment: 1
+											minWidth: -1
+											minHeight: -1
+											maxWidth: -1
+											maxHeight: -1
+											preferredWidth: -1
+											preferredHeight: -1
+											uniformX: false
+											uniformY: false
+											colSpan: 1
+										}
+										{
+											child: {
+												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+												name: candyIcon
+												drawable: {
+													file: E:/Projekte/IMG for Games/Using for Game/Shikashi's Fantasy Icons Pack v2/Shikashi's Fantasy Icons Pack v2/single Icons/items/Candy.png
+													bgColor: {
+														r: 1
+														g: 1
+														b: 1
+														a: 1
+													}
+													tint: null
+													tintName: null
+													name: Candy
+													tiled: false
+													minWidth: -1
+													minHeight: -1
+													customized: false
+													tenPatchData: null
+													tvgData: null
+													type: TEXTURE
+													hidden: false
+												}
+												scaling: stretch
+												touchable: enabled
+												visible: true
+											}
+											row: 1
+											column: 0
+											padLeft: 0
+											padRight: 0
+											padTop: 0
+											padBottom: 0
+											spaceLeft: 0
+											spaceRight: 0
+											spaceTop: 0
+											spaceBottom: 0
+											expandX: false
+											expandY: false
+											fillX: false
+											fillY: false
+											growX: false
+											growY: false
+											alignment: 1
+											minWidth: -1
+											minHeight: -1
+											maxWidth: -1
+											maxHeight: -1
+											preferredWidth: -1
+											preferredHeight: -1
+											uniformX: false
+											uniformY: false
+											colSpan: 1
+										}
+										{
+											child: {
+												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimLabel
+												name: candyText
+												style: {
+													name: default
+													clazz: com.badlogic.gdx.scenes.scene2d.ui.Label
+													properties: {
+														font: {
+															type: com.badlogic.gdx.graphics.g2d.BitmapFont
+															name: font
+															optional: false
+															value: DungeonFont
+														}
+														fontColor: {
+															type: com.badlogic.gdx.graphics.Color
+															name: fontColor
+															optional: true
+															value: white
+														}
+														background: {
+															type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
+															name: background
+															optional: true
+															value: null
+														}
+													}
+													deletable: false
+													parent: null
+												}
+												text: Candy Amount
+												textAlignment: 8
+												ellipsis: false
+												ellipsisString: ...
+												wrap: false
+												color: null
+												touchable: enabled
+												visible: true
+											}
+											row: 1
+											column: 1
+											padLeft: 0
+											padRight: 0
+											padTop: 8
+											padBottom: 0
+											spaceLeft: 0
+											spaceRight: 0
+											spaceTop: 0
+											spaceBottom: 0
+											expandX: false
+											expandY: false
+											fillX: false
+											fillY: false
+											growX: false
+											growY: false
+											alignment: 1
+											minWidth: -1
+											minHeight: -1
+											maxWidth: -1
+											maxHeight: -1
+											preferredWidth: -1
+											preferredHeight: -1
+											uniformX: false
+											uniformY: false
+											colSpan: 1
+										}
 									]
-									name: statsTable
+									name: null
+									background: null
+									color: null
+									padLeft: 0
+									padRight: 0
+									padTop: 0
+									padBottom: 0
+									paddingEnabled: true
+									alignment: 1
+									fillParent: false
+									touchable: childrenOnly
+									visible: true
+								}
+								row: 0
+								column: 2
+								padLeft: 0
+								padRight: 0
+								padTop: 0
+								padBottom: 0
+								spaceLeft: 0
+								spaceRight: 0
+								spaceTop: 0
+								spaceBottom: 0
+								expandX: true
+								expandY: false
+								fillX: false
+								fillY: false
+								growX: false
+								growY: false
+								alignment: 1
+								minWidth: -1
+								minHeight: -1
+								maxWidth: -1
+								maxHeight: -1
+								preferredWidth: -1
+								preferredHeight: -1
+								uniformX: false
+								uniformY: false
+								colSpan: 1
+							}
+						]
+						name: null
+						background: null
+						color: null
+						padLeft: 0
+						padRight: 0
+						padTop: 0
+						padBottom: 0
+						paddingEnabled: false
+						alignment: 1
+						fillParent: false
+						touchable: childrenOnly
+						visible: true
+					}
+					row: 0
+					column: 0
+					padLeft: 0
+					padRight: 0
+					padTop: 0
+					padBottom: 0
+					spaceLeft: 0
+					spaceRight: 0
+					spaceTop: 0
+					spaceBottom: 0
+					expandX: false
+					expandY: false
+					fillX: true
+					fillY: false
+					growX: false
+					growY: false
+					alignment: 2
+					minWidth: -1
+					minHeight: -1
+					maxWidth: -1
+					maxHeight: -1
+					preferredWidth: -1
+					preferredHeight: -1
+					uniformX: false
+					uniformY: false
+					colSpan: 1
+				}
+				{
+					child: {
+						class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
+						cells: [
+							{
+								child: {
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
+									cells: [
+										{
+											child: {
+												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
+												cells: [
+													{
+														child: {
+															class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+															name: null
+															drawable: null
+															scaling: stretch
+															touchable: enabled
+															visible: true
+														}
+														row: 0
+														column: 0
+														padLeft: 0
+														padRight: 0
+														padTop: 0
+														padBottom: 0
+														spaceLeft: 0
+														spaceRight: 0
+														spaceTop: 0
+														spaceBottom: 0
+														expandX: false
+														expandY: false
+														fillX: false
+														fillY: false
+														growX: false
+														growY: false
+														alignment: 1
+														minWidth: -1
+														minHeight: -1
+														maxWidth: -1
+														maxHeight: -1
+														preferredWidth: -1
+														preferredHeight: -1
+														uniformX: false
+														uniformY: false
+														colSpan: 1
+													}
+												]
+												name: null
+												background: {
+													file: E:/Projekte/IMG for Games/Using for Game/User Interface Icons/Frame1.9.png
+													bgColor: {
+														r: 1
+														g: 1
+														b: 1
+														a: 1
+													}
+													tint: null
+													tintName: null
+													name: Frame1
+													tiled: false
+													minWidth: -1
+													minHeight: -1
+													customized: false
+													tenPatchData: null
+													tvgData: null
+													type: NINE_PATCH
+													hidden: false
+												}
+												color: null
+												padLeft: 0
+												padRight: 0
+												padTop: 0
+												padBottom: 0
+												paddingEnabled: false
+												alignment: 1
+												fillParent: false
+												touchable: childrenOnly
+												visible: true
+											}
+											row: 0
+											column: 0
+											padLeft: 0
+											padRight: 0
+											padTop: 0
+											padBottom: 0
+											spaceLeft: 0
+											spaceRight: 0
+											spaceTop: 0
+											spaceBottom: 0
+											expandX: true
+											expandY: true
+											fillX: true
+											fillY: true
+											growX: true
+											growY: true
+											alignment: 1
+											minWidth: -1
+											minHeight: -1
+											maxWidth: -1
+											maxHeight: -1
+											preferredWidth: -1
+											preferredHeight: -1
+											uniformX: false
+											uniformY: false
+											colSpan: 1
+										}
+										{
+											child: {
+												class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
+												cells: []
+												name: null
+												background: {
+													file: E:/Projekte/IMG for Games/Using for Game/User Interface Icons/Frame2.9.png
+													bgColor: {
+														r: 1
+														g: 1
+														b: 1
+														a: 1
+													}
+													tint: null
+													tintName: null
+													name: Frame2
+													tiled: false
+													minWidth: -1
+													minHeight: -1
+													customized: false
+													tenPatchData: null
+													tvgData: null
+													type: NINE_PATCH
+													hidden: false
+												}
+												color: null
+												padLeft: 0
+												padRight: 0
+												padTop: 0
+												padBottom: 0
+												paddingEnabled: false
+												alignment: 1
+												fillParent: false
+												touchable: childrenOnly
+												visible: true
+											}
+											row: 0
+											column: 1
+											padLeft: 0
+											padRight: 0
+											padTop: 0
+											padBottom: 0
+											spaceLeft: 0
+											spaceRight: 0
+											spaceTop: 0
+											spaceBottom: 0
+											expandX: true
+											expandY: true
+											fillX: true
+											fillY: true
+											growX: true
+											growY: true
+											alignment: 1
+											minWidth: -1
+											minHeight: -1
+											maxWidth: -1
+											maxHeight: -1
+											preferredWidth: -1
+											preferredHeight: -1
+											uniformX: false
+											uniformY: false
+											colSpan: 1
+										}
+									]
+									name: null
 									background: null
 									color: null
 									padLeft: 0
@@ -3645,7 +4054,70 @@ sceneComposer: {
 									touchable: childrenOnly
 									visible: true
 								}
-								row: 2
+								row: 0
+								column: 0
+								padLeft: 0
+								padRight: 0
+								padTop: 0
+								padBottom: 0
+								spaceLeft: 0
+								spaceRight: 0
+								spaceTop: 0
+								spaceBottom: 0
+								expandX: true
+								expandY: true
+								fillX: true
+								fillY: true
+								growX: true
+								growY: true
+								alignment: 1
+								minWidth: -1
+								minHeight: -1
+								maxWidth: -1
+								maxHeight: -1
+								preferredWidth: -1
+								preferredHeight: -1
+								uniformX: false
+								uniformY: false
+								colSpan: 1
+							}
+							{
+								child: {
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
+									cells: []
+									name: null
+									background: {
+										file: E:/Projekte/IMG for Games/Using for Game/User Interface Icons/Frame3.9.png
+										bgColor: {
+											r: 1
+											g: 1
+											b: 1
+											a: 1
+										}
+										tint: null
+										tintName: null
+										name: Frame3
+										tiled: false
+										minWidth: -1
+										minHeight: -1
+										customized: false
+										tenPatchData: null
+										tvgData: null
+										type: NINE_PATCH
+										hidden: false
+									}
+									color: null
+									padLeft: 0
+									padRight: 0
+									padTop: 0
+									padBottom: 0
+									paddingEnabled: false
+									alignment: 1
+									fillParent: false
+									touchable: childrenOnly
+									visible: true
+								}
+								row: 1
 								column: 0
 								padLeft: 0
 								padRight: 0
@@ -3674,8 +4146,273 @@ sceneComposer: {
 							}
 						]
 						name: null
+						background: null
+						color: null
+						padLeft: 0
+						padRight: 0
+						padTop: 0
+						padBottom: 0
+						paddingEnabled: false
+						alignment: 1
+						fillParent: false
+						touchable: childrenOnly
+						visible: true
+					}
+					row: 1
+					column: 0
+					padLeft: 0
+					padRight: 0
+					padTop: 0
+					padBottom: 0
+					spaceLeft: 0
+					spaceRight: 0
+					spaceTop: 0
+					spaceBottom: 0
+					expandX: true
+					expandY: true
+					fillX: true
+					fillY: true
+					growX: true
+					growY: true
+					alignment: 1
+					minWidth: -1
+					minHeight: -1
+					maxWidth: -1
+					maxHeight: -1
+					preferredWidth: -1
+					preferredHeight: -1
+					uniformX: false
+					uniformY: false
+					colSpan: 1
+				}
+				{
+					child: {
+						class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimTable
+						cells: [
+							{
+								child: {
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+									name: null
+									drawable: {
+										file: E:/Projekte/IMG for Games/Using for Game/Shikashi's Fantasy Icons Pack v2/Shikashi's Fantasy Icons Pack v2/single Icons/items/Inventory.png
+										bgColor: {
+											r: 1
+											g: 1
+											b: 1
+											a: 1
+										}
+										tint: null
+										tintName: null
+										name: Inventory
+										tiled: false
+										minWidth: -1
+										minHeight: -1
+										customized: false
+										tenPatchData: null
+										tvgData: null
+										type: TEXTURE
+										hidden: false
+									}
+									scaling: stretch
+									touchable: enabled
+									visible: true
+								}
+								row: 0
+								column: 0
+								padLeft: 0
+								padRight: 0
+								padTop: 0
+								padBottom: 0
+								spaceLeft: 0
+								spaceRight: 0
+								spaceTop: 0
+								spaceBottom: 0
+								expandX: true
+								expandY: false
+								fillX: false
+								fillY: false
+								growX: false
+								growY: false
+								alignment: 1
+								minWidth: -1
+								minHeight: -1
+								maxWidth: -1
+								maxHeight: -1
+								preferredWidth: -1
+								preferredHeight: -1
+								uniformX: false
+								uniformY: false
+								colSpan: 1
+							}
+							{
+								child: {
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+									name: null
+									drawable: {
+										file: E:/Projekte/IMG for Games/Using for Game/Shikashi's Fantasy Icons Pack v2/Shikashi's Fantasy Icons Pack v2/single Icons/items/StoryPlay.png
+										bgColor: {
+											r: 1
+											g: 1
+											b: 1
+											a: 1
+										}
+										tint: null
+										tintName: null
+										name: StoryPlay
+										tiled: false
+										minWidth: -1
+										minHeight: -1
+										customized: false
+										tenPatchData: null
+										tvgData: null
+										type: TEXTURE
+										hidden: false
+									}
+									scaling: stretch
+									touchable: enabled
+									visible: true
+								}
+								row: 0
+								column: 1
+								padLeft: 0
+								padRight: 0
+								padTop: 0
+								padBottom: 0
+								spaceLeft: 0
+								spaceRight: 0
+								spaceTop: 0
+								spaceBottom: 0
+								expandX: true
+								expandY: false
+								fillX: false
+								fillY: false
+								growX: false
+								growY: false
+								alignment: 1
+								minWidth: -1
+								minHeight: -1
+								maxWidth: -1
+								maxHeight: -1
+								preferredWidth: -1
+								preferredHeight: -1
+								uniformX: false
+								uniformY: false
+								colSpan: 1
+							}
+							{
+								child: {
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+									name: null
+									drawable: {
+										file: E:/Projekte/IMG for Games/Using for Game/Shikashi's Fantasy Icons Pack v2/Shikashi's Fantasy Icons Pack v2/single Icons/items/Battle.png
+										bgColor: {
+											r: 1
+											g: 1
+											b: 1
+											a: 1
+										}
+										tint: null
+										tintName: null
+										name: Battle
+										tiled: false
+										minWidth: -1
+										minHeight: -1
+										customized: false
+										tenPatchData: null
+										tvgData: null
+										type: TEXTURE
+										hidden: false
+									}
+									scaling: stretch
+									touchable: enabled
+									visible: true
+								}
+								row: 0
+								column: 2
+								padLeft: 0
+								padRight: 0
+								padTop: 0
+								padBottom: 0
+								spaceLeft: 0
+								spaceRight: 0
+								spaceTop: 0
+								spaceBottom: 0
+								expandX: true
+								expandY: false
+								fillX: false
+								fillY: false
+								growX: false
+								growY: false
+								alignment: 1
+								minWidth: -1
+								minHeight: -1
+								maxWidth: -1
+								maxHeight: -1
+								preferredWidth: -1
+								preferredHeight: -1
+								uniformX: false
+								uniformY: false
+								colSpan: 1
+							}
+							{
+								child: {
+									class: com.ray3k.skincomposer.dialog.scenecomposer.DialogSceneComposerModel$SimImage
+									name: null
+									drawable: {
+										file: E:/Projekte/IMG for Games/Using for Game/Shikashi's Fantasy Icons Pack v2/Shikashi's Fantasy Icons Pack v2/single Icons/items/Shop.png
+										bgColor: {
+											r: 1
+											g: 1
+											b: 1
+											a: 1
+										}
+										tint: null
+										tintName: null
+										name: Shop
+										tiled: false
+										minWidth: -1
+										minHeight: -1
+										customized: false
+										tenPatchData: null
+										tvgData: null
+										type: TEXTURE
+										hidden: false
+									}
+									scaling: stretch
+									touchable: enabled
+									visible: true
+								}
+								row: 0
+								column: 3
+								padLeft: 0
+								padRight: 0
+								padTop: 0
+								padBottom: 0
+								spaceLeft: 0
+								spaceRight: 0
+								spaceTop: 0
+								spaceBottom: 0
+								expandX: true
+								expandY: false
+								fillX: false
+								fillY: false
+								growX: false
+								growY: false
+								alignment: 1
+								minWidth: -1
+								minHeight: -1
+								maxWidth: -1
+								maxHeight: -1
+								preferredWidth: -1
+								preferredHeight: -1
+								uniformX: false
+								uniformY: false
+								colSpan: 1
+							}
+						]
+						name: null
 						background: {
-							file: E:/Projekte/IMG for Games/Using for Game/User Interface Icons/Frame1.9.png
+							file: E:/Projekte/IMG for Games/RPG UI pack - Demo (by Franuka)/Single/32x96/BottomRow.9.png
 							bgColor: {
 								r: 1
 								g: 1
@@ -3684,7 +4421,7 @@ sceneComposer: {
 							}
 							tint: null
 							tintName: null
-							name: Frame1
+							name: BottomRow
 							tiled: false
 							minWidth: -1
 							minHeight: -1
@@ -3705,7 +4442,7 @@ sceneComposer: {
 						touchable: childrenOnly
 						visible: true
 					}
-					row: 0
+					row: 2
 					column: 0
 					padLeft: 0
 					padRight: 0
@@ -3715,17 +4452,17 @@ sceneComposer: {
 					spaceRight: 0
 					spaceTop: 0
 					spaceBottom: 0
-					expandX: true
-					expandY: true
+					expandX: false
+					expandY: false
 					fillX: true
-					fillY: true
-					growX: true
-					growY: true
-					alignment: 1
-					minWidth: 128
-					minHeight: 128
-					maxWidth: 256
-					maxHeight: 256
+					fillY: false
+					growX: false
+					growY: false
+					alignment: 4
+					minWidth: -1
+					minHeight: -1
+					maxWidth: -1
+					maxHeight: -1
 					preferredWidth: -1
 					preferredHeight: -1
 					uniformX: false
@@ -3734,7 +4471,26 @@ sceneComposer: {
 				}
 			]
 			name: null
-			background: null
+			background: {
+				file: E:/Projekte/IMG for Games/free-forest-battle-backgrounds/PNG/game_background_4/ForestBackground1.9.png
+				bgColor: {
+					r: 1
+					g: 1
+					b: 1
+					a: 1
+				}
+				tint: null
+				tintName: null
+				name: ForestBackground1
+				tiled: false
+				minWidth: -1
+				minHeight: -1
+				customized: false
+				tenPatchData: null
+				tvgData: null
+				type: NINE_PATCH
+				hidden: false
+			}
 			color: null
 			padLeft: 0
 			padRight: 0

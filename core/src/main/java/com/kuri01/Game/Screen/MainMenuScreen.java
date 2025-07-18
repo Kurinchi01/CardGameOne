@@ -15,21 +15,23 @@ public class MainMenuScreen implements Screen {
 
     private final MainGameClass game;
     private final Stage stage;
+    private CharacterScreen characterScreen;
+
     public MainMenuScreen(MainGameClass mainGameClass) {
         this.game = mainGameClass;
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
+        Table mainMenuRootTable = new Table();
+        mainMenuRootTable.setFillParent(true);
+        stage.addActor(mainMenuRootTable);
 
         Label title = new Label("Mein TriPeaks RPG", game.skin, "title");
         TextButton loginButton = new TextButton("Dev-Login als 'Kuri01'", game.skin);
         title.scaleBy(2f);
-        table.add(title).padBottom(40);
-        table.row();
-        table.add(loginButton).width(500).height(100);
+        mainMenuRootTable.add(title).padBottom(40);
+        mainMenuRootTable.row();
+        mainMenuRootTable.add(loginButton).width(500).height(100);
 
         loginButton.addListener(new ClickListener() {
             @Override
@@ -43,13 +45,16 @@ public class MainMenuScreen implements Screen {
                     game.jwtToken = loginResponse.getJwtToken(); // Speichere das Token
 
                     // Wechsle zum Charakter-Bildschirm
-                    game.setScreen(new CharacterScreen(game));
+                    characterScreen = new CharacterScreen(game);
+                    game.setScreen(characterScreen);
 
                 }, (error) -> {
                     // FEHLER-CALLBACK
                     Gdx.app.error("MainMenu", "Login fehlgeschlagen!", error);
                     loginButton.setText("Fehler! Erneut versuchen.");
                 });
+
+
             }
         });
     }

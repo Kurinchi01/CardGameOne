@@ -129,9 +129,17 @@ public class ModelFactory {
         item.setName(dto.getName());
         item.setDescription(dto.getDescription());
         item.setRarity(dto.getRarity());
-      //  item.setIconName(dto.getIconName());
+        item.setIconName(dto.getIconName());
         item.setQuantity(dto.getQuantity());
 
         return item;
+    }
+
+    public static void copyInventorySlot(InventorySlot source, InventorySlot target)
+    {
+        target.setId(source.getId());
+        target.setInventory(source.getInventory());
+        target.setItem(source.getItem());
+        target.setQuantity(source.getQuantity());
     }
 }
