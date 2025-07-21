@@ -3415,7 +3415,7 @@ sceneComposer: {
 													type: TEXTURE
 													hidden: false
 												}
-												scaling: stretch
+												scaling: fit
 												touchable: enabled
 												visible: true
 											}
@@ -3435,7 +3435,7 @@ sceneComposer: {
 											fillY: true
 											growX: true
 											growY: true
-											alignment: 1
+											alignment: 2
 											minWidth: 64
 											minHeight: 64
 											maxWidth: 64

@@ -4,20 +4,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.kuri01.Game.MainGameClass;
 import com.kuri01.Game.RPG.Model.ModelFactory;
 import com.kuri01.Game.RPG.Model.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CharacterScreen extends ScreenAdapter {
 
@@ -32,6 +33,8 @@ public class CharacterScreen extends ScreenAdapter {
     private static final float VIRTUAL_HEIGHT = 1080;
     private Label playerNameLabel, playerLvlLabel, goldAmountLabel, candyAmountLabel;
     private Table invTableForScrollPane;
+    private final DragAndDrop dragAndDrop = new DragAndDrop();
+    private final List<Object> actionQueue = new ArrayList<>();
 
 
     public CharacterScreen(MainGameClass game) {
@@ -74,7 +77,6 @@ public class CharacterScreen extends ScreenAdapter {
         scrollPane.setActor(invTableForScrollPane);
 
 
-
         table1.add(scrollPane).grow().minHeight(128.0f).maxHeight(512f);
 
         mainTable.add(table1).grow();
@@ -89,7 +91,7 @@ public class CharacterScreen extends ScreenAdapter {
         DebugAll(mainTable);
 
 
-        inventoryView = new InventoryView(game.skin, invTableForScrollPane, stage);
+        inventoryView = new InventoryView(game.skin, invTableForScrollPane, stage, this.dragAndDrop, actionQueue);
         equipmentView = new EquipmentView(game.skin, mainTable.findActor("equipmentFrame"));
 
 

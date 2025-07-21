@@ -15,6 +15,7 @@ public class Inventory {
         // Erstelle die korrekte Anzahl an leeren Slots
         for (int i = 0; i < capacity; i++) {
             this.slots.add(new InventorySlot(this));
+            slots.get(i).setSlotIndex(i);
         }
         this.capacity = capacity;
     }

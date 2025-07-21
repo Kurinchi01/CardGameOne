@@ -51,6 +51,7 @@ public class ModelFactory {
                 if (clientSlot != null && slotDTO.getItem() != null) {
                     clientSlot.setItem(createItemFromDTO(slotDTO.getItem()));
                     clientSlot.setQuantity(slotDTO.getQuantity());
+                    clientSlot.setSlotIndex(slotDTO.getSlotIndex());
                 }
             }
             // 5. Weise das fertig befüllte Inventar dem Spieler zu.

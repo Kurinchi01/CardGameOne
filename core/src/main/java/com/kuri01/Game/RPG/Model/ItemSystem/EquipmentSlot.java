@@ -1,20 +1,30 @@
 package com.kuri01.Game.RPG.Model.ItemSystem;
 
-public enum EquipmentSlot {
-    WEAPON("Waffe"),
-    HELMET("Helm"),
-    ARMOR("Rüstung"),
-    NECKLACE("Kette"),
-    RING("Ring"),
-    SHOES("Schuhe");
+import com.kuri01.Game.RPG.Model.Player;
 
-    private final String displayName;
+public class EquipmentSlot extends ItemSlot {
+    private EquipmentSlotEnum slotEnum;
 
-    EquipmentSlot(String displayName) {
-        this.displayName = displayName;
+    private Player player;
+
+    public EquipmentSlot() {
     }
 
-    public String getDisplayName() {
-        return displayName;
+
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public EquipmentSlotEnum getSlotEnum() {
+        return slotEnum;
+    }
+
+    public void setSlotEnum(EquipmentSlotEnum slotEnum) {
+        this.slotEnum = slotEnum;
     }
 }

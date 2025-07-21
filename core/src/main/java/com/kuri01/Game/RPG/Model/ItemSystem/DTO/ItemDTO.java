@@ -3,11 +3,10 @@ package com.kuri01.Game.RPG.Model.ItemSystem.DTO;
 
 
 
-import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 import com.kuri01.Game.RPG.Model.Rarity;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class ItemDTO {
     private Long id;
@@ -16,7 +15,7 @@ public class ItemDTO {
     private Rarity rarity;
     private String itemType;
     private int quantity;
-    private EquipmentSlot equipmentSlot; // Nur für EquipmentItems relevant
+    private EquipmentSlotEnum equipmentSlotEnum; // Nur für EquipmentItems relevant
     private HashMap<String, Integer> stats;
     private String iconName;// Nur für EquipmentItems relevant
 
@@ -59,12 +58,12 @@ public class ItemDTO {
         this.stats = stats;
     }
 
-    public EquipmentSlot getEquipmentSlot() {
-        return equipmentSlot;
+    public EquipmentSlotEnum getEquipmentSlot() {
+        return equipmentSlotEnum;
     }
 
-    public void setEquipmentSlot(EquipmentSlot equipmentSlot) {
-        this.equipmentSlot = equipmentSlot;
+    public void setEquipmentSlot(EquipmentSlotEnum equipmentSlotEnum) {
+        this.equipmentSlotEnum = equipmentSlotEnum;
     }
 
     public Rarity getRarity() {

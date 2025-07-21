@@ -4,18 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EquipmentItem extends Item {
-    private EquipmentSlot equipmentSlot;
+    private EquipmentSlotEnum equipmentSlotEnum;
     private Map<String, Integer> stats = new HashMap<>();
 
     public EquipmentItem() {
     }
 
-    public EquipmentSlot getEquipmentSlot() {
-        return equipmentSlot;
+    public EquipmentSlotEnum getEquipmentSlot() {
+        return equipmentSlotEnum;
     }
 
-    public void setEquipmentSlot(EquipmentSlot equipmentSlot) {
-        this.equipmentSlot = equipmentSlot;
+    public void setEquipmentSlot(EquipmentSlotEnum equipmentSlotEnum) {
+        this.equipmentSlotEnum = equipmentSlotEnum;
     }
 
     public Map<String, Integer> getStats() {

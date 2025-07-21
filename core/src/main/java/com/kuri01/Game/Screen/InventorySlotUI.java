@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Scaling;
+import com.kuri01.Game.RPG.Model.ItemSystem.DTO.Action.SwapInvAction;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
-import com.kuri01.Game.RPG.Model.ModelFactory;
 
 // Diese Klasse ist eine Table, die einen einzelnen Inventar-Slot darstellt.
 public class InventorySlotUI extends Stack {
@@ -18,12 +18,14 @@ public class InventorySlotUI extends Stack {
     private DragAndDrop dragAndDrop;
     private Skin skin;
     private Image tmp;
+    private final InventoryView parentView;
 
-    public InventorySlotUI(InventorySlot slot, Skin skin, DragAndDrop dragAndDrop) {
+    public InventorySlotUI(InventorySlot slot, Skin skin, DragAndDrop dragAndDrop, InventoryView parentView) {
         super();
         this.skin = skin;
         this.dragAndDrop = dragAndDrop;
         inventorySlot = new InventorySlot();
+        this.parentView = parentView;
 
         // Hintergrundbild für den Slot
         tmp = new Image(skin, "EmptySlot");
@@ -54,19 +56,24 @@ public class InventorySlotUI extends Stack {
             @Override
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 Gdx.app.log("Drop", "Item wurde auf einen Slot abgelegt!");
-                // Hole die Daten aus dem Payload
-                InventorySlot sourceSlotModel = (InventorySlot) payload.getObject();
-                InventorySlot targetSlotModel = InventorySlotUI.this.inventorySlot;
-                InventorySlot tmpSlot = new InventorySlot();
+                Object payloadObject = payload.getObject();
 
-                ModelFactory.copyInventorySlot(targetSlotModel,tmpSlot);
-                ModelFactory.copyInventorySlot(sourceSlotModel,targetSlotModel);
-                ModelFactory.copyInventorySlot(tmpSlot,sourceSlotModel);
+                if (payloadObject instanceof InventorySlot) {
+                    // Fall 1: Item wird von einem Inventar-Slot auf einen anderen gezogen -> SWAP
+                    InventorySlot sourceSlot = (InventorySlot) payloadObject;
+                    InventorySlot targetSlot = inventorySlot;
+
+                    // Erstelle die passende Aktion und füge sie zur Queue hinzu
+                    parentView.getActionQueue().add(new SwapInvAction(sourceSlot, targetSlot));
+
+                    // Führe die lokale UI-Änderung durch...
+                    parentView.handleItemDrop(sourceSlot, targetSlot);
+                }
             }
-
 
         });
     }
+
 
     private void setupDragSource() {
         dragAndDrop.addSource(new DragAndDrop.Source(this) {
@@ -80,10 +87,8 @@ public class InventorySlotUI extends Stack {
                 dragIcon.setSize(64f, 64f);
                 payload.setDragActor(dragIcon);
 
-
                 //Mache gezogenes Item unsichtbar
                 tmp.setVisible(false);
-
 
                 return payload;
             }
@@ -94,7 +99,6 @@ public class InventorySlotUI extends Stack {
                 tmp.setVisible(true);
             }
         });
-
 
     }
 
