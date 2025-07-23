@@ -14,7 +14,8 @@ dependencies {
 }
 
   dependencies {
-    // JUnit 5 hinzufügen
+      implementation 'org.projectlombok:lombok:1.18.34'
+      // JUnit 5 hinzufügen
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
   }
 
