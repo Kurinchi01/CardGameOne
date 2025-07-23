@@ -1,11 +1,19 @@
 package com.kuri01.Game.RPG.Model;
 
+import com.kuri01.Game.RPG.Model.ItemSystem.DTO.PlayerWalletDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class Player extends Character {
     private Equipment equipment;
     private int experiencePoints;
@@ -13,56 +21,13 @@ public class Player extends Character {
     private Inventory inventory;
     // Wichtig für Rolle des Spielers
     private Set<String> roles = new HashSet<>();
+
+    private PlayerWallet playerWallet;
     public Player(String name, int maxHp, int attack) {
         super(name, maxHp, attack);
+        this.playerWallet=new PlayerWallet();
     }
 
-    public Player() {
-    }
-
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
-    }
-
-    public void setInventoryItems(Inventory inventory) {
-        this.inventory = inventory;
-    }
-
-    public Equipment getEquipment() {
-        return equipment;
-    }
-
-    public void setEquipment(Equipment equipment) {
-        this.equipment = equipment;
-    }
-
-    public int getExperiencePoints() {
-        return experiencePoints;
-    }
-
-    public void setExperiencePoints(int experiencePoints) {
-        this.experiencePoints = experiencePoints;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
 
     /**
      * Berechnet einen Gesamt-Stat des Spielers, indem der Basis-Stat
