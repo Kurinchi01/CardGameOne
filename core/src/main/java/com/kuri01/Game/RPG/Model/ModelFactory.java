@@ -11,7 +11,6 @@ import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.LootChest;
 
-import java.util.List;
 
 public class ModelFactory {
 
@@ -29,6 +28,14 @@ public class ModelFactory {
         player.setMaxHp(dto.getMaxHp());
         player.setAttack(dto.getAttack());
 
+        PlayerWallet wallet = new PlayerWallet();
+        wallet.setGold(dto.getPlayerWalletDTO().getGold());
+        wallet.setCandy(dto.getPlayerWalletDTO().getCandy());
+        player.setPlayerWallet(wallet);
+
+
+
+
 
         // HP werden zu Beginn auf MAX gesetzt.
         player.setCurrentHp(dto.getMaxHp());
@@ -38,12 +45,12 @@ public class ModelFactory {
             player.setEquipment(createEquipmentFromDTO(dto.getEquipmentDTO()));
         }
 
-        if (dto.getInventory() != null) {
+        if (dto.getInventoryDTO() != null) {
             // 1. Erstelle das Client-Inventar mit der korrekten Größe vom Server.
-            Inventory inventory = new Inventory(player,dto.getInventory().getCapacity());
+            Inventory inventory = new Inventory(player,dto.getInventoryDTO().getCapacity());
 
             // 2. Gehe durch die vom Server gesendeten, belegten Slots.
-            for (InventorySlotDTO slotDTO : dto.getInventory().getSlots()) {
+            for (InventorySlotDTO slotDTO : dto.getInventoryDTO().getSlots()) {
                 // 3. Finde den entsprechenden leeren Slot im Client-Modell.
                 InventorySlot clientSlot = inventory.getSlots().get(slotDTO.getSlotIndex());
 

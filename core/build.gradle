@@ -11,11 +11,14 @@ dependencies {
     if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
+
+  annotationProcessor "org.projectlombok:lombok:1.18.34"
+
 }
 
   dependencies {
-      implementation 'org.projectlombok:lombok:1.18.34'
-      // JUnit 5 hinzufügen
+    implementation 'org.projectlombok:lombok:1.18.34'
+    // JUnit 5 hinzufügen
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
   }
 

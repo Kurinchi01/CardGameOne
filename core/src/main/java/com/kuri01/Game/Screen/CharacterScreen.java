@@ -142,6 +142,8 @@ public class CharacterScreen extends ScreenAdapter {
         // 1. Aktualisiere die einfachen Labels
         playerNameLabel.setText(this.livePlayer.getName());
         playerLvlLabel.setText("Level: " + this.livePlayer.getLevel());
+        goldAmountLabel.setText((int) livePlayer.getPlayerWallet().getGold());
+        candyAmountLabel.setText((int) livePlayer.getPlayerWallet().getCandy());
         float totalAttack = this.livePlayer.getTotalStat("ATTACK");
         float totalDefense = this.livePlayer.getTotalStat("DEFENSE");
         //statsLabel.setText(String.format("Angriff: %.0f\nVerteidigung: %.0f", totalAttack, totalDefense));

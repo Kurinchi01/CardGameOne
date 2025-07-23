@@ -21,7 +21,7 @@ public class PlayerDTO {
 
     // --- Zusammengesetzte Objekte ---
     private EquipmentDTO equipmentDTO;
-    private InventoryDTO inventory;
+    private InventoryDTO inventoryDTO;
     private PlayerWalletDTO playerWalletDTO;
 
 
