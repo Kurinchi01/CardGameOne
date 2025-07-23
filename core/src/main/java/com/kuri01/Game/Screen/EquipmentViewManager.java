@@ -5,12 +5,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 
-public class EquipmentView {
+public class EquipmentViewManager {
     private Equipment equipment;
     private Table rootTable;
     private Skin skin;
 
-    public EquipmentView(Skin skin, Table rootTable) {
+    public EquipmentViewManager(Skin skin, Table rootTable) {
         this.skin = skin;
         this.rootTable = rootTable;
 

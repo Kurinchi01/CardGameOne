@@ -27,8 +27,8 @@ public class CharacterScreen extends ScreenAdapter {
     private final Stage stage;
 
 
-    private InventoryView inventoryView;
-    private EquipmentView equipmentView;
+    private InventoryViewManager inventoryViewManager;
+    private EquipmentViewManager equipmentViewManager;
     private static final float VIRTUAL_WIDTH = 1920;
     private static final float VIRTUAL_HEIGHT = 1080;
     private Label playerNameLabel, playerLvlLabel, goldAmountLabel, candyAmountLabel;
@@ -91,8 +91,8 @@ public class CharacterScreen extends ScreenAdapter {
         DebugAll(mainTable);
 
 
-        inventoryView = new InventoryView(game.skin, invTableForScrollPane, stage, this.dragAndDrop, actionQueue);
-        equipmentView = new EquipmentView(game.skin, mainTable.findActor("equipmentFrame"));
+        inventoryViewManager = new InventoryViewManager(game.skin, invTableForScrollPane, stage, this.dragAndDrop, actionQueue);
+        equipmentViewManager = new EquipmentViewManager(game.skin, mainTable.findActor("equipmentFrame"));
 
 
     }
@@ -137,7 +137,7 @@ public class CharacterScreen extends ScreenAdapter {
         if (this.livePlayer == null) return;
 
         //Erst nach erhalt der Spieler Daten wird das Inventar in der View gesetzt
-        inventoryView.setInventory(this.livePlayer.getInventory());
+        inventoryViewManager.setInventory(this.livePlayer.getInventory());
 
         // 1. Aktualisiere die einfachen Labels
         playerNameLabel.setText(this.livePlayer.getName());
@@ -147,17 +147,17 @@ public class CharacterScreen extends ScreenAdapter {
         //statsLabel.setText(String.format("Angriff: %.0f\nVerteidigung: %.0f", totalAttack, totalDefense));
 
         // 2. Leere die Tabellen, um sie neu zu befüllen
-        equipmentView.clearTable();
-        inventoryView.clearTable();
+        equipmentViewManager.clearTable();
+        inventoryViewManager.clearTable();
 
         // 3. Befülle die Ausrüstungs-Tabelle
         Gdx.app.log("UI Loading", "Lade das Equipment");
-        equipmentView.fillEquipment(this.livePlayer.getEquipment());
+        equipmentViewManager.fillEquipment(this.livePlayer.getEquipment());
 
 
         // 4. Befülle die Inventar-Tabelle
         Gdx.app.log("UI Loading", "Lade das Inventar");
-        inventoryView.fillInventory(this.livePlayer.getInventory().getSlots());
+        inventoryViewManager.fillInventory(this.livePlayer.getInventory().getSlots());
         Gdx.app.log("UI Loading", "Only Debugpoint");
         DebugAll(invTableForScrollPane);
     }

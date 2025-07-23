@@ -40,7 +40,7 @@ public class ModelFactory {
 
         if (dto.getInventory() != null) {
             // 1. Erstelle das Client-Inventar mit der korrekten Größe vom Server.
-            Inventory inventory = new Inventory(dto.getInventory().getCapacity());
+            Inventory inventory = new Inventory(player,dto.getInventory().getCapacity());
 
             // 2. Gehe durch die vom Server gesendeten, belegten Slots.
             for (InventorySlotDTO slotDTO : dto.getInventory().getSlots()) {

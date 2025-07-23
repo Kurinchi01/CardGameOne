@@ -5,19 +5,20 @@ import com.kuri01.Game.RPG.Model.Player;
 public class EquipmentSlot extends ItemSlot {
     private EquipmentSlotEnum slotEnum;
 
-    private Player player;
+    private Equipment equipment;
+
+
 
     public EquipmentSlot() {
     }
 
 
-
-    public Player getPlayer() {
-        return player;
+    public Equipment getEquipment() {
+        return equipment;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setEquipment(Equipment equipment) {
+        this.equipment = equipment;
     }
 
     public EquipmentSlotEnum getSlotEnum() {

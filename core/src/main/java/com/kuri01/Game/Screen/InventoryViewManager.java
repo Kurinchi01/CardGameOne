@@ -17,7 +17,7 @@ import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 
 import java.util.List;
 
-public class InventoryView {
+public class InventoryViewManager {
     private Inventory inventory;
     private Table rootTable;
     private Skin skin;
@@ -30,7 +30,7 @@ public class InventoryView {
     private final List<Object> actionQueue;
 
 
-    public InventoryView(Skin skin, Table rootTable, Stage stage, DragAndDrop dragAndDrop, List<Object> actionQueue) {
+    public InventoryViewManager(Skin skin, Table rootTable, Stage stage, DragAndDrop dragAndDrop, List<Object> actionQueue) {
         this.rootTable = rootTable;
         this.dragAndDrop = dragAndDrop;
         this.skin = skin;
@@ -105,12 +105,13 @@ public class InventoryView {
                     tmp = tmp.getParent();
                 }
 
-                if (((InventorySlotUI) tmp).getInventorySlot() != null) {
-                    if (((InventorySlotUI) tmp).getInventorySlot().getItem() != null) {
+                assert tmp != null;
+                if (((InventorySlotUI) tmp).getItemSlot() != null) {
+                    if (((InventorySlotUI) tmp).getItemSlot().getItem() != null) {
                         if (openedDialog != null) {
                             openedDialog.remove();
                         }
-                        openedDialog = new ItemHoverView(((InventorySlotUI) tmp).getInventorySlot().getItem(), skin);
+                        openedDialog = new ItemHoverView(((InventorySlotUI) tmp).getItemSlot().getItem(), skin);
                         openedDialog.setPosition(stageCords.x, stageCords.y);
                         stage.addActor(openedDialog);
                     }

@@ -10,7 +10,7 @@ public class Inventory {
     private int capacity;
     private List<InventorySlot> slots = new ArrayList<>();
 
-    public Inventory(int capacity) {
+    public Inventory(Player player,int capacity) {
         this.slots = new ArrayList<>(capacity);
         // Erstelle die korrekte Anzahl an leeren Slots
         for (int i = 0; i < capacity; i++) {
@@ -18,6 +18,7 @@ public class Inventory {
             slots.get(i).setSlotIndex(i);
         }
         this.capacity = capacity;
+        this.player=player;
     }
 
     public Player getPlayer() {
