@@ -1,18 +1,44 @@
 package com.kuri01.Game.Screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
 
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class EquipmentViewManager {
     private Equipment equipment;
     private Table rootTable;
     private Skin skin;
+    private Stage stage;
 
-    public EquipmentViewManager(Skin skin, Table rootTable) {
+    private final DragAndDrop dragAndDrop;
+    private final List<Object> actionQueue;
+    private final CharacterScreen characterScreen;
+
+    public EquipmentViewManager(Skin skin, Table rootTable, CharacterScreen characterScreen) {
         this.skin = skin;
         this.rootTable = rootTable;
+        this.stage=characterScreen.getStage();
+        this.dragAndDrop=characterScreen.getDragAndDrop();
+        this.actionQueue=characterScreen.getActionQueue();
+        this.characterScreen=characterScreen;
+
 
     }
 
@@ -39,7 +65,7 @@ public class EquipmentViewManager {
     }
 
 
-    public void fillEquipment(Equipment equipment) {
+    public void fillEquipment(List<EquipmentSlot> equipmentSlots) {
         if (equipment.getWeapon() != null) {
             Image tmp = this.rootTable.findActor("weaponImage");
             tmp.setDrawable(skin.getDrawable(equipment.getWeapon().getIconName()));
@@ -63,28 +89,40 @@ public class EquipmentViewManager {
 
     }
 
+    public void addClickListener( EquipmentSlotUI equipmentSlotUI)
+    {
+        equipmentSlotUI.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("EquipmentView", "Klick auf Slot erkannt");
+                Actor tmp = event.getTarget();
+                Vector2 stageCords = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+                getStage().screenToStageCoordinates(stageCords);
 
-    public Equipment getEquipment() {
-        return equipment;
+                while (tmp != null && !(tmp instanceof InventorySlotUI)) {
+                    tmp = tmp.getParent();
+                }
+
+                assert tmp != null;
+                if (((ItemSlotUI) tmp).getItemSlot() != null) {
+                    if (((ItemSlotUI) tmp).getItemSlot().getItem() != null) {
+                        if (getCharacterScreen().getOpenedDialog() != null) {
+                            getCharacterScreen().getOpenedDialog().remove();
+                        }
+                        getCharacterScreen().setOpenedDialog(new ItemHoverView(((InventorySlotUI) tmp).getItemSlot().getItem(), skin));
+                        getCharacterScreen().getOpenedDialog().setPosition(stageCords.x, stageCords.y);
+                        stage.addActor(getCharacterScreen().getOpenedDialog());
+                    }
+
+
+                } else {
+                    if (getCharacterScreen().getOpenedDialog() != null) {
+                        getCharacterScreen().getOpenedDialog().remove();
+                    }
+                    getCharacterScreen().setOpenedDialog(null);
+                }
+            }
+        });
     }
 
-    public void setEquipment(Equipment equipment) {
-        this.equipment = equipment;
-    }
-
-    public Table getRootTable() {
-        return rootTable;
-    }
-
-    public void setRootTable(Table rootTable) {
-        this.rootTable = rootTable;
-    }
-
-    public Skin getSkin() {
-        return skin;
-    }
-
-    public void setSkin(Skin skin) {
-        this.skin = skin;
-    }
 }

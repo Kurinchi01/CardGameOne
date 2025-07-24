@@ -17,25 +17,31 @@ import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+
 public class InventoryViewManager {
     private Inventory inventory;
     private Table rootTable;
     private Skin skin;
-    private Window openedDialog;
     private Stage stage;
 
+
     private final DragAndDrop dragAndDrop;
-    //Reihe von Schritten zum validieren durch Server
-
     private final List<Object> actionQueue;
+    private final CharacterScreen characterScreen;
 
 
-    public InventoryViewManager(Skin skin, Table rootTable, Stage stage, DragAndDrop dragAndDrop, List<Object> actionQueue) {
+    public InventoryViewManager(Skin skin, Table rootTable, CharacterScreen characterScreen) {
         this.rootTable = rootTable;
-        this.dragAndDrop = dragAndDrop;
+        this.dragAndDrop = characterScreen.getDragAndDrop();
         this.skin = skin;
-        this.stage = stage;
-        this.actionQueue = actionQueue;
+        this.stage = characterScreen.getStage();
+        this.actionQueue = characterScreen.getActionQueue();
+        this.characterScreen=characterScreen;
 
     }
 
@@ -70,11 +76,12 @@ public class InventoryViewManager {
         sourceSlot.setQuantity(quantityA);
     }
 
-    public void fillInventory(List<InventorySlot> inventorySlot) {
-        if (inventorySlot != null) {
+    public void fillInventory(List<InventorySlot> inventorySlots) {
+        rootTable.clear();
+        if (inventorySlots != null) {
 
-            for (int i = 0; i < inventorySlot.size(); i++) {
-                InventorySlot slot = inventorySlot.get(i);
+            for (int i = 0; i < inventorySlots.size(); i++) {
+                InventorySlot slot = inventorySlots.get(i);
                 // Erstelle ein UI-Element für den Slot (siehe Hilfsmethode/Klasse unten)
                 // und füge es zur Tabelle hinzu.
                 InventorySlotUI tmp = new InventorySlotUI(slot, this.skin, this.dragAndDrop, this);
@@ -106,22 +113,22 @@ public class InventoryViewManager {
                 }
 
                 assert tmp != null;
-                if (((InventorySlotUI) tmp).getItemSlot() != null) {
-                    if (((InventorySlotUI) tmp).getItemSlot().getItem() != null) {
-                        if (openedDialog != null) {
-                            openedDialog.remove();
+                if (((ItemSlotUI) tmp).getItemSlot() != null) {
+                    if (((ItemSlotUI) tmp).getItemSlot().getItem() != null) {
+                        if (getCharacterScreen().getOpenedDialog() != null) {
+                            getCharacterScreen().getOpenedDialog().remove();
                         }
-                        openedDialog = new ItemHoverView(((InventorySlotUI) tmp).getItemSlot().getItem(), skin);
-                        openedDialog.setPosition(stageCords.x, stageCords.y);
-                        stage.addActor(openedDialog);
+                        getCharacterScreen().setOpenedDialog(new ItemHoverView(((InventorySlotUI) tmp).getItemSlot().getItem(), skin));
+                        getCharacterScreen().getOpenedDialog().setPosition(stageCords.x, stageCords.y);
+                        stage.addActor(getCharacterScreen().getOpenedDialog());
                     }
 
 
                 } else {
-                    if (openedDialog != null) {
-                        openedDialog.remove();
+                    if (getCharacterScreen().getOpenedDialog() != null) {
+                        getCharacterScreen().getOpenedDialog().remove();
                     }
-                    openedDialog = null;
+                    getCharacterScreen().setOpenedDialog(null);
                 }
             }
         });
@@ -132,31 +139,5 @@ public class InventoryViewManager {
         this.rootTable.clear();
     }
 
-    public Inventory getInventory() {
-        return inventory;
-    }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
-    }
-
-    public Table getRootTable() {
-        return rootTable;
-    }
-
-    public void setRootTable(Table rootTable) {
-        this.rootTable = rootTable;
-    }
-
-    public Skin getSkin() {
-        return skin;
-    }
-
-    public void setSkin(Skin skin) {
-        this.skin = skin;
-    }
-
-    public List<Object> getActionQueue() {
-        return actionQueue;
-    }
 }

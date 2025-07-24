@@ -2,30 +2,23 @@ package com.kuri01.Game.RPG.Model.ItemSystem;
 
 import com.kuri01.Game.RPG.Model.Player;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class EquipmentSlot extends ItemSlot {
     private EquipmentSlotEnum slotEnum;
 
     private Equipment equipment;
 
-
-
-    public EquipmentSlot() {
-    }
-
-
-    public Equipment getEquipment() {
-        return equipment;
-    }
-
-    public void setEquipment(Equipment equipment) {
+    public EquipmentSlot(Equipment equipment, EquipmentSlotEnum slotEnum) {
         this.equipment = equipment;
-    }
-
-    public EquipmentSlotEnum getSlotEnum() {
-        return slotEnum;
-    }
-
-    public void setSlotEnum(EquipmentSlotEnum slotEnum) {
         this.slotEnum = slotEnum;
     }
+
+
+
 }

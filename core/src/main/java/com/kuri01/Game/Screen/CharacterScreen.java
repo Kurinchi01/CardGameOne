@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
@@ -20,11 +21,18 @@ import com.kuri01.Game.RPG.Model.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CharacterScreen extends ScreenAdapter {
 
     private final MainGameClass game;
     private Player livePlayer;
     private final Stage stage;
+    private Window openedDialog;
+
 
 
     private InventoryViewManager inventoryViewManager;
@@ -91,11 +99,12 @@ public class CharacterScreen extends ScreenAdapter {
         DebugAll(mainTable);
 
 
-        inventoryViewManager = new InventoryViewManager(game.skin, invTableForScrollPane, stage, this.dragAndDrop, actionQueue);
-        equipmentViewManager = new EquipmentViewManager(game.skin, mainTable.findActor("equipmentFrame"));
+        inventoryViewManager = new InventoryViewManager(game.skin, invTableForScrollPane, this, this.dragAndDrop, actionQueue);
+        equipmentViewManager = new EquipmentViewManager(game.skin, mainTable.findActor("equipmentFrame"),this,dragAndDrop,actionQueue);
 
 
     }
+
 
     public void DebugAll(Group actor) {
         for (Actor a : actor.getChildren()
