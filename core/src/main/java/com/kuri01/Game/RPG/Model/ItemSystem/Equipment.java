@@ -1,12 +1,8 @@
 package com.kuri01.Game.RPG.Model.ItemSystem;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Stream;
+import java.util.HashMap;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -15,13 +11,12 @@ public class Equipment {
 
     private Long id;
 
-    private Set<EquipmentSlot> equipmentSlots = new HashSet<>();
+    private HashMap<EquipmentSlotEnum,EquipmentSlot> equipmentSlots =  new HashMap<>();
     //wichtig für JSON Parsen
     public Equipment() {
         for (EquipmentSlotEnum slotEnum : EquipmentSlotEnum.values()) {
-            this.equipmentSlots.add(new EquipmentSlot(this, slotEnum));
+            this.equipmentSlots.put(slotEnum,new EquipmentSlot(this, slotEnum));
         }
-
     }
 
 

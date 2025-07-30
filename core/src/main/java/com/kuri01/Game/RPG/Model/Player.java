@@ -1,31 +1,49 @@
 package com.kuri01.Game.RPG.Model;
 
-import com.kuri01.Game.RPG.Model.ItemSystem.DTO.PlayerWalletDTO;
+import com.kuri01.Game.RPG.Model.Currency.PlayerWallet;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
+import com.kuri01.Game.RPG.Model.ItemSystem.Item;
+import com.kuri01.Game.RPG.Model.ItemSystem.ItemSlot;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class Player extends Character {
+
+    private String googleId;
     private Equipment equipment;
-    private int experiencePoints;
-    private int level;
-    private Inventory inventory;
-    // Wichtig für Rolle des Spielers
+    private PlayerWallet playerWallet;
     private Set<String> roles = new HashSet<>();
 
-    private PlayerWallet playerWallet;
-    public Player(String name, int maxHp, int attack) {
-        super(name, maxHp, attack);
-        this.playerWallet=new PlayerWallet();
+    private int experiencePoints;
+    private int level;
+
+    private Inventory inventory;
+
+
+    public Player() {
+        super();
+        this.inventory = new Inventory(this,20);
+        this.equipment = new Equipment();
+        this.playerWallet = new PlayerWallet(this);
+    }
+
+
+
+    public void swapItemSlots(ItemSlot sourceSlot, ItemSlot targetSlot) {
+
+        Item sourceItem = sourceSlot.getItem();
+        Item targetItem = targetSlot.getItem();
+
+        targetSlot.setItem(sourceItem);
+        sourceSlot.setItem(targetItem);
+
     }
 
 
@@ -43,14 +61,14 @@ public class Player extends Character {
         if ("ATTACK".equalsIgnoreCase(statName)) {
             baseValue = this.getAttack();
         } else if ("MAXHP".equalsIgnoreCase(statName)) {
-             baseValue = this.getMaxHp();
+            baseValue = this.getMaxHp();
         }
 
         // Schritt 2: Hole die Boni aus der Ausrüstung, indem die Hilfsmethode aufgerufen wird.
         int equipmentBonus = 0;
-        if (this.equipment != null) {
-            equipmentBonus = this.equipment.getTotalStat(statName);
-        }
+//        if (this.equipment != null) {
+//            equipmentBonus = this.equipment.getTotalStat(statName);
+//        }
 
         // Schritt 3: Addiere beides und gib das Ergebnis zurück.
         return baseValue + equipmentBonus;

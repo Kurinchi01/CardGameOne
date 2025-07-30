@@ -2,9 +2,11 @@ package com.kuri01.Game.Screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -14,25 +16,33 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.kuri01.Game.Listener.SlotClickListener;
 import com.kuri01.Game.MainGameClass;
+import com.kuri01.Game.DTO.Action.SwapInvAction;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
+import com.kuri01.Game.RPG.Model.ItemSystem.Item;
+import com.kuri01.Game.RPG.Model.ItemSystem.ItemSlot;
 import com.kuri01.Game.RPG.Model.ModelFactory;
 import com.kuri01.Game.RPG.Model.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CharacterScreen extends ScreenAdapter {
+public class CharacterScreen extends ScreenAdapter  implements SlotClickListener {
 
     private final MainGameClass game;
     private Player livePlayer;
     private final Stage stage;
     private Window openedDialog;
-
+    private boolean isDragging = false;
 
 
     private InventoryViewManager inventoryViewManager;
@@ -43,15 +53,23 @@ public class CharacterScreen extends ScreenAdapter {
     private Table invTableForScrollPane;
     private final DragAndDrop dragAndDrop = new DragAndDrop();
     private final List<Object> actionQueue = new ArrayList<>();
+    private final Map<EquipmentSlotEnum, EquipmentSlotUI> equipmentSlotUIs = new HashMap<>();
 
 
     public CharacterScreen(MainGameClass game) {
         this.game = game;
         this.stage = new Stage(new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT));
+        invTableForScrollPane = new Table(game.skin);
+        Table mainTable = new Table();
+        mainTable.setTouchable(Touchable.childrenOnly);
+
+
+
+
 
         //Mit SkinComposer erstellt
 
-        Table mainTable = new Table();
+
         mainTable.setBackground(game.skin.getDrawable("ForestBackground1"));
         mainTable.setFillParent(true);
 
@@ -61,8 +79,15 @@ public class CharacterScreen extends ScreenAdapter {
         Table table1 = new Table();
 
         Table table2 = new Table();
+        table2.setTouchable(Touchable.childrenOnly);
+
+
 
         table2.add(createEquipmentFrameTable()).grow().minSize(128.0f).maxSize(512.0f);
+        //erst nach erstellen der Frame, sonst gibt findActor null zurück
+
+
+
 
         //Filler Table
         Table table3 = new Table();
@@ -75,7 +100,7 @@ public class CharacterScreen extends ScreenAdapter {
         table1.row();
 
         //invTable
-        invTableForScrollPane = new Table(game.skin);
+
 
 
         ScrollPane scrollPane = new ScrollPane(null, game.skin, "inventory");
@@ -95,12 +120,14 @@ public class CharacterScreen extends ScreenAdapter {
         mainTable.add(createBottomRow()).growX().minHeight(128.0f).maxHeight(196f);
         stage.addActor(mainTable);
 
+        inventoryViewManager = new InventoryViewManager(game.skin, invTableForScrollPane, this);
+        equipmentViewManager = new EquipmentViewManager(game.skin, table2.findActor("equipmentFrame"), this);
+
 
         DebugAll(mainTable);
+        DebugAll(table2);
 
 
-        inventoryViewManager = new InventoryViewManager(game.skin, invTableForScrollPane, this, this.dragAndDrop, actionQueue);
-        equipmentViewManager = new EquipmentViewManager(game.skin, mainTable.findActor("equipmentFrame"),this,dragAndDrop,actionQueue);
 
 
     }
@@ -145,8 +172,9 @@ public class CharacterScreen extends ScreenAdapter {
         // Diese Methode verwendet lokales 'livePlayer'-Objekt.
         if (this.livePlayer == null) return;
 
-        //Erst nach erhalt der Spieler Daten wird das Inventar in der View gesetzt
+        //Erst nach erhalt der Spieler Daten wird das Inventar und das Equipment in der View gesetzt
         inventoryViewManager.setInventory(this.livePlayer.getInventory());
+        equipmentViewManager.setEquipment(this.livePlayer.getEquipment());
 
         // 1. Aktualisiere die einfachen Labels
         playerNameLabel.setText(this.livePlayer.getName());
@@ -161,9 +189,10 @@ public class CharacterScreen extends ScreenAdapter {
         equipmentViewManager.clearTable();
         inventoryViewManager.clearTable();
 
+
         // 3. Befülle die Ausrüstungs-Tabelle
         Gdx.app.log("UI Loading", "Lade das Equipment");
-        equipmentViewManager.fillEquipment(this.livePlayer.getEquipment());
+        equipmentViewManager.updateView(this.livePlayer.getEquipment());
 
 
         // 4. Befülle die Inventar-Tabelle
@@ -171,6 +200,16 @@ public class CharacterScreen extends ScreenAdapter {
         inventoryViewManager.fillInventory(this.livePlayer.getInventory().getSlots());
         Gdx.app.log("UI Loading", "Only Debugpoint");
         DebugAll(invTableForScrollPane);
+    }
+
+
+    public void handleItemDrop(ItemSlot sourceSlot, ItemSlot targetSLot) {
+
+            livePlayer.swapItemSlots(sourceSlot,targetSLot);
+            actionQueue.add(new SwapInvAction(sourceSlot, targetSLot));
+
+            updateUiWithPlayerData();
+
     }
 
     private Table createBottomRow() {
@@ -209,32 +248,49 @@ public class CharacterScreen extends ScreenAdapter {
 
     private Table createEquipmentFrameTable() {
         Table table1 = new Table();
+        table1.setTouchable(Touchable.childrenOnly);
+
+
         table1.setName("equipmentFrame");
         table1.setBackground(game.skin.getDrawable("Frame1"));
 
         Table table2 = new Table();
+        table2.setTouchable(Touchable.childrenOnly);
 
-
+        DebugAll(table2);
         Table table = new Table();
-        Image image = new Image();
-        image.setName("helmetImage");
+        table.setTouchable(Touchable.childrenOnly);
+
+        EquipmentSlot tmp = new EquipmentSlot();
+        tmp.setSlotEnum(EquipmentSlotEnum.HELMET);
+
+        EquipmentSlotUI slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
+        DebugAll(slotUI);
+
+        slotUI.setName("helmetUI");
         table.setName("helmetSlot");
-        table.setBackground(game.skin.getDrawable("HelmetSlot"));
+
+        equipmentSlotUIs.put(EquipmentSlotEnum.HELMET, slotUI);
 
 
-        table.add(image).grow();
+        table.add(slotUI).grow();
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
 
 
         table = new Table();
         table.setName("necklaceSlot");
+        table.setTouchable(Touchable.childrenOnly);
 
+        tmp = new EquipmentSlot();
+        tmp.setSlotEnum(EquipmentSlotEnum.NECKLACE);
+        slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
 
-        image = new Image();
-        image.setName("necklaceImage");
+        slotUI.setName("necklaceUI");
         table.setName("necklaceSlot");
         table.setBackground(game.skin.getDrawable("NecklaceSlot"));
-        table.add(image).grow();
+        table.add(slotUI).grow();
+        equipmentSlotUIs.put(EquipmentSlotEnum.NECKLACE, slotUI);
+
 
 
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
@@ -242,52 +298,87 @@ public class CharacterScreen extends ScreenAdapter {
 
         table1.row();
         table2 = new Table();
+        table2.setTouchable(Touchable.childrenOnly);
 
         table = new Table();
         table.setName("weaponSlot");
 
-        image = new Image();
-        image.setName("weaponImage");
+        tmp = new EquipmentSlot();
+        tmp.setSlotEnum(EquipmentSlotEnum.WEAPON);
+        slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
+
+        slotUI.setName("weaponUI");
         table.setName("weaponSlot");
         table.setBackground(game.skin.getDrawable("WeaponSlot"));
-        table.add(image).grow();
+        table.add(slotUI).grow();
+        table.setTouchable(Touchable.childrenOnly);
+        equipmentSlotUIs.put(EquipmentSlotEnum.WEAPON, slotUI);
+
+
 
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
+        table2.setTouchable(Touchable.childrenOnly);
 
         table = new Table();
         table.setName("armorSlot");
 
-        image = new Image();
-        image.setName("armorImage");
+        tmp = new EquipmentSlot();
+        tmp.setSlotEnum(EquipmentSlotEnum.ARMOR);
+        slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
+
+
+
+        slotUI.setName("armorUI");
         table.setName("armorSlot");
         table.setBackground(game.skin.getDrawable("ArmorSlot"));
-        table.add(image).grow();
+        table.add(slotUI).grow();
+        table.setTouchable(Touchable.childrenOnly);
+        equipmentSlotUIs.put(EquipmentSlotEnum.ARMOR, slotUI);
 
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
+        table2.setTouchable(Touchable.childrenOnly);
 
         table = new Table();
-        table.setName("shieldSlot");
+        table.setName("ringSlot");
 
-        image = new Image();
-        image.setName("shieldImage");
-        table.setName("shieldSlot");
-        table.setBackground(game.skin.getDrawable("ShieldSlot"));
-        table.add(image).grow();
+        tmp = new EquipmentSlot();
+        tmp.setSlotEnum(EquipmentSlotEnum.RING);
+        slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
+
+
+
+        slotUI.setName("ringUI");
+        table.setName("ringSlot");
+        table.setBackground(game.skin.getDrawable("RingSlot"));
+        table.add(slotUI).grow();
+        table.setTouchable(Touchable.childrenOnly);
+        equipmentSlotUIs.put(EquipmentSlotEnum.RING, slotUI);
 
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
         table1.add(table2).grow();
+        table2.setTouchable(Touchable.childrenOnly);
+        table1.setTouchable(Touchable.childrenOnly);
 
         table1.row();
         table = new Table();
         table.setName("shoesSlot");
 
-        image = new Image();
-        image.setName("shoesImage");
+        tmp = new EquipmentSlot();
+        tmp.setSlotEnum(EquipmentSlotEnum.SHOES);
+        slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
+
+
+        slotUI.setName("shoesUI");
         table.setName("shoesSlot");
         table.setBackground(game.skin.getDrawable("ShoesSlot"));
-        table.add(image).grow();
+        table.add(slotUI).grow();
+        table.setTouchable(Touchable.childrenOnly);
+        equipmentSlotUIs.put(EquipmentSlotEnum.SHOES, slotUI);
+
+
 
         table1.add(table).grow().minSize(32.0f).maxSize(128.0f);
+        table1.setTouchable(Touchable.childrenOnly);
 
         return table1;
 
@@ -349,10 +440,36 @@ public class CharacterScreen extends ScreenAdapter {
         return table1;
     }
 
+
+
+    /**
+     * Hilfsmethode zum Erstellen, Positionieren und Anzeigen des Info-Fensters.
+     */
+    private void showItemInfoWindow(Item item, float screenX, float screenY) {
+        openedDialog = new ItemHoverView(item, game.skin); // Wir übergeben die Stage
+
+        // Konvertiere Bildschirm-Koordinaten in Bühnen-Koordinaten
+        Vector2 stageCoords = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
+
+        // Positioniere das Fenster (z.B. leicht versetzt zum Klick)
+        openedDialog.setPosition(stageCoords.x + 15, stageCoords.y - openedDialog.getHeight() - 15);
+
+        // Stelle sicher, dass das Fenster innerhalb der Bühne bleibt
+        if (openedDialog.getX() + openedDialog.getWidth() > stage.getWidth()) {
+            openedDialog.setX(stage.getWidth() - openedDialog.getWidth());
+        }
+        if (openedDialog.getY() < 0) {
+            openedDialog.setY(0);
+        }
+
+        stage.addActor(openedDialog);
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+        // Gdx.app.log("CharacterScreen", "Klick erkannt"+ Gdx.input.get);
         stage.act(delta);
         stage.draw();
 
@@ -368,5 +485,22 @@ public class CharacterScreen extends ScreenAdapter {
     public void resize(int width, int height) {
         // Aktualisiert den Viewport der Stage mit der neuen Fenstergröße.
         this.stage.getViewport().update(width, height, true);
+    }
+
+    @Override
+    public void onSlotClicked(ItemSlot clickedSlotModel, float screenX, float screenY) {
+        Gdx.app.log("CharacterScreen", "Ein Slot wurde geklickt! Typ: " + clickedSlotModel.getClass().getSimpleName());
+
+        //bestehende Logik zum Öffnen/Schließen des Fensters kommt
+        if (openedDialog != null) {
+            openedDialog.remove();
+            openedDialog = null;
+        }
+
+        if (clickedSlotModel != null && clickedSlotModel.getItem() != null) {
+            showItemInfoWindow(clickedSlotModel.getItem(), screenX, screenY);
+        }
+        Gdx.app.log("CharacterScreen", "Debugpoint");
+
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -32,6 +33,7 @@ public class MainMenuScreen implements Screen {
         mainMenuRootTable.add(title).padBottom(40);
         mainMenuRootTable.row();
         mainMenuRootTable.add(loginButton).width(500).height(100);
+        mainMenuRootTable.setTouchable(Touchable.childrenOnly);
 
         loginButton.addListener(new ClickListener() {
             @Override

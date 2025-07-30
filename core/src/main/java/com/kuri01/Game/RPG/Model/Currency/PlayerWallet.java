@@ -1,4 +1,6 @@
-package com.kuri01.Game.RPG.Model;
+package com.kuri01.Game.RPG.Model.Currency;
+
+import com.kuri01.Game.RPG.Model.Player;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +19,8 @@ public class PlayerWallet {
     private long gold; // Spielwährung
     private long candy; // Echtgeld-Währung
 
+    public PlayerWallet(Player player) {
+        this.player = player;
+    }
 
 }

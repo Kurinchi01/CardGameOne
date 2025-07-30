@@ -1,4 +1,4 @@
-package com.kuri01.Game.RPG.Model.ItemSystem.DTO;
+package com.kuri01.Game.DTO;
 
 import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
 
@@ -10,10 +10,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class InventorySlotDTO {
-    private int slotIndex; // Der Index des Slots (0, 1, 2...)
-    private ItemDTO item; // Das Item im Slot (kann null sein)
-    private int quantity;
-    private int id;
+
+    //von Oberklasse ItemSlot
+    private Long id;
+    private ItemDTO item;
+
+    //von Unterklasse InventorySlot
+    private int slotIndex;
     private Inventory inventory;
 
 }

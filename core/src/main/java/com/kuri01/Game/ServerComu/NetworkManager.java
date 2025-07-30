@@ -2,13 +2,13 @@ package com.kuri01.Game.ServerComu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter;
-import com.kuri01.Game.RPG.Model.ItemSystem.DTO.PlayerDTO;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.kuri01.Game.DTO.PlayerDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
-import com.kuri01.Game.RPG.Model.Player;
 
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -26,7 +26,7 @@ public class NetworkManager {
     private final String BASE_URL = "http://10.0.2.2:8080/api";
 
     // Eine Instanz des JSON-Parsers von LibGDX.
-    private final Json json = new Json(JsonWriter.OutputType.json);
+    private final Gson gson = new Gson ();
 
 
     /**
@@ -41,7 +41,7 @@ public class NetworkManager {
         request.setHeader("Content-Type", "application/json");
 
         DevLoginRequest loginRequest = new DevLoginRequest(username);
-        String requestBodyJson = json.toJson(loginRequest);
+        String requestBodyJson = gson.toJson(loginRequest);
         request.setContent(requestBodyJson);
         Gdx.app.log("NetworkManager-DEBUG", "Sende folgenden Body: " + requestBodyJson);
         sendRequest(request, LoginResponse.class, successCallback, errorCallback, "DevLogin");
@@ -79,7 +79,7 @@ public class NetworkManager {
 
         // Erstelle den Request-Body
         RoundEndRequest endRequest = new RoundEndRequest(RoundOutcome.WIN, Collections.emptyList(), 120.0);
-        request.setContent(json.toJson(endRequest));
+        request.setContent(gson.toJson(endRequest));
 
         // Wir benutzen hier eine spezielle Hilfsmethode, da gdx-json Listen anders behandelt.
         sendRequestWithList(request, Item.class, successCallback, errorCallback, "EndRound");
@@ -104,7 +104,7 @@ public class NetworkManager {
                     String responseString = httpResponse.getResultAsString();
                     Gdx.app.log(logTag, "Erfolgreiche Antwort: " + responseString);
                     try {
-                        final T data = json.fromJson(responseType, responseString);
+                        final T data = gson.fromJson(responseString, responseType);
                         // Führe den Erfolgs-Callback im Haupt-Thread von LibGDX aus.
                         Gdx.app.postRunnable(() -> successCallback.accept(data));
                     } catch (Exception e) {
@@ -145,8 +145,8 @@ public class NetworkManager {
                     String responseString = httpResponse.getResultAsString();
                     Gdx.app.log(logTag, "Erfolgreiche Antwort: " + responseString);
                     try {
-                        // gdx-json benötigt für Listen den Typ der Liste und den Typ des Inhalts.
-                        final List<T> data = json.fromJson(List.class, listContentType, responseString);
+                        Type listType = TypeToken.getParameterized(List.class, listContentType).getType();
+                        final List<T> data = gson.fromJson(responseString, listType);
                         Gdx.app.postRunnable(() -> successCallback.accept(data));
                     } catch (Exception e) {
                         Gdx.app.error(logTag, "Fehler beim Parsen der JSON-Liste", e);

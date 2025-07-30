@@ -9,7 +9,6 @@ public class ItemSlot {
     private Long id;
     private Item item;
 
-
     public ItemSlot() {
     }
 

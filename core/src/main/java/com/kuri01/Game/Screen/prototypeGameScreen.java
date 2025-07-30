@@ -82,7 +82,7 @@ public class prototypeGameScreen extends ScreenAdapter {
         this.game = game;
 
         //dummy Player
-        player = new Player("Kuri01", 100, 20);
+        player = new Player();
         networkManager = new NetworkManager();
 
     }

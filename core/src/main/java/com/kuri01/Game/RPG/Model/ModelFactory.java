@@ -1,15 +1,22 @@
 package com.kuri01.Game.RPG.Model;
 
-import com.kuri01.Game.RPG.Model.ItemSystem.DTO.EquipmentDTO;
-import com.kuri01.Game.RPG.Model.ItemSystem.DTO.InventorySlotDTO;
-import com.kuri01.Game.RPG.Model.ItemSystem.DTO.ItemDTO;
-import com.kuri01.Game.RPG.Model.ItemSystem.DTO.PlayerDTO;
+import com.badlogic.gdx.Gdx;
+import com.kuri01.Game.DTO.EquipmentDTO;
+import com.kuri01.Game.DTO.EquipmentSlotDTO;
+import com.kuri01.Game.DTO.InventorySlotDTO;
+import com.kuri01.Game.DTO.ItemDTO;
+import com.kuri01.Game.DTO.PlayerDTO;
+import com.kuri01.Game.RPG.Model.Currency.PlayerWallet;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentItem;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.LootChest;
+
+import java.util.Map;
 
 
 public class ModelFactory {
@@ -34,30 +41,27 @@ public class ModelFactory {
         player.setPlayerWallet(wallet);
 
 
-
-
-
         // HP werden zu Beginn auf MAX gesetzt.
         player.setCurrentHp(dto.getMaxHp());
 
         // Konvertiere auch die verschachtelten Objekte
         if (dto.getEquipmentDTO() != null) {
             player.setEquipment(createEquipmentFromDTO(dto.getEquipmentDTO()));
+
         }
 
         if (dto.getInventoryDTO() != null) {
             // 1. Erstelle das Client-Inventar mit der korrekten Größe vom Server.
-            Inventory inventory = new Inventory(player,dto.getInventoryDTO().getCapacity());
+            Inventory inventory = new Inventory(player, dto.getInventoryDTO().getCapacity());
 
             // 2. Gehe durch die vom Server gesendeten, belegten Slots.
-            for (InventorySlotDTO slotDTO : dto.getInventoryDTO().getSlots()) {
+            for (InventorySlotDTO slotDTO : dto.getInventoryDTO().getInventorySlots()) {
                 // 3. Finde den entsprechenden leeren Slot im Client-Modell.
                 InventorySlot clientSlot = inventory.getSlots().get(slotDTO.getSlotIndex());
 
                 // 4. Befülle den Slot mit dem Item.
                 if (clientSlot != null && slotDTO.getItem() != null) {
                     clientSlot.setItem(createItemFromDTO(slotDTO.getItem()));
-                    clientSlot.setQuantity(slotDTO.getQuantity());
                     clientSlot.setSlotIndex(slotDTO.getSlotIndex());
                 }
             }
@@ -65,7 +69,7 @@ public class ModelFactory {
             player.setInventory(inventory);
         }
 
-
+        //Gdx.app.log("ModelFacotry", "Spieler erfolgreich erstellt");
         return player;
     }
 
@@ -76,20 +80,40 @@ public class ModelFactory {
      * @return Ein initialisiertes, clientseitiges Equipment-Objekt.
      */
     public static Equipment createEquipmentFromDTO(EquipmentDTO dto) {
-        if (dto == null) {
-            return null;
-        }
+        if (dto == null) return null;
+
+
         Equipment equipment = new Equipment();
+        equipment.setId(dto.getId());
+
         // Wandle jedes Item im DTO in ein clientseitiges Item-Modell um.
-        equipment.setWeapon((EquipmentItem) createItemFromDTO(dto.getWeapon()));
-        equipment.setHelmet((EquipmentItem) createItemFromDTO(dto.getHelmet()));
-        equipment.setArmor((EquipmentItem) createItemFromDTO(dto.getArmor()));
-        equipment.setNecklace((EquipmentItem) createItemFromDTO(dto.getNecklace()));
-        equipment.setRing((EquipmentItem) createItemFromDTO(dto.getRing()));
-        equipment.setShoes((EquipmentItem) createItemFromDTO(dto.getShoes()));
+        for (Map.Entry<EquipmentSlotEnum, EquipmentSlotDTO> entry: dto.getEquipmentSlots().entrySet()) {
+            EquipmentSlotEnum slotEnum = entry.getKey();
+            EquipmentSlotDTO equipmentSlotDTO = entry.getValue();
+
+                // Prüfe, ob der Slot im DTO belegt ist
+                if (equipmentSlotDTO != null) {
+                    // Ja, er ist belegt -> konvertiere das Slot und setze es.
+                   equipment.getEquipmentSlots().put(slotEnum,createEquipmentSlotFromDTO(equipmentSlotDTO));
+                } else {
+                    // Nein, der Slot ist im DTO leer (null) -> setze das Item im Client-Modell auch auf null.
+                    throw new IllegalArgumentException();
+                }
+
+        }
         return equipment;
     }
 
+    private static EquipmentSlot createEquipmentSlotFromDTO(EquipmentSlotDTO equipmentSlotDTO) {
+        if (equipmentSlotDTO == null) return null;
+
+        EquipmentSlot equipmentSlot = new EquipmentSlot();
+        equipmentSlot.setSlotEnum(equipmentSlotDTO.getSlotEnum());
+        equipmentSlot.setId(equipmentSlotDTO.getId());
+        equipmentSlot.setItem(createItemFromDTO(equipmentSlotDTO.getItem()));
+
+        return equipmentSlot;
+    }
 
     /**
      * Konvertiert ein ItemDTO in ein clientseitiges Item-Modell.
@@ -111,7 +135,7 @@ public class ModelFactory {
         switch (dto.getItemType()) {
             case "EQUIPMENT":
                 EquipmentItem equipItem = new EquipmentItem();
-                equipItem.setEquipmentSlot(dto.getEquipmentSlot());
+                equipItem.setEquipmentSlot(dto.getEquipmentSlotEnum());
                 equipItem.setStats(dto.getStats());
                 item = equipItem;
                 break;
@@ -119,13 +143,6 @@ public class ModelFactory {
                 // Annahme: Du hast eine clientseitige LootChest-Klasse, die von Item erbt.
                 item = new LootChest();
                 break;
-//            case "CONSUMABLE":
-//                // Annahme: Du hast eine clientseitige ConsumableItem-Klasse.
-//                ConsumableItem consumable = new ConsumableItem();
-//                consumable.setEffect(dto.getEffect());
-//                consumable.setEffectValue(dto.getEffectValue());
-//                item = consumable;
-//                break;
             default:
                 // Fallback für unbekannte oder generische Item-Typen
                 item = new Item();
@@ -143,11 +160,18 @@ public class ModelFactory {
         return item;
     }
 
-    public static void copyInventorySlot(InventorySlot source, InventorySlot target)
+
+    public InventorySlot createInventorySlotFromDTO(InventorySlotDTO inventorySlotDTO)
     {
-        target.setId(source.getId());
-        target.setInventory(source.getInventory());
-        target.setItem(source.getItem());
-        target.setQuantity(source.getQuantity());
+        InventorySlot tmp = new InventorySlot();
+
+        tmp.setItem(createItemFromDTO(inventorySlotDTO.getItem()));
+        tmp.setInventory(inventorySlotDTO.getInventory());
+        tmp.setId(inventorySlotDTO.getId());
+        tmp.setSlotIndex(inventorySlotDTO.getSlotIndex());
+
+
+        return tmp;
     }
+
 }

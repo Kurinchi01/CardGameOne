@@ -5,43 +5,33 @@ import com.kuri01.Game.RPG.Model.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class Inventory {
+    private Long id;
     private Player player;
     private int capacity;
     private List<InventorySlot> slots = new ArrayList<>();
 
-    public Inventory(Player player,int capacity) {
+    public Inventory(Player player, int capacity) {
         this.slots = new ArrayList<>(capacity);
         // Erstelle die korrekte Anzahl an leeren Slots
         for (int i = 0; i < capacity; i++) {
-            this.slots.add(new InventorySlot(this));
-            slots.get(i).setSlotIndex(i);
+            addSlot(new InventorySlot(i));
         }
         this.capacity = capacity;
-        this.player=player;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
         this.player = player;
     }
 
-    public int getCapacity() {
-        return capacity;
+    //Füge den Slot hinzu und setz dem Slot die Rück-Referenz zum Inventory
+    public void addSlot(InventorySlot slot) {
+        this.slots.add(slot);
+        slot.setInventory(this);
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public List<InventorySlot> getSlots() {
-        return slots;
-    }
-
-    public void setSlots(List<InventorySlot> slots) {
-        this.slots = slots;
-    }
 }

@@ -1,6 +1,4 @@
-package com.kuri01.Game.RPG.Model.ItemSystem.DTO;
-
-import java.util.List;
+package com.kuri01.Game.DTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

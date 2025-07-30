@@ -1,4 +1,4 @@
-package com.kuri01.Game.RPG.Model.ItemSystem.DTO.Action;
+package com.kuri01.Game.DTO.Action;
 
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
