@@ -22,10 +22,10 @@ public class InventorySlotUI extends ItemSlotUI {
 
     public InventorySlotUI(InventorySlot inventorySlot, Skin skin, DragAndDrop dragAndDrop, InventoryViewManager inventoryViewManager) {
         super(inventorySlot, skin, dragAndDrop);
-
-
         this.inventoryViewManager = inventoryViewManager;
-        setupDragandDrop(dragAndDrop, inventoryViewManager);
+
+
+        setupDragandDrop(dragAndDrop);
 
 
         this.addListener(new ClickListener() {
@@ -39,14 +39,13 @@ public class InventorySlotUI extends ItemSlotUI {
             }
         });
 
-        this.setBackground(new Image(skin.getDrawable("EmptySlot")));
-        add(this.getBackground());
+        this.add(new Image(skin.getDrawable("EmptySlot")));
 
         updateSlotVisuals(inventorySlot.getItem());
 
     }
 
-    private void setupDragandDrop(DragAndDrop dragAndDrop, InventoryViewManager inventoryViewManager) {
+    private void setupDragandDrop(DragAndDrop dragAndDrop) {
         // Dieser Slot als QUELLE (zum Ablegen eines Items)
         if (getItemSlot() != null) {
             if (getItemSlot().getItem() != null) {
@@ -55,6 +54,7 @@ public class InventorySlotUI extends ItemSlotUI {
                         getInventoryViewManager().getCharacterScreen().setDragging(true);
                         DragAndDrop.Payload payload = new DragAndDrop.Payload();
                         payload.setObject(getItemSlot()); // Wir transportieren das InventorySlot-Modell.
+                        getInventoryViewManager().getCharacterScreen().closeInfoView();
 
                         Image dragIcon = new Image(getSkin().getDrawable(getItemSlot().getItem().getIconName()));
                         dragIcon.setSize(64, 64);
@@ -85,7 +85,7 @@ public class InventorySlotUI extends ItemSlotUI {
 
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 Gdx.app.log("InventorySlotUI-Drop", "Item auf Inventarplatz abgelegt.");
-                getInventoryViewManager().getCharacterScreen().handleItemDrop((ItemSlot) payload.getObject(), getItemSlot());
+                getInventoryViewManager().getCharacterScreen().handleItemDrop(  (ItemSlot) payload.getObject(),getItemSlot());
 
             }
         });

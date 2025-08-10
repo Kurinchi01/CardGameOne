@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kuri01.Game.DTO.PlayerActionQueueDTO;
 import com.kuri01.Game.DTO.PlayerDTO;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 
@@ -29,6 +30,23 @@ public class NetworkManager {
     private final Gson gson = new Gson ();
 
 
+
+
+    public void sendAction(PlayerActionQueueDTO listDto, String jwtToken, final Consumer<PlayerActionQueueDTO> successCallback, final Consumer<Throwable> errorCallback){
+        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.POST);
+        request.setUrl(BASE_URL + "/inventory/actions");
+
+        request.setHeader("Content-Type", "application/json");
+        request.setHeader("Authorization", "Bearer " + jwtToken);
+        String requestBodyJson = gson.toJson(listDto);
+
+        request.setContent(requestBodyJson);
+
+        Gdx.app.log("NetworkManager-DEBUG", "Sende Action mit Body: " + requestBodyJson);
+
+        sendRequest(request, PlayerActionQueueDTO.class,successCallback,errorCallback,"sendAction");
+
+    }
     /**
      * Ein unsicherer Login nur für Entwicklungszwecke.
      * @param username Ein beliebiger Benutzername, um einen Spieler zu finden oder zu erstellen.

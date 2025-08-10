@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.kuri01.Game.RPG.Model.ItemSystem.Action.PlayerInventoryAction;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
@@ -23,10 +24,10 @@ public class EquipmentViewManager {
     private Stage stage;
 
     private final DragAndDrop dragAndDrop;
-    private final List<Object> actionQueue;
+    private final List<PlayerInventoryAction> actionQueue;
     private final CharacterScreen characterScreen;
 
-    public EquipmentViewManager(Skin skin, Table rootTable, CharacterScreen characterScreen) {
+    public EquipmentViewManager(Skin skin, CharacterScreen characterScreen) {
         this.skin = skin;
         this.rootTable = rootTable;
         this.stage = characterScreen.getStage();
@@ -58,8 +59,7 @@ public class EquipmentViewManager {
 
             if (uiSlot != null) {
                 // Aktualisiere das Datenmodell und das Aussehen des EINEN existierenden UI-Slots
-                uiSlot.setItemSlot(dataSlotFromServer);
-                uiSlot.updateSlotVisuals(dataSlotFromServer.getItem()); // Die UI aktualisiert sich basierend auf dem neuen Modell
+                uiSlot.setSlotModel(dataSlotFromServer); // Die UI aktualisiert sich basierend auf dem neuen Modell
             }
         }
     }

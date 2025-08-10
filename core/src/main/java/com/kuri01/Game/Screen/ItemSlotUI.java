@@ -25,7 +25,6 @@ public abstract class ItemSlotUI extends Stack {
     public ItemSlotUI(ItemSlot itemSlot, Skin skin, DragAndDrop dragAndDrop) {
 
         this.itemSlot = itemSlot;
-
         this.skin = skin;
         this.dragAndDrop = dragAndDrop;
 

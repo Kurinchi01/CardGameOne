@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.kuri01.Game.RPG.Model.ItemSystem.Action.PlayerInventoryAction;
 import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 
@@ -22,7 +23,7 @@ public class InventoryViewManager {
 
 
     private final DragAndDrop dragAndDrop;
-    private final List<Object> actionQueue;
+    private final List<PlayerInventoryAction> actionQueue;
     private final CharacterScreen characterScreen;
 
 
@@ -37,10 +38,11 @@ public class InventoryViewManager {
     }
 
 
-    public void fillInventory(List<InventorySlot> inventorySlots) {
+    public void fillInventory() {
+        List<InventorySlot> inventorySlots = getInventory().getSlots();
 
         if (inventorySlots != null) {
-            rootTable.clear();
+
             for (int i = 0; i < inventorySlots.size(); i++) {
                 InventorySlot slot = inventorySlots.get(i);
                 // Erstelle ein UI-Element für den Slot (siehe Hilfsmethode/Klasse unten)

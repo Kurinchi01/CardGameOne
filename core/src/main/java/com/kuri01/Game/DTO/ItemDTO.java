@@ -7,6 +7,7 @@ import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 import com.kuri01.Game.RPG.Model.Rarity;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ public class ItemDTO {
 
     private int quantity;
     private EquipmentSlotEnum equipmentSlotEnum; // Nur für EquipmentItems relevant
-    private HashMap<String, Integer> stats;
+    private Map<String, Integer> stats;
     private String iconName;
 
 

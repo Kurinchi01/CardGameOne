@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kuri01.Game.MainGameClass;
+import com.kuri01.Game.ServerComu.LoginResponse;
+
+import java.util.function.Consumer;
 
 public class MainMenuScreen implements Screen {
 
@@ -41,15 +44,18 @@ public class MainMenuScreen implements Screen {
                 Gdx.app.log("MainMenu", "Login-Button geklickt. Sende Anfrage...");
                 loginButton.setText("Logge ein..."); // Visuelles Feedback
 
-                game.networkManager.devLogin("Kuri01", (loginResponse) -> {
-                    // ERFOLGS-CALLBACK
-                    Gdx.app.log("MainMenu", "Login erfolgreich! JWT erhalten.");
-                    game.jwtToken = loginResponse.getJwtToken(); // Speichere das Token
+                game.networkManager.devLogin("Kuri01", new Consumer<LoginResponse>() {
+                    @Override
+                    public void accept(LoginResponse loginResponse) {
+                        // ERFOLGS-CALLBACK
+                        Gdx.app.log("MainMenu", "Login erfolgreich! JWT erhalten.");
+                        game.jwtToken = loginResponse.getJwtToken(); // Speichere das Token
 
-                    // Wechsle zum Charakter-Bildschirm
-                    characterScreen = new CharacterScreen(game);
-                    game.setScreen(characterScreen);
+                        // Wechsle zum Charakter-Bildschirm
+                        characterScreen = new CharacterScreen(game);
+                        game.setScreen(characterScreen);
 
+                    }
                 }, (error) -> {
                     // FEHLER-CALLBACK
                     Gdx.app.error("MainMenu", "Login fehlgeschlagen!", error);

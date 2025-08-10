@@ -1,5 +1,6 @@
 package com.kuri01.Game.DTO;
 
+import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 
 import lombok.Getter;

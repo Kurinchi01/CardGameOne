@@ -9,13 +9,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InventorySlot extends ItemSlot {
 
-
-    private Inventory inventory;
-
     private int slotIndex;
 
     public InventorySlot(int slotIndex) {
         this.slotIndex = slotIndex;
     }
 
+    //Kopie Konstruktor um eine Kopie und keine Refferenz zu erstellen
+    public InventorySlot(InventorySlot inventorySlot) {
+        super(inventorySlot);
+        this.slotIndex = inventorySlot.slotIndex;
+
+
+    }
 }

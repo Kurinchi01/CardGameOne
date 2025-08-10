@@ -12,4 +12,16 @@ public class ItemSlot {
     public ItemSlot() {
     }
 
+
+    //Kopie Konstruktor um eine Kopie und keine Refferenz zu erstellen
+    public ItemSlot(ItemSlot itemSlot) {
+
+
+        if (itemSlot.getItem() instanceof EquipmentItem a) {
+            this.item = a;
+        } else
+            this.item = itemSlot.getItem();
+        this.id = itemSlot.getId();
+    }
+
 }

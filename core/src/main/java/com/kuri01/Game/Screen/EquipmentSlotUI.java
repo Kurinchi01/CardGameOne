@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentItem;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
+import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.ItemSlot;
 
 import lombok.Getter;
@@ -21,9 +22,10 @@ public class EquipmentSlotUI extends ItemSlotUI {
 
     private  EquipmentViewManager equipmentViewManager;
 
-
+    private DragAndDrop.Source dragSource;
     public EquipmentSlotUI(EquipmentSlot equipmentSlot, Skin skin, DragAndDrop dragAndDrop) {
         super(equipmentSlot, skin, dragAndDrop);
+         setItemSlot(equipmentSlot);
 
         Gdx.app.log("EquipmentSlotUI", "Lade: " + this.getZIndex());
         // Hintergrundbild für den Slot
@@ -54,7 +56,11 @@ public class EquipmentSlotUI extends ItemSlotUI {
         }
 
         add(this.getBackground());
-        setupDragAndDrop(dragAndDrop);
+
+        setupDropTarget(dragAndDrop);
+
+
+        updateState();
 
 
         this.addListener(new ClickListener() {
@@ -69,19 +75,39 @@ public class EquipmentSlotUI extends ItemSlotUI {
             }
         });
 
-
+    }
+    public void updateState() {
+        // 1. Aktualisiere die visuelle Darstellung (Icon)
+        updateVisuals();
+        // 2. Aktualisiere die Drag-and-Drop-Fähigkeit (Source)
+        updateDragSource();
+    }
+    public void setSlotModel(EquipmentSlot newSlotModel) {
+        setItemSlot(newSlotModel);
+        // Wichtig:  immer updateState() nach setzen neues slots!
+        updateState();
     }
 
-    private void setupDragAndDrop(DragAndDrop dnd) {
-        // Dieser Slot als QUELLE (zum Ablegen eines Items)
-        if (getItemSlot().getItem() != null) {
-            dnd.addSource(new DragAndDrop.Source(this) {
+    public void updateVisuals() {
+        super.updateSlotVisuals(getItemSlot().getItem());
+    }
+
+    private void updateDragSource() {
+        // Entferne immer zuerst eine eventuell vorhandene alte Source
+        if (dragSource != null) {
+            getDragAndDrop().removeSource(dragSource);
+            dragSource = null;
+        }
+
+        // Füge eine neue Source hinzu, WENN ein Item vorhanden ist
+        if (getItemSlot() != null && getItemSlot().getItem() != null) {
+            dragSource = new DragAndDrop.Source(this) {
                 @Override
                 public DragAndDrop.Payload dragStart(InputEvent e, float x, float y, int p) {
                     getEquipmentViewManager().getCharacterScreen().setDragging(true);
                     DragAndDrop.Payload payload = new DragAndDrop.Payload();
                     payload.setObject(getItemSlot()); // Payload ist ein EquipmentSlot
-
+                    getEquipmentViewManager().getCharacterScreen().closeInfoView();
 
                     Image dragIcon = new Image(getSkin().getDrawable(getItemSlot().getItem().getIconName()));
                     dragIcon.setSize(64, 64);
@@ -98,11 +124,15 @@ public class EquipmentSlotUI extends ItemSlotUI {
                         }
                     }, 0.1f);
                 }
-            });
-        }
 
-        // Dieser Slot als ZIEL (zum Ausrüsten eines Items)
+            };
+            getDragAndDrop().addSource(dragSource);
+        }
+    }
+
+    private void setupDropTarget(DragAndDrop dnd) {
         dnd.addTarget(new DragAndDrop.Target(this) {
+
             public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 // Akzeptiere nur Drops von einem InventorySlot...
                 if (payload.getObject() instanceof InventorySlot) {
@@ -111,7 +141,7 @@ public class EquipmentSlotUI extends ItemSlotUI {
                     if (sourceSlot.getItem() instanceof EquipmentItem) {
                         EquipmentItem itemToEquip = (EquipmentItem) sourceSlot.getItem();
                         // ...und dessen Typ zu diesem Slot passt.
-                        boolean tmp = itemToEquip.getEquipmentSlot() == ((EquipmentSlot) getItemSlot()).getSlotEnum();
+                        boolean tmp = itemToEquip.getEquipmentSlotEnum() == ((EquipmentSlot) getItemSlot()).getSlotEnum();
                         return tmp;
                     }
                 }
@@ -121,9 +151,10 @@ public class EquipmentSlotUI extends ItemSlotUI {
             public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float x, float y, int pointer) {
                 Gdx.app.log("EquipmentSlotUI", "Drop auf EquipmentSlot erkannt");
 
-                getEquipmentViewManager().getCharacterScreen().handleItemDrop((ItemSlot) payload.getObject(), getItemSlot());
+                getEquipmentViewManager().getCharacterScreen().handleItemDrop((InventorySlot) payload.getObject(), getItemSlot());
 
             }
+
         });
     }
 

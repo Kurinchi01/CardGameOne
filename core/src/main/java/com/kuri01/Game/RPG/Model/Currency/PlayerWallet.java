@@ -12,15 +12,8 @@ import lombok.Setter;
 @Setter
 public class PlayerWallet {
 
-    private Long id;
-
-    private Player player;
 
     private long gold; // Spielwährung
     private long candy; // Echtgeld-Währung
-
-    public PlayerWallet(Player player) {
-        this.player = player;
-    }
 
 }

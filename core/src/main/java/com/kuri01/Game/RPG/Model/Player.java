@@ -2,7 +2,10 @@ package com.kuri01.Game.RPG.Model;
 
 import com.kuri01.Game.RPG.Model.Currency.PlayerWallet;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
+import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
+import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.ItemSlot;
 
@@ -16,24 +19,23 @@ import lombok.Setter;
 @Setter
 public class Player extends Character {
 
-    private String googleId;
+
     private Equipment equipment;
     private PlayerWallet playerWallet;
-    private Set<String> roles = new HashSet<>();
+    private Inventory inventory;
 
     private int experiencePoints;
     private int level;
 
-    private Inventory inventory;
+
 
 
     public Player() {
         super();
-        this.inventory = new Inventory(this,20);
+        this.inventory = new Inventory(this, 20);
         this.equipment = new Equipment();
-        this.playerWallet = new PlayerWallet(this);
+        this.playerWallet = new PlayerWallet();
     }
-
 
 
     public void swapItemSlots(ItemSlot sourceSlot, ItemSlot targetSlot) {
@@ -45,7 +47,6 @@ public class Player extends Character {
         sourceSlot.setItem(targetItem);
 
     }
-
 
     /**
      * Berechnet einen Gesamt-Stat des Spielers, indem der Basis-Stat
@@ -72,5 +73,21 @@ public class Player extends Character {
 
         // Schritt 3: Addiere beides und gib das Ergebnis zurück.
         return baseValue + equipmentBonus;
+    }
+
+    public ItemSlot findSlot(ItemSlot referenceSlot) {
+        if (referenceSlot instanceof InventorySlot) {
+            int index = ((InventorySlot) referenceSlot).getSlotIndex();
+            // Gehe sicher, dass der Index gültig ist
+            if (inventory != null && index >= 0 && index < inventory.getSlots().size()) {
+                return inventory.getSlots().get(index);
+            }
+        } else if (referenceSlot instanceof EquipmentSlot) {
+            EquipmentSlotEnum type = ((EquipmentSlot) referenceSlot).getSlotEnum();
+            if (equipment != null && equipment.getEquipmentSlots() != null) {
+                return equipment.getEquipmentSlots().get(type);
+            }
+        }
+        return null;
     }
 }

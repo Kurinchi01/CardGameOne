@@ -8,15 +8,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class EquipmentSlot extends ItemSlot {
-    private Equipment equipment;
 
     private EquipmentSlotEnum slotEnum;
 
-
-
     public EquipmentSlot(Equipment equipment, EquipmentSlotEnum slotEnum) {
-        this.equipment = equipment;
+
         this.slotEnum = slotEnum;
     }
+
+    //copyconstructor
+    public EquipmentSlot(EquipmentSlot equipmentSlot, Item item) {
+
+        this.slotEnum = equipmentSlot.getSlotEnum();
+        this.setId(equipmentSlot.getId());
+        setItem(item);
+    }
+
 
 }

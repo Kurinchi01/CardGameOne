@@ -13,8 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Inventory {
-    private Long id;
-    private Player player;
+
     private int capacity;
     private List<InventorySlot> slots = new ArrayList<>();
 
@@ -25,13 +24,23 @@ public class Inventory {
             addSlot(new InventorySlot(i));
         }
         this.capacity = capacity;
-        this.player = player;
+
     }
 
-    //Füge den Slot hinzu und setz dem Slot die Rück-Referenz zum Inventory
+    //Kopie Konstruktor um eine Kopie und keine Refferenz zu erstellen
+    public Inventory(Inventory inventory) {
+        this.capacity = inventory.capacity;
+        this.slots = new ArrayList<>(capacity);
+        for (InventorySlot a : inventory.slots) {
+            InventorySlot newSlot = new InventorySlot(a);
+            this.addSlot(newSlot);
+        }
+
+    }
+
+
     public void addSlot(InventorySlot slot) {
         this.slots.add(slot);
-        slot.setInventory(this);
     }
 
 }

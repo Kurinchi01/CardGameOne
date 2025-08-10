@@ -1,26 +1,35 @@
 package com.kuri01.Game.Screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.kuri01.Game.RPG.Model.ItemSystem.Action.EquipInventoryInventoryAction;
+import com.kuri01.Game.RPG.Model.ItemSystem.Action.PlayerInventoryAction;
+import com.kuri01.Game.RPG.Model.ItemSystem.Action.SwapSlotInventoryAction;
+import com.kuri01.Game.RPG.Model.ItemSystem.Action.UnequipInventoryAction;
+import com.kuri01.Game.DTO.PlayerActionQueueDTO;
 import com.kuri01.Game.Listener.SlotClickListener;
 import com.kuri01.Game.MainGameClass;
-import com.kuri01.Game.DTO.Action.SwapInvAction;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
+import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.ItemSlot;
 import com.kuri01.Game.RPG.Model.ModelFactory;
@@ -30,13 +39,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CharacterScreen extends ScreenAdapter  implements SlotClickListener {
+public class CharacterScreen extends ScreenAdapter implements SlotClickListener {
 
     private final MainGameClass game;
     private Player livePlayer;
@@ -52,7 +62,7 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
     private Label playerNameLabel, playerLvlLabel, goldAmountLabel, candyAmountLabel;
     private Table invTableForScrollPane;
     private final DragAndDrop dragAndDrop = new DragAndDrop();
-    private final List<Object> actionQueue = new ArrayList<>();
+    private final List<PlayerInventoryAction> actionQueue = new ArrayList<>();
     private final Map<EquipmentSlotEnum, EquipmentSlotUI> equipmentSlotUIs = new HashMap<>();
 
 
@@ -60,16 +70,14 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
         this.game = game;
         this.stage = new Stage(new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT));
         invTableForScrollPane = new Table(game.skin);
+        inventoryViewManager = new InventoryViewManager(game.skin, invTableForScrollPane, this);
+        equipmentViewManager = new EquipmentViewManager(game.skin, this);
+
         Table mainTable = new Table();
         mainTable.setTouchable(Touchable.childrenOnly);
 
 
-
-
-
         //Mit SkinComposer erstellt
-
-
         mainTable.setBackground(game.skin.getDrawable("ForestBackground1"));
         mainTable.setFillParent(true);
 
@@ -82,25 +90,48 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
         table2.setTouchable(Touchable.childrenOnly);
 
 
-
         table2.add(createEquipmentFrameTable()).grow().minSize(128.0f).maxSize(512.0f);
-        //erst nach erstellen der Frame, sonst gibt findActor null zurück
-
-
+        equipmentViewManager.setRootTable(table2.findActor("equipmentFrame"));
 
 
         //Filler Table
         Table table3 = new Table();
         table3.setName("fillerTable");
         table2.add(table3).growX();
+        TextButton sendInventory = new TextButton("Sende Inventar an Server", game.skin);
+        table3.add(sendInventory).width(500).height(100);
+
+        /// TestButton um Inventar an Server zu schicken
+        sendInventory.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("CharacterScreen", "Sende Inventar an Server...");
+                PlayerActionQueueDTO playerActionQueueDTO = ModelFactory.createDTOFromPlayerActionQueue(actionQueue);
+
+                game.networkManager.sendAction(playerActionQueueDTO, game.jwtToken,
+                    new Consumer<PlayerActionQueueDTO>() {
+                        @Override
+                        public void accept(PlayerActionQueueDTO sendeInventarRespone) {
+                            actionQueue.clear();
+                            Gdx.app.log("CharacterScreen", "Erfolgscallback!");
+                        }
+                    },
+
+                    (error) -> {
+                        // FEHLER-CALLBACK
+                        actionQueue.clear();
+                        reloadPlayerFromServer();
+                        Gdx.app.error("CharacterScreen", "Senden fehlgeschlagen!");
+                    });
+            }
+        });
+
 
         table2.add(createEquipmentStatsTable()).grow();
 
+
         table1.add(table2).grow().align(Align.left).minHeight(256.0f).maxHeight(352.0f);
         table1.row();
-
-        //invTable
-
 
 
         ScrollPane scrollPane = new ScrollPane(null, game.skin, "inventory");
@@ -109,10 +140,10 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
 
         scrollPane.setActor(invTableForScrollPane);
 
-
         table1.add(scrollPane).grow().minHeight(128.0f).maxHeight(512f);
 
         mainTable.add(table1).grow();
+
 
         mainTable.row();
 
@@ -120,14 +151,9 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
         mainTable.add(createBottomRow()).growX().minHeight(128.0f).maxHeight(196f);
         stage.addActor(mainTable);
 
-        inventoryViewManager = new InventoryViewManager(game.skin, invTableForScrollPane, this);
-        equipmentViewManager = new EquipmentViewManager(game.skin, table2.findActor("equipmentFrame"), this);
-
 
         DebugAll(mainTable);
         DebugAll(table2);
-
-
 
 
     }
@@ -144,7 +170,15 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
     public void show() {
 
         Gdx.input.setInputProcessor(stage);
+        Gdx.input.setCatchKey(Input.Keys.BACK, true);
+        reloadPlayerFromServer();
 
+
+
+    }
+
+    public void reloadPlayerFromServer()
+    {
         game.networkManager.getPlayerProfile(game.jwtToken, (playerDTO) -> {
             // ===== ERFOLGS-CALLBACK: DTO ERHALTEN! =====
 
@@ -162,7 +196,6 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
             Gdx.app.error("CharacterScreen", "Konnte Spielerprofil nicht laden", error);
 
         });
-
 
     }
 
@@ -186,31 +219,63 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
         //statsLabel.setText(String.format("Angriff: %.0f\nVerteidigung: %.0f", totalAttack, totalDefense));
 
         // 2. Leere die Tabellen, um sie neu zu befüllen
-        equipmentViewManager.clearTable();
         inventoryViewManager.clearTable();
-
 
         // 3. Befülle die Ausrüstungs-Tabelle
         Gdx.app.log("UI Loading", "Lade das Equipment");
         equipmentViewManager.updateView(this.livePlayer.getEquipment());
 
-
         // 4. Befülle die Inventar-Tabelle
         Gdx.app.log("UI Loading", "Lade das Inventar");
-        inventoryViewManager.fillInventory(this.livePlayer.getInventory().getSlots());
+        inventoryViewManager.fillInventory();
         Gdx.app.log("UI Loading", "Only Debugpoint");
         DebugAll(invTableForScrollPane);
     }
 
 
-    public void handleItemDrop(ItemSlot sourceSlot, ItemSlot targetSLot) {
+    public void handleItemDrop(ItemSlot sourceSlotFromPayload, ItemSlot targetSlotFromUI) {
+        if (livePlayer == null) return;
 
-            livePlayer.swapItemSlots(sourceSlot,targetSLot);
-            actionQueue.add(new SwapInvAction(sourceSlot, targetSLot));
+        // SCHRITT 1: Ignoriere die übergebenen Objekte und benutze sie nur, um die ECHTEN Objekte zu finden.
+        // Hole die frischen, autoritativen Datenmodelle direkt aus dem 'livePlayer'.
+        ItemSlot authoritativeSourceSlot = livePlayer.findSlot(sourceSlotFromPayload);
+        ItemSlot authoritativeTargetSlot = livePlayer.findSlot(targetSlotFromUI);
 
+        // Sicherheitscheck
+        if (authoritativeSourceSlot == null || authoritativeTargetSlot == null) {
+            Gdx.app.error("handleItemDrop", "Konnte die autoritativen Slots nicht finden!");
+            // Breche ab und setze die UI zurück, um einen konsistenten Zustand zu gewährleisten.
             updateUiWithPlayerData();
+            return;
+        }
 
+        // SCHRITT 2: Zeichne die Aktion auf (mit den frischen, korrekten Daten).
+        if (authoritativeSourceSlot instanceof EquipmentSlot sourceSlot) {
+            EquipmentSlot copyAuthoritativeSourceSlot = new EquipmentSlot(sourceSlot, sourceSlot.getItem());
+            InventorySlot copyAuthoritativeTargetSlot = new InventorySlot((InventorySlot) authoritativeTargetSlot);
+
+            actionQueue.add(new UnequipInventoryAction(copyAuthoritativeSourceSlot, copyAuthoritativeTargetSlot));
+            livePlayer.swapItemSlots(authoritativeSourceSlot, authoritativeTargetSlot);
+        } else if (targetSlotFromUI instanceof EquipmentSlot targetSlot) {
+            InventorySlot copyAuthoritativeSourceSlot = new InventorySlot((InventorySlot) authoritativeSourceSlot);
+            EquipmentSlot copyAuthoritativeTargetSlot = new EquipmentSlot(targetSlot, targetSlot.getItem());
+
+            actionQueue.add(new EquipInventoryInventoryAction(copyAuthoritativeSourceSlot, copyAuthoritativeTargetSlot));
+            livePlayer.swapItemSlots((InventorySlot) authoritativeSourceSlot, authoritativeTargetSlot);
+        } else {
+            InventorySlot copyAuthoritativeSourceSlot = new InventorySlot((InventorySlot) authoritativeSourceSlot);
+            InventorySlot copyAuthoritativeTargetSlot = new InventorySlot((InventorySlot) authoritativeTargetSlot);
+
+            actionQueue.add(new SwapSlotInventoryAction(copyAuthoritativeSourceSlot, copyAuthoritativeTargetSlot));
+
+            livePlayer.swapItemSlots((InventorySlot) authoritativeSourceSlot, (InventorySlot) authoritativeTargetSlot);
+        }
+        // z.B. actionQueue.add(new SwapInvAction(authoritativeSourceSlot, authoritativeTargetSlot));
+
+        // SCHRITT 4: Aktualisiere die gesamte UI basierend auf dem finalen, korrekten Zustand.
+        updateUiWithPlayerData();
     }
+
 
     private Table createBottomRow() {
         Table table1 = new Table();
@@ -256,126 +321,127 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
 
         Table table2 = new Table();
         table2.setTouchable(Touchable.childrenOnly);
-
         DebugAll(table2);
+
+        /// ______________ Helmet __________________
         Table table = new Table();
         table.setTouchable(Touchable.childrenOnly);
 
         EquipmentSlot tmp = new EquipmentSlot();
         tmp.setSlotEnum(EquipmentSlotEnum.HELMET);
-
         EquipmentSlotUI slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
+        slotUI.setEquipmentViewManager(equipmentViewManager);
         DebugAll(slotUI);
-
         slotUI.setName("helmetUI");
         table.setName("helmetSlot");
-
         equipmentSlotUIs.put(EquipmentSlotEnum.HELMET, slotUI);
-
 
         table.add(slotUI).grow();
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
 
+        /// ______________ Necklace __________________
 
         table = new Table();
-        table.setName("necklaceSlot");
         table.setTouchable(Touchable.childrenOnly);
 
         tmp = new EquipmentSlot();
         tmp.setSlotEnum(EquipmentSlotEnum.NECKLACE);
         slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
+        slotUI.setEquipmentViewManager(equipmentViewManager);
 
+        DebugAll(slotUI);
         slotUI.setName("necklaceUI");
         table.setName("necklaceSlot");
-        table.setBackground(game.skin.getDrawable("NecklaceSlot"));
-        table.add(slotUI).grow();
         equipmentSlotUIs.put(EquipmentSlotEnum.NECKLACE, slotUI);
 
+        table.add(slotUI).grow();
 
 
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
         table1.add(table2).grow();
 
+        /// ______________ Neue Reihe __________________
         table1.row();
+
         table2 = new Table();
         table2.setTouchable(Touchable.childrenOnly);
 
+        /// ______________ Weapon __________________
         table = new Table();
-        table.setName("weaponSlot");
+        table.setTouchable(Touchable.childrenOnly);
 
         tmp = new EquipmentSlot();
         tmp.setSlotEnum(EquipmentSlotEnum.WEAPON);
         slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
-
+        slotUI.setEquipmentViewManager(equipmentViewManager);
+        DebugAll(slotUI);
         slotUI.setName("weaponUI");
         table.setName("weaponSlot");
-        table.setBackground(game.skin.getDrawable("WeaponSlot"));
-        table.add(slotUI).grow();
-        table.setTouchable(Touchable.childrenOnly);
         equipmentSlotUIs.put(EquipmentSlotEnum.WEAPON, slotUI);
 
+        table.add(slotUI).grow();
 
 
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
         table2.setTouchable(Touchable.childrenOnly);
 
+        /// ______________ Armor __________________
         table = new Table();
-        table.setName("armorSlot");
+        table.setTouchable(Touchable.childrenOnly);
 
         tmp = new EquipmentSlot();
         tmp.setSlotEnum(EquipmentSlotEnum.ARMOR);
         slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
-
-
-
+        slotUI.setEquipmentViewManager(equipmentViewManager);
+        DebugAll(slotUI);
         slotUI.setName("armorUI");
         table.setName("armorSlot");
-        table.setBackground(game.skin.getDrawable("ArmorSlot"));
-        table.add(slotUI).grow();
-        table.setTouchable(Touchable.childrenOnly);
         equipmentSlotUIs.put(EquipmentSlotEnum.ARMOR, slotUI);
+
+        table.add(slotUI).grow();
+
 
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
         table2.setTouchable(Touchable.childrenOnly);
 
+        /// ______________ Ring __________________
         table = new Table();
-        table.setName("ringSlot");
+        table.setTouchable(Touchable.childrenOnly);
 
         tmp = new EquipmentSlot();
         tmp.setSlotEnum(EquipmentSlotEnum.RING);
         slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
-
-
-
+        slotUI.setEquipmentViewManager(equipmentViewManager);
+        DebugAll(slotUI);
         slotUI.setName("ringUI");
         table.setName("ringSlot");
-        table.setBackground(game.skin.getDrawable("RingSlot"));
-        table.add(slotUI).grow();
-        table.setTouchable(Touchable.childrenOnly);
         equipmentSlotUIs.put(EquipmentSlotEnum.RING, slotUI);
 
+        table.add(slotUI).grow();
+
+
         table2.add(table).grow().minSize(32.0f).maxSize(128.0f);
-        table1.add(table2).grow();
         table2.setTouchable(Touchable.childrenOnly);
+        table1.add(table2).grow();
         table1.setTouchable(Touchable.childrenOnly);
 
+        /// ______________ Neue Reihe __________________
         table1.row();
+
+        /// ______________ Shoes __________________
         table = new Table();
-        table.setName("shoesSlot");
+        table.setTouchable(Touchable.childrenOnly);
 
         tmp = new EquipmentSlot();
         tmp.setSlotEnum(EquipmentSlotEnum.SHOES);
         slotUI = new EquipmentSlotUI(tmp, game.skin, dragAndDrop);
-
-
+        slotUI.setEquipmentViewManager(equipmentViewManager);
+        DebugAll(slotUI);
         slotUI.setName("shoesUI");
         table.setName("shoesSlot");
-        table.setBackground(game.skin.getDrawable("ShoesSlot"));
-        table.add(slotUI).grow();
-        table.setTouchable(Touchable.childrenOnly);
         equipmentSlotUIs.put(EquipmentSlotEnum.SHOES, slotUI);
 
-
+        table.add(slotUI).grow();
 
         table1.add(table).grow().minSize(32.0f).maxSize(128.0f);
         table1.setTouchable(Touchable.childrenOnly);
@@ -441,7 +507,6 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
     }
 
 
-
     /**
      * Hilfsmethode zum Erstellen, Positionieren und Anzeigen des Info-Fensters.
      */
@@ -472,6 +537,13 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
         // Gdx.app.log("CharacterScreen", "Klick erkannt"+ Gdx.input.get);
         stage.act(delta);
         stage.draw();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            // Führen Sie hier Ihre Aktion aus
+            Gdx.app.log("Input", "Back-Button wurde gedrückt!");
+            this.dispose();
+            game.setScreen(new MainMenuScreen(game));
+
+        }
 
     }
 
@@ -492,15 +564,19 @@ public class CharacterScreen extends ScreenAdapter  implements SlotClickListener
         Gdx.app.log("CharacterScreen", "Ein Slot wurde geklickt! Typ: " + clickedSlotModel.getClass().getSimpleName());
 
         //bestehende Logik zum Öffnen/Schließen des Fensters kommt
-        if (openedDialog != null) {
-            openedDialog.remove();
-            openedDialog = null;
-        }
+        closeInfoView();
 
         if (clickedSlotModel != null && clickedSlotModel.getItem() != null) {
             showItemInfoWindow(clickedSlotModel.getItem(), screenX, screenY);
         }
         Gdx.app.log("CharacterScreen", "Debugpoint");
 
+    }
+
+    public void closeInfoView() {
+        if (openedDialog != null) {
+            openedDialog.remove();
+            openedDialog = null;
+        }
     }
 }
