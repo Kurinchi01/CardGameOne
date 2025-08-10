@@ -13,6 +13,5 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class EquipmentDTO {
-    private Long id;
     private HashMap<EquipmentSlotEnum, EquipmentSlotDTO> equipmentSlots = new HashMap<>();
 }

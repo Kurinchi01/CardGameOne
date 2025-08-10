@@ -2,9 +2,6 @@ package com.kuri01.Game.RPG.Model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.kuri01.Game.DTO.EquipmentDTO;
 import com.kuri01.Game.DTO.EquipmentSlotDTO;
 import com.kuri01.Game.DTO.InventoryDTO;
@@ -12,7 +9,7 @@ import com.kuri01.Game.DTO.InventorySlotDTO;
 import com.kuri01.Game.DTO.ItemDTO;
 import com.kuri01.Game.DTO.PlayerDTO;
 import com.kuri01.Game.DTO.PlayerWalletDTO;
-import com.kuri01.Game.MainGameClass;
+import com.kuri01.Game.DTOMapper.ModelFactory;
 import com.kuri01.Game.RPG.Model.Currency.PlayerWallet;
 import com.kuri01.Game.RPG.Model.ItemSystem.Equipment;
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentItem;
@@ -22,7 +19,6 @@ import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
 import com.kuri01.Game.RPG.Model.ItemSystem.LootChest;
 
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

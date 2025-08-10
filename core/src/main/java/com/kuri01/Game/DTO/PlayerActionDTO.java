@@ -1,9 +1,8 @@
 package com.kuri01.Game.DTO;
 
 import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlot;
-import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
-import com.kuri01.Game.RPG.Model.ModelFactory;
+import com.kuri01.Game.DTOMapper.ModelFactory;
 
 import lombok.Getter;
 import lombok.Setter;

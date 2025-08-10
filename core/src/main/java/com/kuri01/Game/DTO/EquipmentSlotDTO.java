@@ -12,11 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EquipmentSlotDTO {
 
-    //von Oberklasse ItemSlot
-    private Long id;
-    private ItemDTO item;
+    //ItemID für Referenz auf Item
+    private Long itemID;
 
     //von Unterklasse InventorySlot
     private EquipmentSlotEnum slotEnum;
+
 
 }

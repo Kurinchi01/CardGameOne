@@ -32,7 +32,7 @@ import com.kuri01.Game.RPG.Model.ItemSystem.EquipmentSlotEnum;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.ItemSlot;
-import com.kuri01.Game.RPG.Model.ModelFactory;
+import com.kuri01.Game.DTOMapper.ModelFactory;
 import com.kuri01.Game.RPG.Model.Player;
 
 import java.util.ArrayList;

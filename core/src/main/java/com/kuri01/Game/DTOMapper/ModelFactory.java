@@ -1,4 +1,4 @@
-package com.kuri01.Game.RPG.Model;
+package com.kuri01.Game.DTOMapper;
 
 import com.kuri01.Game.RPG.Model.ItemSystem.Action.EquipInventoryInventoryAction;
 import com.kuri01.Game.RPG.Model.ItemSystem.Action.PlayerInventoryAction;
@@ -22,6 +22,7 @@ import com.kuri01.Game.RPG.Model.ItemSystem.Inventory;
 import com.kuri01.Game.RPG.Model.ItemSystem.InventorySlot;
 import com.kuri01.Game.RPG.Model.ItemSystem.Item;
 import com.kuri01.Game.RPG.Model.ItemSystem.LootChest;
+import com.kuri01.Game.RPG.Model.Player;
 
 import java.util.ArrayList;
 import java.util.List;

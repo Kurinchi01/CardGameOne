@@ -1,5 +1,7 @@
 package com.kuri01.Game.DTO;
 
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,9 +23,6 @@ public class PlayerDTO {
     private EquipmentDTO equipmentDTO;
     private InventoryDTO inventoryDTO;
     private PlayerWalletDTO playerWalletDTO;
-
-
-
-
+    private Map<Long, ItemDTO> itemBlueprints;
 
 }
